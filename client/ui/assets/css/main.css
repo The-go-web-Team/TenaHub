@@ -373,12 +373,7 @@ height: calc(100% - 100px);
 }
 
 .navbar-top div ul.nav li:hover .profile-dropdown{
-display: block;
 }
-
-
-
-
 }
 @media only screen and (min-width: 992px){
     
