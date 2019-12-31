@@ -7,62 +7,33 @@ import (
 	"strconv"
 
 	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
-
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/user"
+	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/hcservice"
 	"github.com/julienschmidt/httprouter"
 )
 
-// UserHandler handles User related http requests
-type UserHandler struct {
-	userService user.UserService
+// HcserviceHandler handles hcservice related http requests
+type HcserviceHandler struct {
+	servService hcservice.ServicesService
 }
 
-// NewUserHander creates and returns new UserHandler object
-func NewUserHander(us user.UserService) *UserHandler {
-	return &UserHandler{userService: us}
+// NewServiceHandler creates HcserviceHandler object
+func NewServiceHandler(serv hcservice.ServicesService) *HcserviceHandler {
+	return &HcserviceHandler{servService: serv}
 }
 
-// GetUsers handles GET /v1/users request
-func (uh *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// GetServices handles GET /v1/services/:id
+func (sh *HcserviceHandler) GetServices(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-type", "application/json")
+	id, err := strconv.Atoi(ps.ByName("id"))
 
-	users, errs := uh.userService.Users()
+	services, errs := sh.servService.Services(uint(id))
 
 	if len(errs) > 0 {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
-	output, err := json.MarshalIndent(users, "", "\n")
-
-	if err != nil {
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		return
-	}
-
-	w.Write(output)
-	return
-
-}
-
-// GetUser handles POST /v1/user
-func (uh *UserHandler) GetUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	w.Header().Set("Content-type", "application/json")
-	username := r.PostFormValue("username")
-	password := r.PostFormValue("password")
-
-	fmt.Println(username,password)
-
-	usr := entity.User{UserName: username, Password: password}
-
-	user, errs := uh.userService.User(&usr)
-
-	if len(errs) > 0 {
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		return
-	}
-
-	output, err := json.MarshalIndent(&user, "", "\n")
+	output, err := json.MarshalIndent(&services, "", "\n")
 
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -73,8 +44,8 @@ func (uh *UserHandler) GetUser(w http.ResponseWriter, r *http.Request, _ httprou
 	return
 }
 
-// GetSingleUser handler GET /v1/users/:id
-func (uh *UserHandler) GetSingleUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+// GetSingleService hanldes GET /v1/service/:id
+func (sh *HcserviceHandler) GetSingleService(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-type", "application/json")
 	id, err := strconv.Atoi(ps.ByName("id"))
 
@@ -83,14 +54,15 @@ func (uh *UserHandler) GetSingleUser(w http.ResponseWriter, r *http.Request, ps 
 		return
 	}
 
-	user, errs := uh.userService.UserByID(uint(id))
+	service, errs := sh.servService.Service(uint(id))
 
 	if len(errs) > 0 {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
-	output, err := json.MarshalIndent(user, "", "\n")
+	output, err := json.MarshalIndent(service, "", "\n")
+
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
@@ -100,10 +72,9 @@ func (uh *UserHandler) GetSingleUser(w http.ResponseWriter, r *http.Request, ps 
 	return
 }
 
-// PutUser handles PUT /v1/users/:id request
-func (uh *UserHandler) PutUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+// PutService handler PUT /v1/services/:id
+func (sh *HcserviceHandler) PutService(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-type", "application/json")
-
 	id, err := strconv.Atoi(ps.ByName("id"))
 
 	if err != nil {
@@ -111,7 +82,7 @@ func (uh *UserHandler) PutUser(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	user, errs := uh.userService.UserByID(uint(id))
+	service, errs := sh.servService.Service(uint(id))
 
 	if len(errs) > 0 {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -124,21 +95,21 @@ func (uh *UserHandler) PutUser(w http.ResponseWriter, r *http.Request, ps httpro
 
 	r.Body.Read(body)
 
-	err = json.Unmarshal(body, user)
+	err = json.Unmarshal(body, service)
 
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
-	user, errs = uh.userService.UpdateUser(user)
+	service, errs = sh.servService.UpdateService(service)
 
 	if len(errs) > 0 {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
-	output, err := json.MarshalIndent(&user, "", "\n")
+	output, err := json.MarshalIndent(service, "", "\n")
 
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -147,13 +118,11 @@ func (uh *UserHandler) PutUser(w http.ResponseWriter, r *http.Request, ps httpro
 
 	w.Write(output)
 	return
-
 }
 
-// DeleteUser Handler DELETE /v1/users/:id
-func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+// DeleteService handles DELETE /v1/services/:id
+func (sh *HcserviceHandler) DeleteService(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-type", "application/json")
-
 	id, err := strconv.Atoi(ps.ByName("id"))
 
 	if err != nil {
@@ -161,14 +130,14 @@ func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	user, errs := uh.userService.DeleteUser(uint(id))
+	service, errs := sh.servService.DeleteService(uint(id))
 
 	if len(errs) > 0 {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
-	_, err = json.MarshalIndent(user, "", "\n")
+	_, err = json.MarshalIndent(service, "", "\n")
 
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -177,34 +146,33 @@ func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request, ps htt
 
 	w.WriteHeader(http.StatusNoContent)
 	return
-
 }
 
-// PostUser handles POST /v1/users requests
-func (uh *UserHandler) PostUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+// PostService handles POST /v1/services
+func (sh *HcserviceHandler) PostService(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-type", "application/json")
 
-	user := entity.User{}
+	service := &entity.Service{}
 
 	l := r.ContentLength
 	body := make([]byte, l)
 	r.Body.Read(body)
 
-	err := json.Unmarshal(body, &user)
+	err := json.Unmarshal(body, service)
 
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		http.Error(w, http.StatusText(http.StatusNoContent), http.StatusNoContent)
 		return
 	}
 
-	u, errs := uh.userService.StoreUser(&user)
+	service, errs := sh.servService.StoreService(service)
 
 	if len(errs) > 0 {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
-	p := fmt.Sprintf("/v1/users/%d", u.ID)
+	p := fmt.Sprintf("/v1/services/%d", service.ID)
 	w.Header().Set("Location", p)
 	w.WriteHeader(http.StatusCreated)
 	return

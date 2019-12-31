@@ -17,7 +17,7 @@ func NewUserService(repo user.UserRepository) *UserService {
 	return &UserService{userRepo: repo}
 }
 
-// Users returns all users from the database
+// Users returns all application users 
 func (us *UserService) Users() ([]entity.User, []error) {
 	users, errs := us.userRepo.Users()
 	if len(errs) > 0 {
@@ -27,7 +27,7 @@ func (us *UserService) Users() ([]entity.User, []error) {
 	return users, nil
 }
 
-// User returns a single users from the database with user name and password
+// User returns a single application user by username and password
 func (us *UserService) User(user *entity.User) (*entity.User, []error) {
 	usr, errs := us.userRepo.User(user)
 	fmt.Println(errs)
@@ -38,7 +38,7 @@ func (us *UserService) User(user *entity.User) (*entity.User, []error) {
 	return usr, nil
 }
 
-// UserByID returns a single user by its id from the database
+// UserByID returns a single application user by its id 
 func (us *UserService) UserByID(id uint) (*entity.User, []error) {
 	usr, errs := us.userRepo.UserByID(id)
 
@@ -49,7 +49,7 @@ func (us *UserService) UserByID(id uint) (*entity.User, []error) {
 	return usr, nil
 }
 
-// UpdateUser updates user from the database
+// UpdateUser updates application user
 func (us *UserService) UpdateUser(user *entity.User) (*entity.User, []error) {
 	usr, errs := us.userRepo.UpdateUser(user)
 
@@ -60,7 +60,7 @@ func (us *UserService) UpdateUser(user *entity.User) (*entity.User, []error) {
 	return usr, nil
 }
 
-// DeleteUser deletes a single user from the database by it's id
+// DeleteUser deletes a single application user
 func (us *UserService) DeleteUser(id uint) (*entity.User, []error) {
 	usr, errs := us.userRepo.DeleteUser(id)
 
@@ -71,7 +71,7 @@ func (us *UserService) DeleteUser(id uint) (*entity.User, []error) {
 	return usr, nil
 }
 
-// StoreUser will insert a new user to the database
+// StoreUser will insert a new application user
 func (us *UserService) StoreUser(user *entity.User) (*entity.User, []error) {
 	usr, errs := us.userRepo.StoreUser(user)
 	if len(errs) > 0 {
