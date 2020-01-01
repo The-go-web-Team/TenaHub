@@ -17,6 +17,30 @@ type User struct {
 	Role        string `json:"role"`
 }
 
+
+type Admin struct {
+	ID          uint `json:"id"`
+	FirstName   string `json:"firstname"`
+	LastName    string `json:"lastname"`
+	UserName    string `json:"username"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
+	ProfilePic  string `json:"profilepic"`
+	PhoneNumber string `json:"phonenum" `
+}
+
+type Agent struct {
+	ID          uint `json:"id"`
+	FirstName   string `json:"firstname"`
+	LastName    string `json:"lastname"`
+	UserName    string `json:"username"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
+	ProfilePic  string `json:"profilepic"`
+	PhoneNumber string `json:"phonenum"`
+}
+
+
 // Rating represents users rating
 type Rating struct {
 	ID             uint 
