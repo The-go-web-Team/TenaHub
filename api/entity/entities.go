@@ -31,7 +31,7 @@ type Comment struct {
 	Comment        string `json:"comment" gorm:"varchar(255); not null"`
 	UserID         uint	`json:"userid"`
 	HealthCenterID uint	`json:"healthcenterid"`
-	PlacedAt       time.Time `json:"placedat" sql:"DEFAULT:'current_timestamp'"`
+	PlacedAt       time.Time `json:"placedat" sql:"DEFAULT:current_timestamp"`
 }
 
 // HealthCenter represents health centers data

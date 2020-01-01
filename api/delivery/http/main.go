@@ -6,9 +6,13 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 
 	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/delivery/http/handler"
-	// "github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
+	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
 	hcserviceRepository "github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/hcservice/repository"
 	hcserviceService "github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/hcservice/service"
+
+	commentRepository "github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/comment/repository"
+	commentService "github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/comment/service"
+
 	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/user/repository"
 
 	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/user/service"
@@ -26,11 +30,11 @@ func main() {
 
 	defer dbConn.Close()
 
-	// errs := dbConn.CreateTable(&entity.Service{}).GetErrors()
+	errs := dbConn.CreateTable(&entity.Comment{}).GetErrors()
 
-	// if len(errs) > 0 {
-	// 	panic(errs)
-	// }
+	if len(errs) > 0 {
+		panic(errs)
+	}
 
 	userRepo := repository.NewUserGormRepo(dbConn)
 	userServ := service.NewUserService(userRepo)
@@ -38,8 +42,12 @@ func main() {
 	serviceRepo := hcserviceRepository.NewServiceGormRepo(dbConn)
 	serviceServ := hcserviceService.NewHcserviceService(serviceRepo)
 
+	comRepo := commentRepository.NewCommentGormRepo(dbConn)
+	comServ := commentService.NewCommentService(comRepo)
+
 	userHandl := handler.NewUserHander(userServ)
 	hcservHandl := handler.NewServiceHandler(serviceServ)
+	cmtHandl := handler.NewCommentHandler(comServ)
 
 	router := httprouter.New()
 
@@ -55,6 +63,12 @@ func main() {
 	router.PUT("/v1/services/:id", hcservHandl.PutService)
 	router.DELETE("/v1/services/:id", hcservHandl.DeleteService)
 	router.POST("/v1/services", hcservHandl.PostService)
+
+	router.GET("/v1/comments/:id", cmtHandl.GetComments)
+	router.GET("/v1/comment/:id", cmtHandl.GetComment)
+	router.PUT("/v1/comments/:id", cmtHandl.PutComment)
+	router.DELETE("/v1/comments/:id", cmtHandl.DeleteComment)
+	router.POST("/v1/comments", cmtHandl.PostComment)
 
 	http.ListenAndServe(":8181", router)
 }

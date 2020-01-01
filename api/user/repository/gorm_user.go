@@ -53,7 +53,7 @@ func (ur *UserGormRepo) UserByID(id uint) (*entity.User, []error) {
 // UpdateUser updates user from the database
 func (ur *UserGormRepo) UpdateUser(user *entity.User) (*entity.User, []error) {
 	usr := user
-	errs := ur.conn.Save(&usr).GetErrors()
+	errs := ur.conn.Save(usr).GetErrors()
 
 	if len(errs) > 0 {
 		return nil, errs
