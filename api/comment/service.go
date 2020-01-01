@@ -1,6 +1,9 @@
 package comment
 
-import "github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
+import (
+	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
+)
+
 
 // CommentService is
 type CommentService interface {
