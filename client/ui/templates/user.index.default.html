@@ -1,0 +1,79 @@
+{{ define "user.index.default.layout" }}
+{{ template "user.header.default.layout" }}
+{{ template "user.index.default.content" }}
+{{ template "user.footer.default.html" }}
+{{ end }}
+
+{{ define "user.index.default.content" }}
+<div id="banner" class="container-fluid d-flex body-container">
+    <div class="container align-self-center">
+        <h1 class="banner-title text-white">Welcome to TenaHub</h1>
+        <div class="col-md-9">
+            <div>
+                <form action="pages/result.php" class="form-row search-form" method="get">
+                    <div class="col">
+                        <input type="text" placeholder="search for healthcenters" name="search-key" class="form-control search-input" required>
+                    </div>
+                    <div class="col">
+                        <input type="submit" class="btn btn-danger search-input" value="search">
+                    </div>
+                </form> 
+            </div>
+        </div>
+    </div>
+</div>
+<div id="top-rated" class="container">
+        <div class="container">
+            <h2 class="text-center">how to use</h2>
+            <div class="row" id="walkthrough-container">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="rounded-circle bg-primary walkthrough-icon p-3" >
+                            <img src="../assets/img/search.png" alt="">
+                        </div>
+                        <p class="p-2"><strong>Search healthcenters</strong></p>
+                        <p>Search healthcenters around you and see what other peoples have to say about them.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="rounded-circle bg-success walkthrough-icon p-3" >
+                            <img src="../assets/img/signup.png" alt="">
+                        </div>
+                        <p class="p-2"><strong>Create account</strong></p>
+                        <p>Create your account and share your feedback with others.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="rounded-circle bg-danger walkthrough-icon p-3" >
+                            <img src="../assets/img/comments.png" alt="">
+                        </div>
+                        <p class="p-2"><strong>Give feedback</strong></p>
+                        <p>Your feedbacks will impact the quality of services healthcenters are providing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div>
+    <h2 class="text-center">Top rated</h2>
+    <div class="row">
+        <div class='col-md-3 mb-3'>
+            <div class='items border rounded '>
+                <div class='item-img'>
+                    <img src='' alt='img' class='rounded-top'>
+                </div>
+                <div class='item-desc pt-2'>
+                    <b class='p-0'><a href="#"></a></b>
+                    <p class='p-0 mb-1'></p>
+                    <div class='rating d-flex p-0'>
+                        <img src='../assets/img/star_blue.png' alt=''>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>       
+{{ end }}

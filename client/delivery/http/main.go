@@ -1,11 +1,24 @@
 package main
 
 import (
+	"html/template"
 	"net/http"
+
+	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/client/delivery/http/handler"
 	"github.com/gorilla/mux"
 )
 
-func main()  {
+var templ = template.Must(template.ParseGlob("../../ui/templates/*"))
+
+func main() {
+
+	userHandler := handler.NewUserHandler(templ)
+
 	router := mux.NewRouter()
-	http.ListenAndServe(":8181", router)
+	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("../../ui/assets"))))
+	router.HandleFunc("/", userHandler.Index)
+	router.HandleFunc("/login", userHandler.Login)
+	router.HandleFunc("/signup", userHandler.SignUp)
+
+	http.ListenAndServe(":8282", router)
 }

@@ -48,12 +48,12 @@ func (uh *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request, _ httpro
 // GetUser handles POST /v1/user
 func (uh *UserHandler) GetUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-type", "application/json")
-	username := r.PostFormValue("username")
+	email := r.PostFormValue("email")
 	password := r.PostFormValue("password")
 
-	fmt.Println(username,password)
+	fmt.Println(email,password)
 
-	usr := entity.User{UserName: username, Password: password}
+	usr := entity.User{Email: email, Password: password}
 
 	user, errs := uh.userService.User(&usr)
 

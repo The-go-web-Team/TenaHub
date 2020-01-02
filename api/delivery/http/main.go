@@ -6,7 +6,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 
 	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/delivery/http/handler"
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
 	hcserviceRepository "github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/hcservice/repository"
 	hcserviceService "github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/hcservice/service"
 
@@ -30,11 +29,11 @@ func main() {
 
 	defer dbConn.Close()
 
-	errs := dbConn.CreateTable(&entity.Comment{}).GetErrors()
+	// errs := dbConn.CreateTable(&entity.User{}).GetErrors()
 
-	if len(errs) > 0 {
-		panic(errs)
-	}
+	// if len(errs) > 0 {
+	// 	panic(errs)
+	// }
 
 	userRepo := repository.NewUserGormRepo(dbConn)
 	userServ := service.NewUserService(userRepo)

@@ -1,6 +1,10 @@
 package repository
 
 import (
+	"fmt"
+
+	"github.com/lib/pq"
+
 	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
 	"github.com/jinzhu/gorm"
 )
@@ -30,7 +34,7 @@ func (ur *UserGormRepo) Users() ([]entity.User, []error) {
 // User returns a single users from the database with user name and password
 func (ur *UserGormRepo) User(user *entity.User) (*entity.User, []error) {
 	usr := entity.User{}
-	errs := ur.conn.Where("user_name = ? AND password = ?", user.UserName, user.Password).First(&usr).GetErrors()
+	errs := ur.conn.Where("email = ? AND password = ?", user.Email, user.Password).First(&usr).GetErrors()
 
 	if len(errs) > 0 {
 		return nil, errs
@@ -83,6 +87,11 @@ func (ur *UserGormRepo) DeleteUser(id uint) (*entity.User, []error) {
 func (ur *UserGormRepo) StoreUser(user *entity.User) (*entity.User, []error) {
 	usr := user
 	errs := ur.conn.Create(usr).GetErrors()
+
+	for _, err := range errs {
+		pqerr := err.(*pq.Error)
+		fmt.Println(pqerr)
+	}
 
 	if len(errs) > 0 {
 		return nil, errs
