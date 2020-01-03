@@ -19,6 +19,10 @@ func main() {
 	router.HandleFunc("/", userHandler.Index)
 	router.HandleFunc("/login", userHandler.Login)
 	router.HandleFunc("/signup", userHandler.SignUp)
+	router.HandleFunc("/search", userHandler.Search)
+	router.HandleFunc("/home", userHandler.Home)
+	router.HandleFunc("/healthcenters", userHandler.Healthcenters)
+	router.HandleFunc("/logout", userHandler.Logout)
 
 	http.ListenAndServe(":8282", router)
 }

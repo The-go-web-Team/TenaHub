@@ -1,0 +1,57 @@
+{{ define "user.hc.default.layout" }}
+{{ template "user.header.default.layout" }}
+{{ template "user.hc.default.content" . }}
+{{ template "user.footer.default.layout" }}
+{{ end }}
+
+{{ define "user.hc.default.content" }}
+<div class="container-fluid">
+    <div class="container">
+            <div class='health_center_image row border-bottom mt-3 mb-3 pb-1'>
+                <div class='col-md-12'>
+                    <img src="../assets/img/health_center_hd.jpg" alt='' id='health-center-img-banner'>
+                </div>
+            </div>
+            <div class='helth-center-desc'>
+            <h2 class='health-center-desc-title'>Name</h2>
+            <div class='rating d-flex pb-3'>
+                <p><b>Rating</b></p>
+                <img src='../assets/img/star_blue.png' alt=''>
+                <span>5.0</span>
+            </div>
+            <div class='pb-3'>
+                <b class='mr-3'>Address</b>
+                <span>AddisAbaba</span>
+            </div>
+            <div class='pb-3'>
+                <b class='mr-3'>Phone number</b>
+                <span>0909090909</span>
+            </div>
+            <div class='desc-services'>
+                <p><b>Services</b></p>
+                <span class='p-2 mr-1 bg-success text-white rounded'>service 1</span>
+            </div>
+            <div class="reviews mb-5">
+                <h2 class="border-bottom">Reviews</h2>
+                <div class="add-review pt-3 pb-3">
+                    <p class="">Login <a href="/login" class="text-primary">here</a> to comment..</p>
+                </div>
+                <div class='review border-bottom pt-2 pb-2'>
+                    <div class='reviewer row pt-2'>
+                        <div class='ml-3'>
+                            <span id='user-logo' class='bg-danger text-white pl-1 pr-1 mt-2 rounded-circle'>Jhon Doe</span> 
+                        </div>
+                        <div class='col-md-9'>
+                            <p class='p-0 m-0 reviewer-name'>Nati</p>
+                            <span>june 2019</span>
+                        </div>
+                    </div>
+                    <div class='review-text col-md-8 pl-0 pt-2'>
+                        <p>Great Service</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

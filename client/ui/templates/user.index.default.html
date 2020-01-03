@@ -1,7 +1,7 @@
 {{ define "user.index.default.layout" }}
 {{ template "user.header.default.layout" }}
-{{ template "user.index.default.content" }}
-{{ template "user.footer.default.html" }}
+{{ template "user.index.default.content" .}}
+{{ template "user.footer.default.layout" }}
 {{ end }}
 
 {{ define "user.index.default.content" }}

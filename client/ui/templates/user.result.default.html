@@ -1,0 +1,33 @@
+{{ define "user.result.default.layout" }}
+{{ template "user.header.default.layout" }}
+{{ template "user.result.default.content" . }}
+{{ template "user.footer.default.layout" }}
+{{ end }}
+
+{{ define "user.result.default.content" }}
+<div class="container-fluid body-container">
+    <div class="container">
+        <div class="">
+            <p>{{ . }}</p>
+            <h3>Search results(20)</h3>
+            <div class="search-items">
+                <div class='search-item row border'>
+                    <div class='col-md-3'>
+                        <img src="../assets/img/health_center.jpg" class='rounded' alt=''>
+                    </div>
+                    <div class='col-md-9'>
+                        <a href="/healthcenters?id=1" class='search-title'>Yekatit</a>
+                        <div class='location'>
+                            <p>AddisAbaba</p>
+                        </div>
+                        <div class='rating d-flex'>
+                            <img src='../assets/imgs/star_blue.png' alt=''>
+                            <span>4.5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

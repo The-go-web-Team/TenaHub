@@ -9,11 +9,24 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/client/entity"
 )
 
-const baseURL string = "http://localhost:8181/v1/"
+type cookie struct {
+	Key        string
+	Expiration time.Time
+}
+
+type response struct {
+	Status string
+	Content interface{}
+}
+
+var loggedIn = make([]cookie, 10)
+
+const baseURL string = "http://localhost:8181/v1/"	
 
 func getResponse(request *http.Request) []byte {
 	client := &http.Client{}
@@ -70,15 +83,15 @@ func PostUser(user *entity.User) error {
 }
 
 // Authenticate authenticates user
-func Authenticate(user *entity.User) error {
-	requestBody, err := json.MarshalIndent(user, "", "\n")
+func Authenticate(user *entity.User) (*entity.User, error) {
+	// requestBody, err := json.MarshalIndent(user, "", "\n")
 	URL := fmt.Sprintf("%s%s", baseURL, "user")
 
-	fmt.Println(requestBody, URL)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
+	// fmt.Println(requestBody, URL)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return nil, err
+	// }
 
 	formval := url.Values{}
 	formval.Add("email", user.Email)
@@ -86,9 +99,10 @@ func Authenticate(user *entity.User) error {
 
 	resp, err := http.PostForm(URL, formval)
 
+
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return nil, err
 	}
 
 	defer resp.Body.Close()
@@ -96,9 +110,24 @@ func Authenticate(user *entity.User) error {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return nil, err
+	}
+	
+	respjson := struct {
+		Status string
+		Content entity.User
+	}{}
+
+	err = json.Unmarshal(body, &respjson)
+
+	fmt.Println(respjson)
+
+
+	if respjson.Status == "error" {
+		return nil, errors.New("error")
 	}
 
-	fmt.Println(string(body))
-	return nil
+
+
+	return &respjson.Content, nil
 }
