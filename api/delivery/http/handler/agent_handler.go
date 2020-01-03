@@ -42,6 +42,8 @@ func (adm *AgentHandler) GetSingleAgent(w http.ResponseWriter,r *http.Request, p
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8282")
+
 	w.Write(output)
 	return
 }
@@ -63,6 +65,8 @@ func (adm *AgentHandler) GetAgents(w http.ResponseWriter,r *http.Request, ps htt
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	w.Write(output)
 	return
 }
@@ -82,11 +86,24 @@ func (adm *AgentHandler) DeleteAgent(w http.ResponseWriter, r *http.Request, ps 
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	w.WriteHeader(http.StatusNoContent)
 	return
 }
 func (adm *AgentHandler) PostAgent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	//data, _ := ioutil.ReadAll(r.Body)
+	////data, _ := ioutil.ReadAll(r.Body)
+	//w.Header().Set("Access-Control-Allow-Origin", "*")
+	//w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	//w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	header := w.Header()
+	header.Add("Access-Control-Allow-Origin", "*")
+	header.Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+	header.Add("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+	header.Add("Access-Control-Max-Age","86400")
+
+
 	l := r.ContentLength
 	body := make([]byte, l)
 	r.Body.Read(body)
@@ -106,10 +123,19 @@ func (adm *AgentHandler) PostAgent(w http.ResponseWriter, r *http.Request, ps ht
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
+	//if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		//return
+	//}
 	return
 }
+
 func (adm *AgentHandler) PutAgent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	fmt.Println(id)
+
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -117,6 +143,7 @@ func (adm *AgentHandler) PutAgent(w http.ResponseWriter, r *http.Request, ps htt
 	}
 	agentData, errs := adm.agentService.Agent(uint(id))
 
+	fmt.Println("dat is ", agentData)
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -126,6 +153,10 @@ func (adm *AgentHandler) PutAgent(w http.ResponseWriter, r *http.Request, ps htt
 	body := make([]byte, l)
 	r.Body.Read(body)
 	json.Unmarshal(body, &agentData)
+	agentData.ID = uint(id)
+
+	fmt.Println("data is ", agentData)
+
 	agentData, errs = adm.agentService.UpdateAgent(agentData)
 
 	if len(errs) > 0 {
@@ -142,6 +173,8 @@ func (adm *AgentHandler) PutAgent(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	w.Write(output)
 	return
 }

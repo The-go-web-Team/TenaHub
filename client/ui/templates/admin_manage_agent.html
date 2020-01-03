@@ -13,7 +13,7 @@
             </div>
             <div class="col-sm-6">
                 <a href="#addAgentModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Agent</span></a>
-                <a href="#deleteAgentModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xe16c;</i> <span>Delete</span></a>
+                <a href="#deleteAgentModal" class="btn btn-danger " id="deleteAgentBtn" data-toggle="modal"><i class="material-icons">&#xe16c;</i> <span>Delete</span></a>
             </div>
         </div>
     </div>
@@ -34,7 +34,27 @@
         </tr>
         </thead>
         <tbody id="agent_data_table">
+            {{ range .Agent}}
+                <tr>
+                    <td>
+                        <span class="custom-checkbox">
+                            <input type="checkbox" id="checkbox1" class="agent_checkbox" name="options[]" value="1">
+                            <label for="checkbox1"></label>
+                        </span>
+                    </td>
+                    <td>{{.FirstName}} {{.LastName}}</td>
+                    <td>{{.UserName}}</td>
+                    <td>{{.Email}}</td>
+                    <td>{{.PhoneNumber}}</td>
+                    <td >
+                        <a data-target="#editAgentModal" class="agent_edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                        <a data-target="#deleteAgentModal" class="agent_delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                    </td>
+                    <td id="agent-hidden-field" hidden>{{.ID}}</td>
 
+                </tr>
+
+            {{end}}
         </tbody>
     </table>
 
@@ -44,7 +64,7 @@
 <div id="addAgentModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="../functions/add_agent.php" id="addAgentForm" name="addAgentForm" method="POST">
+            <form action="/agent/addagent" id="addAgentForm" name="addAgentForm" method="POST">
                 <div class="modal-header">
                     <h4 class="modal-title">Add Agent</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -72,7 +92,7 @@
                     </div>
                     <div class="form-group">
                         <label>Phone Number</label>
-                        <input type="text" name="phonenumber" class="form-control" required>
+                        <input type="text" name="phonenum" class="form-control" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -80,6 +100,10 @@
                     <input type="submit" name="addbtn" id="addBtn" class="btn btn-success" value="Add">
                 </div>
             </form>
+
+
+
+
         </div>
     </div>
 </div>
@@ -89,7 +113,7 @@
         <div class="modal-content">
 
 
-            <form action="../functions/edit_agent.php" method="POST" name="editAgentForm" id = "editAgentForm">
+            <form action="/agent/editagent" method="POST" name="editAgentForm" id = "editAgentForm">
                 <div class="modal-header">
                     <h4 class="modal-title">Edit Agent</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -120,7 +144,7 @@
                         <input type="text" class="form-control" name="phonenumber" id="phone-field" required>
                     </div>
                     <div class="form-group">
-                        <input type="hidden" class="form-control" name="hidden_username" id="hidden-field" required>
+                        <input type="hidden" class="form-control" name="hidden_id" id="hidden-agent-field" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -135,16 +159,17 @@
 <div id="deleteAgentModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="deleteAgentForm" action="../functions/delete_agent.php" method="POST">
+            <form id="deleteAgentForm" action="/agent/deleteagent" method="POST">
                 <div class="modal-header">
                     <h4 class="modal-title">Delete Agents</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <input type="hidden" class="form-control" name="hidden_username" id="hidden-agent-field" required>
+                        <input type="hidden" class="form-control" name="hidden_id" id="hidden-agent-field" required>
                     </div>
-                    <p>Are you sure you want to delete these Records?</p>
+                    <p style="display: inline;" class="deletableagent" id="deletedagent"></p>
+                    <p>Are you sure you want to delete Agent:  </p>
                     <p class="text-warning"><small>This action cannot be undone.</small></p>
                 </div>
 
@@ -156,6 +181,61 @@
         </div>
     </div>
 </div>
+{{/*<script>*/}}
+
+    {{/*// (function ($) {*/}}
+    {{/*//     $.fn.serializeFormJSON = function () {*/}}
+    {{/*//         var o = {};*/}}
+    {{/*//         var a = this.serializeArray();*/}}
+    {{/*//         $.each(a, function () {*/}}
+    {{/*//             if (o[this.name]) {*/}}
+    {{/*//                 if (!o[this.name].push) {*/}}
+    {{/*//                     o[this.name] = [o[this.name]];*/}}
+    {{/*//                 }*/}}
+    {{/*//                 o[this.name].push(this.value || '');*/}}
+    {{/*//             } else {*/}}
+    {{/*//                 o[this.name] = this.value || '';*/}}
+    {{/*//             }*/}}
+    {{/*//         });*/}}
+    {{/*//         return o;*/}}
+    {{/*//     };*/}}
+    {{/*// })(jQuery);*/}}
+    {{/*// $(document).ready(function() {*/}}
+    {{/*//     $("#addAgentForm").submit(function(event) {*/}}
+    {{/*//         event.preventDefault();*/}}
+    {{/*//         var data = $(this).serializeFormJSON();*/}}
+    {{/*//         var json = JSON.stringify(data);*/}}
+    {{/*//         console.log(json);*/}}
+    {{/*//         $.post( "http://localhost:8181/v1/agent", json);*/}}
+
+
+            {{/*// $.ajax({*/}}
+            {{/*//     cache: false,*/}}
+            {{/*//     url: 'http://localhost:8181/v1/agent',*/}}
+            {{/*//     type: "OPTIONS",*/}}
+            {{/*//     data: $("#addAgentForm").serialize(),*/}}
+            {{/*//     datatype: 'json',*/}}
+            {{/*//     crossDomain: true,*/}}
+            {{/*//     contentType: 'application/json;charset=UTF-8',*/}}
+            {{/*//     headers:{*/}}
+            {{/*//         'Accept': 'application/json',*/}}
+            {{/*//         'Content-Type': 'application/json',*/}}
+            {{/*//         'Access-Control-Allow-Origin': '*'*/}}
+            {{/*//     },*/}}
+            {{/*//     success: function(data) {*/}}
+            {{/*//         console.log(data)*/}}
+            {{/*//     },*/}}
+            {{/*//     error: function (responseData, textStatus, errorThrown) {*/}}
+            {{/*//         alert('POST failed.');*/}}
+            {{/*//     }*/}}
+            {{/*// });*/}}
+
+
+        {{/*});*/}}
+    {{/*});*/}}
+
+{{/* </script>*/}}
+
 
 
 {{end}}

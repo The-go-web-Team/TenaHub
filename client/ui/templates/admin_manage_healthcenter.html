@@ -12,7 +12,7 @@
             </div>
             <div class="col-sm-6">
                 <a href="#notifyHealthCenterModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xe163;</i> <span>Notify Health Center</span></a>
-                <a href="#deleteHealthCenterModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xe16c;</i> <span>Remove Health Center</span></a>
+                <a href="#deleteHealthCenterModal" class="btn btn-danger deleteCenterBtn" id="deleteCenterBtn" data-toggle="modal"><i class="material-icons">&#xe16c;</i> <span>Remove Health Center</span></a>
             </div>
         </div>
     </div>
@@ -21,7 +21,7 @@
         <tr>
             <th>
                     <span class="custom-checkbox">
-                        <input type="checkbox" id="selectAllCenter">
+                        <input type="checkbox" id="selectAllCenter" class="selectAllCenter">
                         <label for="selectAllCenter"></label>
                     </span>
             </th>
@@ -33,6 +33,27 @@
         </tr>
         </thead>
         <tbody id="healthcenter_table">
+        {{ range .HealthCenter}}
+        <tr>
+            <td>
+                <span class="custom-checkbox">
+                    <input type="checkbox" id="checkbox1" class="center_checkbox" name="options[]" value="1">
+                    <label for="checkbox1"></label>
+                </span>
+            </td>
+            <td>{{.Name}}</td>
+            <td>{{.Email}}</td>
+            <td>{{.City}}</td>
+            <td>{{.PhoneNumber}}</td>
+            <td>
+                <a data-target="#notifyHealthCenterModal" class="healthcenter-edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xe163;</i></a>
+                <a data-target="#deleteHealthCenterModal" class="healthcenter-delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+            </td>
+            <td hidden>{{.ID}}</td>
+
+        </tr>
+
+        {{end}}
 
         </tbody>
     </table>
@@ -72,7 +93,7 @@
 <div id="deleteHealthCenterModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="../functions/delete_healthcenter.php" method="POST" id = "deletehealthcenterform">
+            <form action="/healthcenter/delete" method="POST" id = "deletehealthcenterform">
 
                 <div class="modal-header">
                     <h4 class="modal-title">Delete Health Center</h4>
@@ -80,7 +101,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <input type="hidden" class="form-control" name="hidden_username" id="hidden-healthcenter-field" required>
+                        <input type="hidden" class="form-control" name="hidden_id" id="hidden-healthcenter-field" required>
                     </div>
                     <p>Are you sure you want to delete these Records?</p>
                     <p class="text-warning"><small>This action cannot be undone.</small></p>

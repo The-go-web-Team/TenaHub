@@ -1,5 +1,11 @@
 {{ define "admin_home.layout"}}
     {{template "admin_home_header.layout" .}}
+    {{/*{{ if .Success}}*/}}
+        {{/*<script>alert("Agent added successfully")</script>*/}}
+    {{/*{{else}}*/}}
+    {{/*<script>alert("Agent not Successful")</script>*/}}
+
+    {{/*{{end}}*/}}
     {{template "admin_home.content" .}}
     {{template "admin_home.footer" .}}
 
@@ -8,11 +14,12 @@
 {{define "admin_home.content"}}
 
     <div class="main">
-        <ul>
+        <ul >
+
             <li>{{template "admin_dashboard.layout" .}}</li>
             <li>{{template "admin_edit_profile.layout" .}}</li>
-            <li>{{template "admin_manage_healthcenter.layout" .}}</li>
             <li>{{template "admin_manage_agent.layout" .}}</li>
+            <li>{{template "admin_manage_healthcenter.layout" .}}</li>
             <li>{{template "admin_manage_user.layout" .}}</li>
         </ul>
     </div>

@@ -13,7 +13,7 @@
             </div>
             <div class="col-sm-6">
                 <a href="#notifyUserModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xe163;</i> <span>Notify User</span></a>
-                <a href="#deleteUserModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xe16c;</i> <span>Remove User</span></a>
+                <a href="#deleteUserModal" id="deleteUserBtn" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xe16c;</i> <span>Remove User</span></a>
             </div>
         </div>
     </div>
@@ -29,10 +29,32 @@
             <th>Name</th>
             <th>Email</th>
             <th>Username</th>
+            <th>Phone</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody id="user_table">
+
+        {{ range .User}}
+        <tr>
+            <td>
+                <span class="custom-checkbox">
+                    <input type="checkbox" id="checkbox1" class="user_checkbox" name="options[]" value="1">
+                    <label for="checkbox1"></label>
+                </span>
+            </td>
+            <td>{{.FirstName}} {{.LastName}}</td>
+            <td>{{.Email}}</td>
+            <td>{{.UserName}}</td>
+            <td>{{.PhoneNumber}}</td>
+            <td>
+                <a href="#notifyUserModal" class="user-edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xe163;</i></a>
+                <a href="#deleteUserModal" class="user-delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+            </td>
+            <td hidden>{{.ID}}</td>
+        </tr>
+
+        {{end}}
 
         </tbody>
     </table>
@@ -72,14 +94,14 @@
 <div id="deleteUserModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="deleteUserForm" action="../functions/delete_user.php" method="POST">
+            <form id="deleteUserForm" action="/user/delete" method="POST">
                 <div class="modal-header">
                     <h4 class="modal-title">Delete User</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <input type="hidden" class="form-control" name="hidden_username" id="hidden-user-field" required>
+                        <input type="hidden" class="form-control" name="hidden_id" id="hidden-user-field" required>
                     </div>
                     <p>Are you sure you want to delete these Records?</p>
                     <p class="text-warning"><small>This action cannot be undone.</small></p>

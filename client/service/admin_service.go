@@ -17,16 +17,17 @@ func FetchAgent(id int) (*clientEntity.Agent, error) {
 	if err != nil {
 		return nil, err
 	}
-	userdata := &clientEntity.Agent{}
+	userdata := clientEntity.Agent{}
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal(body, userdata)
+	err = json.Unmarshal(body, &userdata)
+	fmt.Println("error is ",err)
 	if err != nil {
 		return nil, err
 	}
-	return userdata, nil
+	return &userdata, nil
 }
 
 func FetchAgents() ([]clientEntity.Agent, error) {
@@ -42,7 +43,7 @@ func FetchAgents() ([]clientEntity.Agent, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal(body, agents)
+	err = json.Unmarshal(body, &agents)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +83,7 @@ func FetchHealthCenters() ([]clientEntity.HealthCenter, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal(body, healthcenters)
+	err = json.Unmarshal(body, &healthcenters)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +123,7 @@ func FetchUsers() ([]clientEntity.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal(body, users)
+	err = json.Unmarshal(body, &users)
 	if err != nil {
 		return nil, err
 	}
