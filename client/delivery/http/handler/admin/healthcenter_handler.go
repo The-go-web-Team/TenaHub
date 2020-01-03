@@ -15,6 +15,14 @@ func NewHealthCenterHandler(T *template.Template) *HealthCenterHandler {
 	return &HealthCenterHandler{temp: T}
 }
 
+func (adh *HealthCenterHandler) HealthCenterPage(writer http.ResponseWriter, request *http.Request){
+	// cross site scripting is used to secure the endpoint from another server
+	//writer.Header().Set("Access-Control-Allow-Origin", request.Header.Get("Origin"))
+	adh.temp.ExecuteTemplate(writer, "healthcenter_home.layout", nil)
+}
+
+
+
 func (adh *HealthCenterHandler) DeleteHealthCenter(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 	id,_ := strconv.Atoi(r.FormValue("hidden_id"))

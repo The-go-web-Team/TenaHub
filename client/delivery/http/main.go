@@ -29,6 +29,12 @@ func main()  {
 	router.HandleFunc("/agent/deleteagent",AgentHandler.DeleteAgent ).Methods("POST")
 	router.HandleFunc("/healthcenter/delete",HealthCenterHandler.DeleteHealthCenter ).Methods("POST")
 	router.HandleFunc("/user/delete",UserHandler.DeleteUser ).Methods("POST")
+
+
+	router.HandleFunc("/healthcenter", HealthCenterHandler.HealthCenterPage).Methods("GET")
+
+
+
 	http.ListenAndServe(":8282", router)
 
 }
