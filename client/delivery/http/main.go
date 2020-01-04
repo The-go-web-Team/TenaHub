@@ -18,11 +18,13 @@ func main() {
 	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("../../ui/assets"))))
 	router.HandleFunc("/", userHandler.Index)
 	router.HandleFunc("/login", userHandler.Login)
+	router.HandleFunc("/auth", userHandler.Auth)
 	router.HandleFunc("/signup", userHandler.SignUp)
 	router.HandleFunc("/search", userHandler.Search)
 	router.HandleFunc("/home", userHandler.Home)
 	router.HandleFunc("/healthcenters", userHandler.Healthcenters)
 	router.HandleFunc("/logout", userHandler.Logout)
+	router.HandleFunc("/feedback", userHandler.Feedback)
 
 	http.ListenAndServe(":8282", router)
 }
