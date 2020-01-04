@@ -1,3 +1,6 @@
+$(document).ready(function(){
+
+
 var side_list = $('body .navbar-side div ul li');
 side_list = side_list.slice(0,5);
 var list = $('.main ul li');
@@ -46,7 +49,6 @@ var list = $('.main ul li:nth-child('+ index +')');
 
 
 
-$(document).ready(function(){
     // $.get("../functions/agentData.php", "", function(data,status){
     //     $("#agent_data_table").html(data);
     // });
@@ -142,14 +144,7 @@ checkbox3.click(function(){
 // alert("center is clicked");
 // $('#deleteCenterBtn').toggleClass('disabled');
 
-
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-$(document).ready(function(){
 
     $('.navbar-side-icon').on('click', function(){
         var sidebar = $('.navbar-side');
@@ -187,13 +182,12 @@ $(document).ready(function(){
         var icon = $('.side-icon');
            icon.css('transform','rotate('+degree+'deg)'); 
     }
-});
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-$(document).ready(function(){
     $(document).on("click",'table tbody tr  td a.healthcenter-edit', function(){
         var email = $(this).closest('tr').children()[2].innerHTML;
         $("#healthcenterform .modal-body #email-healthcenter-field").val(email);
@@ -239,7 +233,7 @@ $(document).ready(function(){
         $("#editAgentForm .modal-body #email-agent-field").val(email);
         $("#editAgentForm .modal-body #phone-field").val(phone);
         $("#editAgentForm .modal-body #hidden-agent-field").val(agent_id);
-        
+
     } );
 
     $(document).on("click",'table tbody tr  td a.agent_delete', function(){
@@ -252,8 +246,29 @@ $(document).ready(function(){
         $("#deleteAgentForm .modal-body #hidden-agent-field").val(agent_id);
 
     } );
-});
+
+
+    $(document).on("click",'table tbody tr  td a.service_edit', function(){
+        var name = $(this).closest('tr').children()[1].innerHTML;
+        var description = $(this).closest('tr').children()[2].innerHTML;
+        var service_id = $(this).closest('tr').children()[4].innerHTML;
+
+        $("#editServiceForm .modal-body #service_name").val(name);
+        $("#editServiceForm .modal-body #service_description").val(description);
+        $("#editServiceForm .modal-body #hidden_service_id").val(service_id);
+
+
+    } );
+    $(document).on("click",'table tbody tr  td a.service_delete', function(){
+        var service_id = $(this).closest('tr').children()[4].innerHTML;
+
+        $("#deleteServiceForm .modal-body #hidden_service_id").val(service_id);
+
+    } );
+
 /////////
 $('.update-alert').slideUp(2000);
+
+
 
 

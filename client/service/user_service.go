@@ -8,23 +8,22 @@ import (
 	"fmt"
 )
 
-func FetchHealthCenters() ([]clientEntity.HealthCenter, error) {
+func FetchUsers() ([]clientEntity.User, error) {
 	client := &http.Client{}
-	URL := fmt.Sprintf("%s/healthcenter", baseURL)
+	URL := fmt.Sprintf("%s/user", baseURL)
 	req, _ := http.NewRequest("GET", URL, nil)
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
-	var healthcenters []clientEntity.HealthCenter
+	var users []clientEntity.User
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal(body, &healthcenters)
+	err = json.Unmarshal(body, &users)
 	if err != nil {
 		return nil, err
 	}
-	return healthcenters, nil
+	return users, nil
 }
-

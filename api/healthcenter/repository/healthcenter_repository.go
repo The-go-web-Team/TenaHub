@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/TenaHub/api/entity"
 	"github.com/TenaHub/api/healthcenter"
+	"fmt"
 )
 
 type HealthCenterGormRepo struct {
@@ -42,6 +43,17 @@ func (adm *HealthCenterGormRepo) DeleteHealthCenter(id uint) (*entity.HealthCent
 	}
 	return healthcenter, errs
 }
+
+func (adm *HealthCenterGormRepo) UpdateHealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
+	healthcenter := healthcenterData
+	fmt.Println(healthcenter)
+	errs := adm.conn.Save(healthcenter).GetErrors()
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return healthcenter, errs
+}
+
 
 
 

@@ -1,51 +1,51 @@
 package service
 
 import (
+	"github.com/TenaHub/client/entity"
 	"net/http"
 	"io/ioutil"
 	"encoding/json"
-	"github.com/TenaHub/client/entity"
 	"fmt"
 )
-var baseURL = "http://localhost:8181/v1"
 
-func FetchHealthCenter(id int) (*clientEntity.HealthCenter, error) {
+func FetchAgent(id int) (*clientEntity.Agent, error) {
 	client := &http.Client{}
-	URL := fmt.Sprintf("%s/healthcenter/%d", baseURL, id)
+	URL := fmt.Sprintf("%s/agent/%d", baseURL, id)
 	req, _ := http.NewRequest("GET", URL, nil)
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
-	healthcenter := &clientEntity.HealthCenter{}
+	userdata := clientEntity.Agent{}
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal(body, healthcenter)
+	err = json.Unmarshal(body, &userdata)
+	fmt.Println("error is ",err)
 	if err != nil {
 		return nil, err
 	}
-	return healthcenter, nil
+	return &userdata, nil
 }
 
-func FetchUser(id int) (*clientEntity.User, error) {
+func FetchAgents() ([]clientEntity.Agent, error) {
 	client := &http.Client{}
-	URL := fmt.Sprintf("%s/user/%d", baseURL, id)
+	URL := fmt.Sprintf("%s/agent", baseURL)
 	req, _ := http.NewRequest("GET", URL, nil)
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
-	userdata := &clientEntity.User{}
+	var agents []clientEntity.Agent
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal(body, userdata)
+	err = json.Unmarshal(body, &agents)
 	if err != nil {
 		return nil, err
 	}
-	return userdata, nil
+	return agents, nil
 }
 

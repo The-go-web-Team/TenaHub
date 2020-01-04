@@ -5,6 +5,9 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 
+
+	serviceRepo "github.com/TenaHub/api/service/repository"
+	serviceServ "github.com/TenaHub/api/service/service"
 	adminRepo "github.com/TenaHub/api/admin/repository"
 	adminServ "github.com/TenaHub/api/admin/service"
 	agentRepo "github.com/TenaHub/api/agent/repository"
@@ -13,6 +16,8 @@ import (
 	healthCenterServ "github.com/TenaHub/api/healthcenter/service"
 	userRepo "github.com/TenaHub/api/user/repository"
 	userServ "github.com/TenaHub/api/user/service"
+	feedBackRepo "github.com/TenaHub/api/comment/repository"
+	feedBackServ "github.com/TenaHub/api/comment/service"
 	"github.com/TenaHub/api/delivery/http/handler"
 	"github.com/julienschmidt/httprouter"
 )
@@ -25,6 +30,15 @@ func main()  {
 	}
 
 	defer dbconn.Close()
+
+	//errs := dbconn.CreateTable(&entity.HealthCenter{}).GetErrors()
+	//if len(errs)> 0 {
+	//	panic(errs)
+	//}else {
+	//	fmt.Println("something is occurred")
+	//}
+
+
 	adminRespository := adminRepo.NewAdminGormRepo(dbconn)
 	adminService := adminServ.NewAdminService(adminRespository)
 	adminHandler := handler.NewAdminHandler(adminService)
@@ -46,12 +60,19 @@ func main()  {
 	healthCenterService := healthCenterServ.NewHealthCenterService(healthCenterRespository)
 	healthCenterHandler := handler.NewHealthCenterHandler(healthCenterService)
 
-	//errs := dbconn.CreateTable(&entity.Agent{},&entity.Admin{}, &entity.HealthCenter{}, &entity.User{}).GetErrors()
-	//if len(errs)> 0 {
-	//	panic(errs)
-	//}else {
-	//	fmt.Println("something is occurred")
-	//}
+
+	/////////
+	serviceRepository := serviceRepo.NewServiceGormRepo(dbconn)
+	serviceService := serviceServ.NewServiceService(serviceRepository)
+	serviceHandler := handler.NewServiceHandler(serviceService)
+	////////
+
+
+	feedBackRepository := feedBackRepo.NewCommentGormRepo(dbconn)
+	feedBackService := feedBackServ.NewCommentService(feedBackRepository)
+	feedBackHandler := handler.NewCommentHandler(feedBackService)
+
+
 
 
 	router := httprouter.New()
@@ -59,17 +80,38 @@ func main()  {
 	router.GET("/v1/admin/:id", adminHandler.GetAdmin)
 	router.PUT("/v1/admin/:id", adminHandler.PutAdmin)
 	router.GET("/v1/agent/:id", agentHandler.GetSingleAgent)
+
 	router.GET("/v1/agent", agentHandler.GetAgents)
 	router.PUT("/v1/agent/:id", agentHandler.PutAgent)
 	router.POST("/v1/agent", agentHandler.PostAgent)
 	router.OPTIONS("/v1/agent", agentHandler.PostAgent)
 	router.DELETE("/v1/agent/:id", agentHandler.DeleteAgent)
+
 	router.GET("/v1/healthcenter/:id", healthCenterHandler.GetSingleHealthCenter)
+	router.PUT("/v1/healthcenter/:id", healthCenterHandler.PutHealthCenter)
 	router.GET("/v1/healthcenter", healthCenterHandler.GetHealthCenter)
 	router.DELETE("/v1/healthcenter/:id", healthCenterHandler.DeleteHealthCenter)
+
 	router.GET("/v1/user/:id", userHandler.GetSingleUser)
 	router.GET("/v1/user", userHandler.GetUsers)
 	router.DELETE("/v1/user/:id", userHandler.DeleteUser)
+
+	router.GET("/v1/service/:id", serviceHandler.GetSingleService)
+	router.GET("/v1/service", serviceHandler.GetServices)
+	router.GET("/v1/pendingservice", serviceHandler.GetPendingServices)
+	router.PUT("/v1/service/:id", serviceHandler.PutService)
+	router.POST("/v1/service", serviceHandler.PostService)
+	router.OPTIONS("/v1/service", serviceHandler.PostService)
+	router.DELETE("/v1/service/:id", serviceHandler.DeleteService)
+
+	//router.GET("/v1/feedback/:id", feedBackHandler.GetComment)
+	router.GET("/v1/feedback/:id", feedBackHandler.GetComments)
+	router.PUT("/v1/feedback/:id", feedBackHandler.PutComment)
+	router.POST("/v1/feedback", feedBackHandler.PostComment)
+	router.OPTIONS("/v1/feedback", feedBackHandler.PostComment)
+	router.DELETE("/v1/feedback/:id", feedBackHandler.DeleteComment)
+
+
 	http.ListenAndServe(":8181", router)
 }
 

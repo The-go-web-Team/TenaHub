@@ -1,10 +1,7 @@
 {{define "healthcenter_service.layout"  }}
     {{template "healthcenter_service.content" .}}
 {{end}}
-
 {{define "healthcenter_service.content"}}
-
-
 <div class="table-wrapper">
     <div class="table-title">
         <div class="row">
@@ -12,8 +9,8 @@
                 <h2>Manage <b>Services</b></h2>
             </div>
             <div class="col-sm-6">
-                <a href="#addAgentModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Service</span></a>
-                <a href="#deleteAgentModal" class="btn btn-danger " id="deleteServiceBtn" data-toggle="modal"><i class="material-icons">&#xe16c;</i> <span>Delete</span></a>
+                <a href="#addServiceModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Service</span></a>
+                <a href="#deleteServiceModal" class="btn btn-danger " id="deleteServiceBtn" data-toggle="modal"><i class="material-icons">&#xe16c;</i> <span>Delete</span></a>
             </div>
         </div>
     </div>
@@ -33,36 +30,37 @@
         </tr>
         </thead>
         <tbody id="agent_data_table">
-        {{/*{{ range .Agent}}*/}}
-        <tr>
-            <td>
-                <span class="custom-checkbox">
-                    <input type="checkbox" id="checkbox1" class="agent_checkbox" name="options[]" value="1">
-                    <label for="checkbox1"></label>
-                </span>
-            </td>
-            <td>sample</td>
-            <td>sample</td>
-            <td>sample</td>
-
-            <td >
-                <a data-target="#editAgentModal" class="agent_edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                <a data-target="#deleteAgentModal" class="agent_delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-            </td>
-            <td id="agent-hidden-field" hidden></td>
-
-        </tr>
-
-        {{/*{{end}}*/}}
+        {{ range .Service}}
+            <tr>
+                <td>
+                    <span class="custom-checkbox">
+                        <input type="checkbox" id="checkbox1" class="agent_checkbox" name="options[]" value="1">
+                        <label for="checkbox1"></label>
+                    </span>
+                </td>
+                <td>{{.Name}}</td>
+                <td>{{.Description}}</td>
+                <td><span class="badge badge-pill badge-primary">{{.Status}}</span></td>
+                <td id="service_id" hidden>{{.ID}}</td>
+                <td id="healthcenter_id" hidden>{{.HealthCenterID}}</td>
+                <td >
+                    <a data-target="#editServiceModal" class="service_edit" data-toggle="modal">
+                        <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
+                    </a>
+                    <a data-target="#deleteServiceModal" class="service_delete" data-toggle="modal">
+                        <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
+                    </a>
+                </td>
+            </tr>
+        {{end}}
         </tbody>
     </table>
-
 </div>
 
-<div id="addAgentModal" class="modal fade">
+<div id="addServiceModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="/service/addService" id="addAgentForm" name="addServiceForm" method="POST">
+            <form action="/service/addservice" id="addAgentForm" name="addServiceForm" method="POST">
                 <div class="modal-header">
                     <h4 class="modal-title">Add Service</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -80,56 +78,50 @@
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                    <input type="submit" name="addbtn" id="addBtn" class="btn btn-success" value="Add">
+                    <input type="submit" name="addbtn" class="btn btn-success" value="Add">
                 </div>
             </form>
-
-
-
 
         </div>
     </div>
 </div>
 <!-- Edit Modal HTML -->
-<div id="editAgentModal" class="modal fade">
+<div id="editServiceModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
 
-
-            <form action="/agent/editagent" method="POST" name="editAgentForm" id = "editAgentForm">
+            <form action="/service/editservice" method="POST" name="editServiceForm" id = "editServiceForm">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Agent</h4>
+                    <h4 class="modal-title">Edit Service</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="recipient-name" class="col-form-label">Name:</label>
-                            <input type="text" class="form-control" name="name" id="service-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label">Description:</label>
-                            <textarea class="form-control" name="description" id="service-description" required></textarea>
-                        </div>
-
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" name="name" id="service_name" required>
                     </div>
                     <div class="form-group">
-                        <input type="hidden" class="form-control" name="hidden_id" id="hidden-agent-field" required>
+                        <label for="message-text" class="col-form-label">Description:</label>
+                        <textarea class="form-control" name="description" id="service_description"  rows="5" required></textarea>
                     </div>
+                    <div class="form-group">
+                        <input type="hidden" class="form-control" name="hidden_service_id" id="hidden_service_id" required>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                    <input type="submit" name="savebtn" class="btn btn-info" value="Save">
+                    <input type="submit" name="addbtn" id="addBtn" class="btn btn-success" value="Submit">
                 </div>
             </form>
         </div>
     </div>
 </div>
 <!-- Delete Modal HTML -->
-<div id="deleteAgentModal" class="modal fade">
+<div id="deleteServiceModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="deleteServiceForm" action="/service/deleteagent" method="POST">
+            <form id="deleteServiceForm" action="/service/deleteservice" method="POST">
                 <div class="modal-header">
                     <h4 class="modal-title">Delete Agents</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -141,6 +133,10 @@
                     <p style="display: inline;" class="deletableagent" id="deletedagent"></p>
                     <p>Are you sure you want to delete Service:  </p>
                     <p class="text-warning"><small>This action cannot be undone.</small></p>
+
+                    <div class="form-group">
+                        <input type="hidden" class="form-control" name="hidden_service_id" id="hidden_service_id" required>
+                    </div>
                 </div>
 
                 <div class="modal-footer">

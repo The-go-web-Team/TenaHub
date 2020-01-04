@@ -18,6 +18,10 @@ func main()  {
 	AgentHandler := admin.NewAgentHandler(Templ)
 	HealthCenterHandler := admin.NewHealthCenterHandler(Templ)
 	UserHandler := admin.NewUserHandler(Templ)
+	ServiceHandler := admin.NewServiceHandler(Templ)
+	//FeedbackHandler := admin.NewFeedBackHandlerHandler(Templ)
+
+
 	router := mux.NewRouter()
 	router.PathPrefix("/assets/").
 		Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("client/ui/assets"))))
@@ -32,7 +36,12 @@ func main()  {
 
 
 	router.HandleFunc("/healthcenter", HealthCenterHandler.HealthCenterPage).Methods("GET")
+	router.HandleFunc("/healthcenter/updateprofile", HealthCenterHandler.EditHealthCenter).Methods("POST")
 
+
+	router.HandleFunc("/service/addservice",ServiceHandler.AddService ).Methods("POST")
+	router.HandleFunc("/service/editservice",ServiceHandler.EditService ).Methods("POST")
+	router.HandleFunc("/service/deleteservice",ServiceHandler.DeleteService ).Methods("POST")
 
 
 	http.ListenAndServe(":8282", router)

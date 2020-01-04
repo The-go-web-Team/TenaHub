@@ -43,6 +43,7 @@ type HealthCenter struct {
 	ID          uint `json:"id"`
 	Name        string `json:"name" gorm:"type:varchar(255); not null"`
 	Email       string `json:"email" gorm:"type:varchar(255); not null"`
+	Password    string `json:"password" gorm:"type:varchar(255);not null"`
 	PhoneNumber string `json:"phonenumber" gorm:"type:varchar(255); not null"`
 	City        string `json:"city" gorm:"type:varchar(255); not null"`
 	ProfilePic  string `json:"profilepic" gorm:"type:varchar(255);"`
@@ -56,17 +57,19 @@ type HealthCenter struct {
 type Rating struct {
 	ID             uint 
 	UserID         uint 
-	HealthCenterID uint	
-	PlacedAt       time.Time `sql:"DEFAULT:'current_timestamp'"`
+	HealthCenterID uint
+	PlacedAt       time.Time `json:"placed_at" gorm:"default:CURRENT_TIMESTAMP"`
+
+	//PlacedAt       time.Time `json:"placed_at" sql:"DEFAULT:current_timestamp"`
 }
 
 // Comment represents users comment
 type Comment struct {
 	ID             uint `json:"id"`
-	Comment        string `json:"comment" gorm:"varchar(255); not null"`
+	Comment        string `json:"comment" gorm:" type:varchar(255); not null"`
 	UserID         uint	`json:"userid"`
 	HealthCenterID uint	`json:"healthcenterid"`
-	PlacedAt       time.Time `json:"placedat" sql:"DEFAULT:'current_timestamp'"`
+	PlacedAt       time.Time `json:"placed_at" gorm:"default:CURRENT_TIMESTAMP"`
 }
 
 
@@ -76,6 +79,5 @@ type Service struct {
 	Name           string `json:"name" gorm:"varchar(255); not null"`
 	Description    string `json:"description" gorm:"varchar(255); not null"`
 	HealthCenterID uint `json:"healthcenterid"`
-	HealthCenter   HealthCenter
 	Status         string `json:"status" gorm:"varchar(255); not null;default:'pending'"`
 }

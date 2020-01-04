@@ -1,14 +1,14 @@
 package comment
 
 import (
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
+	"github.com/TenaHub/api/entity"
 )
 
 // CommentRepository is
 type CommentRepository interface {
-	Comment(id int)(*entity.Comment, []error)
-	Comments()([]entity.Comment, []error)
-	UpdateComment(hc entity.Comment)(*entity.Comment, []error)
-	StoreComment(hc entity.Comment)(*entity.Comment, []error)
-	DeleteComment(id int)(*entity.HealthCenter, []error)
+	Comment(id uint)(*entity.Comment, []error)
+	Comments(id uint)([]entity.Comment, []error)
+	UpdateComment(comment *entity.Comment)(*entity.Comment, []error)
+	StoreComment(comment *entity.Comment)(*entity.Comment, []error)
+	DeleteComment(id uint)(*entity.Comment, []error)
 }

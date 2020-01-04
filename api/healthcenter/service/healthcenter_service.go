@@ -13,7 +13,7 @@ func NewHealthCenterService(serv healthcenter.HealthCenterService)(admin *Health
 }
 
 
-func (adm HealthCenterService) HealthCenter(id uint) (*entity.HealthCenter, []error) {
+func (adm *HealthCenterService) HealthCenter(id uint) (*entity.HealthCenter, []error) {
 	healthCenter, errs := adm.healthCenterRepo.HealthCenter(id)
 	if len(errs) > 0 {
 		return nil, errs
@@ -34,5 +34,10 @@ func (adm *HealthCenterService) DeleteHealthCenter(id uint) (*entity.HealthCente
 	}
 	return healthcenter, errs
 }
-
-
+func (adm *HealthCenterService) UpdateHealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
+	healthcenter, errs := adm.healthCenterRepo.UpdateHealthCenter(healthcenterData)
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return healthcenter, errs
+}
