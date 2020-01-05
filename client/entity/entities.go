@@ -63,6 +63,7 @@ type HealthCenter struct {
 	ID          uint `json:"id"`
 	Name        string `json:"name"`
 	Email       string `json:"email"`
+	Password    string `json:"password"`
 	PhoneNumber string `json:"phonenumber"`
 	City        string `json:"city"`
 	ProfilePic  string `json:"profilepic"`

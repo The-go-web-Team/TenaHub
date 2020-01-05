@@ -15,7 +15,15 @@ func NewAdminGormRepo(db *gorm.DB) admin.AdminRepository{
 	return &AdminGormRepo{conn:db}
 }
 
-func (adm *AdminGormRepo) Admin(id uint) (*entity.Admin, []error) {
+func (adm *AdminGormRepo) Admin(adminData *entity.Admin) (*entity.Admin, []error) {
+	admin := entity.Admin{}
+	errs := adm.conn.Where("email = ? AND password = ?", adminData.Email, adminData.Password).First(&admin).GetErrors()
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return &admin, errs
+}
+func (adm *AdminGormRepo) AdminById(id uint) (*entity.Admin, []error) {
 	admin := entity.Admin{}
 	errs := adm.conn.First(&admin, id).GetErrors()
 	if len(errs) > 0 {

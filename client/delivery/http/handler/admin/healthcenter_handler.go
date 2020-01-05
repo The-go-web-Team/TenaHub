@@ -10,6 +10,7 @@ import (
 	"bytes"
 	"github.com/TenaHub/client/service"
 	"github.com/TenaHub/client/entity"
+	"time"
 )
 
 
@@ -20,28 +21,10 @@ func NewHealthCenterHandler(T *template.Template) *HealthCenterHandler {
 	return &HealthCenterHandler{temp: T}
 }
 type healthcenterData struct {
+	HealthCenter *clientEntity.HealthCenter
 	FeedBack []clientEntity.Comment
 	Service []clientEntity.Service
 
-}
-
-func (adh *HealthCenterHandler) HealthCenterPage(writer http.ResponseWriter, request *http.Request){
-	// cross site scripting is used to secure the endpoint from another server
-	//writer.Header().Set("Access-Control-Allow-Origin", request.Header.Get("Origin"))
-
-	feedbacks, err := service.FetchFeedbacks()
-	services, err := service.FetchServices()
-
-	fmt.Println(err, " is error")
-
-	var data = healthcenterData{FeedBack:feedbacks, Service:services}
-
-	fmt.Println(data)
-	if err != nil {
-		writer.WriteHeader(http.StatusNoContent)
-		adh.temp.ExecuteTemplate(writer, "healthcenter_home.layout", nil)
-	}
-	adh.temp.ExecuteTemplate(writer, "healthcenter_home.layout", data)
 }
 
 func (adh *HealthCenterHandler) EditHealthCenter(w http.ResponseWriter, r *http.Request) {
@@ -78,8 +61,6 @@ func (adh *HealthCenterHandler) EditHealthCenter(w http.ResponseWriter, r *http.
 }
 
 
-
-
 func (adh *HealthCenterHandler) DeleteHealthCenter(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 	id,_ := strconv.Atoi(r.FormValue("hidden_id"))
@@ -100,3 +81,98 @@ func (adh *HealthCenterHandler) DeleteHealthCenter(w http.ResponseWriter, r *htt
 	http.Redirect(w, r, r.Header.Get("Referer"), 302)
 	}
 
+
+func (adh *HealthCenterHandler) HealthCenterPage(w http.ResponseWriter, r *http.Request) {
+	c, err := r.Cookie("healthcenter")
+
+	if err != nil {
+		//adh.temp.ExecuteTemplate(w, "admin.login.layout",nil)
+		http.Redirect(w, r, "http://localhost:8282/healthcenter/login", http.StatusSeeOther)
+		return
+	} else {
+		fmt.Println(c.Value)
+		fmt.Println(c.MaxAge)
+	}
+	id, _ := strconv.Atoi(c.Value)
+	healthcenter, err := service.FetchHealthCenter(uint(id))
+	healthcenter.Password = ""
+	feedbacks, err := service.FetchFeedbacks(uint(id))
+	services, err := service.FetchService(uint(id))
+
+	fmt.Println(err, " is error")
+
+	var data = healthcenterData{HealthCenter:healthcenter, FeedBack:feedbacks, Service:services}
+
+	fmt.Println(data)
+	if err != nil {
+		w.WriteHeader(http.StatusNoContent)
+		adh.temp.ExecuteTemplate(w, "healthcenter_home.layout", nil)
+	}
+	adh.temp.ExecuteTemplate(w, "healthcenter_home.layout", data)
+}
+
+
+
+// Login handles Get /login and POST /login
+func (ah *HealthCenterHandler) HealthCenterLogin(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.Referer())
+	if r.Method == http.MethodGet {
+		ah.temp.ExecuteTemplate(w, "healthcenter.login.layout", nil)
+
+	} else if r.Method == http.MethodPost {
+		email := r.PostFormValue("email")
+		password := r.PostFormValue("password")
+
+		healthcenter := clientEntity.HealthCenter{Email: email,Password : password}
+		fmt.Println(healthcenter)
+
+		resp, err := service.HealthCenterAuthenticate(&healthcenter)
+		//
+		fmt.Println(resp, " error ", err)
+
+		if err != nil {
+			if err.Error() == "error" {
+				//http.Redirect(w,r,"/admin",http.StatusSeeOther)
+				fmt.Println("before executing")
+				ah.temp.ExecuteTemplate(w, "healthcenter.login.layout", "incorrect credentials")
+				return
+			}
+		} else {
+			fmt.Println(resp ," is the correct one")
+
+			cookie := http.Cookie{
+				Name:     "healthcenter",
+				Value:    strconv.Itoa(int(resp.ID)),
+				MaxAge:   60 * 3,
+				Path:     "/",
+				HttpOnly: true,
+			}
+
+			http.SetCookie(w, &cookie)
+			http.Redirect(w, r, "http://localhost:8282/healthcenter", http.StatusSeeOther)
+		}
+	}
+}
+
+// Logout handles GET /logout
+func (uh *HealthCenterHandler) HealthCenterLogout(w http.ResponseWriter, r *http.Request) {
+	c, err := r.Cookie("healthcenter")
+
+	if err != nil {
+		http.Redirect(w, r, "http://localhost:8282/healthcenter/login", http.StatusSeeOther)
+		return
+	}
+	if c != nil {
+		c = &http.Cookie{
+			Name:     "healthcenter",
+			Value:    "",
+			Path:     "/",
+			Expires:  time.Unix(0, 0),
+			MaxAge:   -10,
+			HttpOnly: true,
+		}
+
+		http.SetCookie(w, c)
+	}
+	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+}

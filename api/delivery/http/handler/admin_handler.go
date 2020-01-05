@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/TenaHub/api/admin"
 	"fmt"
+	"github.com/TenaHub/api/entity"
 )
 
 type AdminHandler struct {
@@ -26,7 +27,7 @@ func (adm *AdminHandler) PutAdmin(w http.ResponseWriter, r *http.Request, ps htt
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-	adminData, errs := adm.adminService.Admin(uint(id))
+	adminData, errs := adm.adminService.AdminById(uint(id))
 	//
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -63,10 +64,10 @@ func (adm *AdminHandler) PutAdmin(w http.ResponseWriter, r *http.Request, ps htt
 
 
 
-func (adm *AdminHandler) GetAdmin(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
+func (adm *AdminHandler) GetSingleAdmin(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
 	fmt.Println("Before Recieving")
-	admin, errs := adm.adminService.Admin(uint(id))
+	admin, errs := adm.adminService.AdminById(uint(id))
 
 	fmt.Println("After Recieving", admin)
 	if len(errs) > 0 {
@@ -82,6 +83,35 @@ func (adm *AdminHandler) GetAdmin(w http.ResponseWriter,r *http.Request, ps http
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
+	w.Write(output)
+	return
+}
+
+type response struct{
+	Status string
+	Content interface{}
+}
+
+func (uh *AdminHandler) GetAdmin(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	w.Header().Set("Content-type", "application/json")
+	email := r.PostFormValue("email")
+	password := r.PostFormValue("password")
+	fmt.Println(email,password)
+	admin := entity.Admin{Email: email, Password: password}
+	user, errs := uh.adminService.Admin(&admin)
+	if len(errs) > 0 {
+		data, err := json.MarshalIndent(&response{Status:"error", Content:nil},"", "\t")
+		if err != nil {
+
+		}
+		http.Error(w, string(data) , http.StatusNotFound)
+		return
+	}
+	output, err := json.MarshalIndent(response{Status:"success", Content:&user}, "", "\n")
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
 	w.Write(output)
 	return
 }

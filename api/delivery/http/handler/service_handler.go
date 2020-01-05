@@ -66,8 +66,9 @@ func (adm *ServiceHandler) GetPendingServices(w http.ResponseWriter,r *http.Requ
 	return
 }
 func (adm *ServiceHandler) GetServices(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
+	id, err := strconv.Atoi(ps.ByName("id"))
 
-	services, errs := adm.serviceService.Services()
+	services, errs := adm.serviceService.Services(uint(id))
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")

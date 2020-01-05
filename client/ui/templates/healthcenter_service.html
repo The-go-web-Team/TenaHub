@@ -70,6 +70,11 @@
                             <label for="recipient-name" class="col-form-label">Name:</label>
                             <input type="text" class="form-control" name="name" id="service-name" required>
                         </div>
+                    <div class="form-group">
+                        {{with .HealthCenter}}
+                            <input type="hidden" class="form-control" name="healthcenter_id" id="service-name" value="{{.ID}}">
+                        {{end}}
+                    </div>
                         <div class="form-group">
                             <label for="message-text" class="col-form-label">Description:</label>
                             <textarea class="form-control" name="description" id="service-description" rows="5" required></textarea>

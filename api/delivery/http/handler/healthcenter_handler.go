@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/TenaHub/api/healthcenter"
 	"fmt"
+	"github.com/TenaHub/api/entity"
 )
 
 type HealthCenterHandler struct {
@@ -17,7 +18,6 @@ func NewHealthCenterHandler(adm healthcenter.HealthCenterService) *HealthCenterH
 }
 
 func (adm *HealthCenterHandler) GetSingleHealthCenter(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
-
 	id, err := strconv.Atoi(ps.ByName("id"))
 
 	if err != nil {
@@ -25,14 +25,13 @@ func (adm *HealthCenterHandler) GetSingleHealthCenter(w http.ResponseWriter,r *h
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-	healthcenter, errs := adm.healthCenterService.HealthCenter(uint(id))
+	healthcenter, errs := adm.healthCenterService.HealthCenterById(uint(id))
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-
 	output, err := json.MarshalIndent(healthcenter, "", "\t\t")
 
 	if err != nil {
@@ -44,7 +43,33 @@ func (adm *HealthCenterHandler) GetSingleHealthCenter(w http.ResponseWriter,r *h
 	w.Write(output)
 	return
 }
-func (adm *HealthCenterHandler) GetHealthCenter(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
+
+func (uh *HealthCenterHandler) GetHealthCenter(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	w.Header().Set("Content-type", "application/json")
+	email := r.PostFormValue("email")
+	password := r.PostFormValue("password")
+	fmt.Println(email,password)
+	healthcenter := entity.HealthCenter{Email: email, Password: password}
+	user, errs := uh.healthCenterService.HealthCenter(&healthcenter)
+	if len(errs) > 0 {
+		data, err := json.MarshalIndent(&response{Status:"error", Content:nil},"", "\t")
+		if err != nil {
+
+		}
+		http.Error(w, string(data) , http.StatusNotFound)
+		return
+	}
+	output, err := json.MarshalIndent(response{Status:"success", Content:&user}, "", "\n")
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+	w.Write(output)
+	return
+}
+
+
+func (adm *HealthCenterHandler) GetHealthCenters(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
 
 	agents, errs := adm.healthCenterService.HealthCenters()
 
@@ -94,7 +119,7 @@ func (adm *HealthCenterHandler) PutHealthCenter(w http.ResponseWriter, r *http.R
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-	healthCenterData, errs := adm.healthCenterService.HealthCenter(uint(id))
+	healthCenterData, errs := adm.healthCenterService.HealthCenterById(uint(id))
 	//
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")

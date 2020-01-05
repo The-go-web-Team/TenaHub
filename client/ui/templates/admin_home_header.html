@@ -80,8 +80,6 @@
         .navbar-top div ul.nav li:hover .profile-dropdown{
             display: block;
         }
-
-
     </style>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
@@ -113,9 +111,11 @@
                     </a>
                     <div class="dropdown" style="display: inline">
                         <a class="mx-1 dropdown-toggle btn btn-outline-primary" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Nathaniel Awel
+                           {{with .Admin}}
+                            {{.FirstName }} {{.LastName}}
+                            {{end}}
                         </a>
-                        <a class="mx-5 btn btn-outline-danger">Logout</a>
+                        <a href="/admin/logout" class="mx-5 btn btn-outline-danger">Logout</a>
                     </div>
                 </li>
             </ul>

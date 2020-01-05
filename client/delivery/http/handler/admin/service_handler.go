@@ -19,11 +19,12 @@ func NewServiceHandler(T *template.Template) *ServiceHandler {
 
 
 func (adh *ServiceHandler) AddService(w http.ResponseWriter, r *http.Request) {
+	id, _ := strconv.Atoi(r.FormValue("healthcenter_id"))
 	name := r.FormValue("name")
 	description := r.FormValue("description")
 
 	// healthcenter id is get from the cookie
-	data := entity.Service{Name:name, Description:description,HealthCenterID:1}
+	data := entity.Service{Name:name, Description:description,HealthCenterID: uint(id)}
 	jsonValue, _ := json.Marshal(data)
 	response, err := http.Post("http://localhost:8181/v1/service","application/json",bytes.NewBuffer(jsonValue))
 	var status addStatus

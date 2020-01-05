@@ -109,9 +109,11 @@
                 </a>
                 <div class="dropdown" style="display: inline">
                     <a class="mx-1 dropdown-toggle btn btn-outline-primary" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Yekatit 12
+                       {{with .HealthCenter}}
+                            {{.Name}}
+                        {{end}}
                     </a>
-                   <a class="mx-5 btn btn-outline-danger">Logout</a>
+                   <a href="/healthcenter/logout" class="mx-5 btn btn-outline-danger">Logout</a>
                 </div>
             </li>
         </ul>

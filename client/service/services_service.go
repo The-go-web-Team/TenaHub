@@ -8,7 +8,7 @@ import (
 	"fmt"
 )
 
-func FetchServices() ([]clientEntity.Service, error) {
+func FetchServices(id uint) ([]clientEntity.Service, error) {
 	client := &http.Client{}
 	URL := fmt.Sprintf("%s/service", baseURL)
 	req, _ := http.NewRequest("GET", URL, nil)
@@ -26,5 +26,24 @@ func FetchServices() ([]clientEntity.Service, error) {
 		return nil, err
 	}
 	return services, nil
+}
+func FetchService(id uint) ([]clientEntity.Service, error) {
+	client := &http.Client{}
+	URL := fmt.Sprintf("%s/service/%d", baseURL, id)
+	req, _ := http.NewRequest("GET", URL, nil)
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	var service []clientEntity.Service
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(body, &service)
+	if err != nil {
+		return nil, err
+	}
+	return service, nil
 }
 

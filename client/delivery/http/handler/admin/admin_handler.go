@@ -9,6 +9,9 @@ import (
 	"github.com/TenaHub/api/entity"
 	"encoding/json"
 	"bytes"
+	"golang.org/x/crypto/bcrypt"
+	"strconv"
+	"time"
 )
 
 
@@ -19,15 +22,9 @@ func NewAdminHandler(T *template.Template) *AdminHandler {
 	return &AdminHandler{temp: T}
 }
 
-func (adh *AdminHandler) HomePage(writer http.ResponseWriter, request *http.Request){
-	// cross site scripting is used to secure the endpoint from another server
-	//writer.Header().Set("Access-Control-Allow-Origin", request.Header.Get("Origin"))
-	adh.temp.ExecuteTemplate(writer, "admin_home.layout", nil)
-}
 
 func (adh *AdminHandler) AllAgents(w http.ResponseWriter, r *http.Request) {
 	//w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
-	fmt.Println("something")
 	users, err := service.FetchAgent(6)
 	fmt.Println(err)
 	if err != nil {
@@ -37,25 +34,38 @@ func (adh *AdminHandler) AllAgents(w http.ResponseWriter, r *http.Request) {
 	adh.temp.ExecuteTemplate(w, "check.html", users)
 }
 type data struct {
+	Admin *clientEntity.Admin
 	Agent []clientEntity.Agent
 	HealthCenter []clientEntity.HealthCenter
 	User []clientEntity.User
 
 }
 func (adh *AdminHandler) AdminPage(w http.ResponseWriter, r *http.Request) {
-	//w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
-	fmt.Println("something")
-	agents, err := service.FetchAgents()
-	healthCenters, err := service.FetchHealthCenters()
-	users, err := service.FetchUsers()
+	c, err := r.Cookie("admin")
 
-	fmt.Println(err)
 	if err != nil {
-		w.WriteHeader(http.StatusNoContent)
-		adh.temp.ExecuteTemplate(w, "admin_home.layout", nil)
+		//adh.temp.ExecuteTemplate(w, "admin.login.layout",nil)
+		http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
+		return
+	} else {
+		fmt.Println(c.Value)
+		fmt.Println(c.MaxAge)
 	}
-	adh.temp.ExecuteTemplate(w, "admin_home.layout", data{agents, healthCenters, users})
+		id, _ := strconv.Atoi(c.Value)
+		admin, err := service.FetchAdmin(id)
+		admin.Password = ""
+		agents, err := service.FetchAgents()
+		healthCenters, err := service.FetchHealthCenters()
+		users, err := service.FetchUsers()
+
+		if err != nil {
+			w.WriteHeader(http.StatusNoContent)
+			//http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
+		}
+		adh.temp.ExecuteTemplate(w, "admin_home.layout", data{admin,agents, healthCenters, users})
+
 }
+
 
 func (adh *AdminHandler) EditAdmin(w http.ResponseWriter, r *http.Request) {
 	firstName := r.FormValue("firstname")
@@ -70,7 +80,6 @@ func (adh *AdminHandler) EditAdmin(w http.ResponseWriter, r *http.Request) {
 	if password != confirm {
 		return
 	}
-
 
 	data := entity.Admin{FirstName:firstName, LastName:lastName, UserName:username, Email:email,PhoneNumber:phone,Password:password}
 	fmt.Println(data," is data")
@@ -95,4 +104,127 @@ func (adh *AdminHandler) EditAdmin(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, r.Header.Get("Referer"), 302)
 	//adh.temp.ExecuteTemplate(w, "admin_home.layout", status)
 }
+
+func VerifyPassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+//func (u *clientEntity.Admin) Prepare() {
+//	//u.ID = 0
+//	//u.Nickname = html.EscapeString(strings.TrimSpace(u.Nickname))
+//	//u.Email = html.EscapeString(strings.TrimSpace(u.Email))
+//	//u.CreatedAt = time.Now()
+//	//u.UpdatedAt = time.Now()
+//}
+
+//func (u *User) Validate(action string) error {
+//	switch strings.ToLower(action) {
+//	case "update":
+//		if u.Nickname == "" {
+//			return errors.New("Required Nickname")
+//		}
+//		if u.Password == "" {
+//			return errors.New("Required Password")
+//		}
+//		if u.Email == "" {
+//			return errors.New("Required Email")
+//		}
+//		if err := checkmail.ValidateFormat(u.Email); err != nil {
+//			return errors.New("Invalid Email")
+//		}
+//
+//		return nil
+//	case "login":
+//		if u.Password == "" {
+//			return errors.New("Required Password")
+//		}
+//		if u.Email == "" {
+//			return errors.New("Required Email")
+//		}
+//		if err := checkmail.ValidateFormat(u.Email); err != nil {
+//			return errors.New("Invalid Email")
+//		}
+//		return nil
+//
+//	default:
+//		if u.Nickname == "" {
+//			return errors.New("Required Nickname")
+//		}
+//		if u.Password == "" {
+//			return errors.New("Required Password")
+//		}
+//		if u.Email == "" {
+//			return errors.New("Required Email")
+//		}
+//		if err := checkmail.ValidateFormat(u.Email); err != nil {
+//			return errors.New("Invalid Email")
+//		}
+//		return nil
+//	}
+//}
+
+
+// Login handles Get /login and POST /login
+func (ah *AdminHandler) AdminLogin(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.Referer())
+	if r.Method == http.MethodGet {
+		ah.temp.ExecuteTemplate(w, "admin.login.layout", nil)
+
+	} else if r.Method == http.MethodPost {
+		email := r.PostFormValue("email")
+		password := r.PostFormValue("password")
+
+		admin := clientEntity.Admin{Email: email, Password: password}
+		fmt.Println(admin)
+
+		resp, err := service.AdminAuthenticate(&admin)
+		//
+		fmt.Println(resp, " error ", err)
+
+		if err != nil {
+			if err.Error() == "error" {
+				//http.Redirect(w,r,"/admin",http.StatusSeeOther)
+				fmt.Println("before executing")
+				ah.temp.ExecuteTemplate(w, "admin.login.layout", "incorrect credentials")
+				return
+			}
+		} else {
+			fmt.Println(resp ," is the correct one")
+
+			cookie := http.Cookie{
+				Name:     "admin",
+				Value:    strconv.Itoa(int(resp.ID)),
+				MaxAge:   60 * 3,
+				Path:     "/",
+				HttpOnly: true,
+			}
+
+			http.SetCookie(w, &cookie)
+			http.Redirect(w, r, "http://localhost:8282/admin", http.StatusSeeOther)
+		}
+	}
+}
+
+// Logout handles GET /logout
+func (uh *AdminHandler) AdminLogout(w http.ResponseWriter, r *http.Request) {
+	c, err := r.Cookie("admin")
+
+	if err != nil {
+		http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
+		return
+	}
+	if c != nil {
+		c = &http.Cookie{
+			Name:     "admin",
+			Value:    "",
+			Path:     "/",
+			Expires:  time.Unix(0, 0),
+			MaxAge:   -10,
+			HttpOnly: true,
+		}
+
+		http.SetCookie(w, c)
+	}
+	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+}
+
 

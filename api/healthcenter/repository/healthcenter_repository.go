@@ -15,7 +15,7 @@ func NewHealthCenterGormRepo(db *gorm.DB) healthcenter.HealthCenterRepository{
 	return &HealthCenterGormRepo{conn:db}
 }
 
-func (adm HealthCenterGormRepo) HealthCenter(id uint) (*entity.HealthCenter, []error) {
+func (adm HealthCenterGormRepo) HealthCenterById(id uint) (*entity.HealthCenter, []error) {
 	healthcenter := entity.HealthCenter{}
 	errs := adm.conn.First(&healthcenter, id).GetErrors()
 	if len(errs) > 0 {
@@ -23,6 +23,16 @@ func (adm HealthCenterGormRepo) HealthCenter(id uint) (*entity.HealthCenter, []e
 	}
 	return &healthcenter, errs
 }
+func (adm HealthCenterGormRepo) HealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
+	healthcenter := entity.HealthCenter{}
+	errs := adm.conn.Where("email = ? AND password = ?", healthcenterData.Email, healthcenterData.Password).First(&healthcenter).GetErrors()
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return &healthcenter, errs
+}
+
+
 func (adm *HealthCenterGormRepo) HealthCenters() ([]entity.HealthCenter, []error) {
 	var healthcenters []entity.HealthCenter
 	errs := adm.conn.Find(&healthcenters).GetErrors()
@@ -33,7 +43,7 @@ func (adm *HealthCenterGormRepo) HealthCenters() ([]entity.HealthCenter, []error
 
 }
 func (adm *HealthCenterGormRepo) DeleteHealthCenter(id uint) (*entity.HealthCenter, []error) {
-	healthcenter, errs := adm.HealthCenter(id)
+	healthcenter, errs := adm.HealthCenterById(id)
 	if len(errs) > 0 {
 		return nil, errs
 	}

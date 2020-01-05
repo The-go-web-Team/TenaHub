@@ -26,8 +26,8 @@ func (adm *ServiceService) PendingService() ([]entity.Service, []error) {
 	}
 	return services, errs
 }
-func (adm *ServiceService) Services() ([]entity.Service, []error) {
-	healthCenters, errs := adm.serviceRepo.Services()
+func (adm *ServiceService) Services(id uint) ([]entity.Service, []error) {
+	healthCenters, errs := adm.serviceRepo.Services(id)
 	if len(errs) > 0 {
 		return nil, errs
 	}

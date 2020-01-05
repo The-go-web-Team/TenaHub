@@ -77,7 +77,8 @@ func main()  {
 
 	router := httprouter.New()
 
-	router.GET("/v1/admin/:id", adminHandler.GetAdmin)
+	router.GET("/v1/admin/:id", adminHandler.GetSingleAdmin)
+	router.POST("/v1/admin", adminHandler.GetAdmin)
 	router.PUT("/v1/admin/:id", adminHandler.PutAdmin)
 	router.GET("/v1/agent/:id", agentHandler.GetSingleAgent)
 
@@ -88,6 +89,7 @@ func main()  {
 	router.DELETE("/v1/agent/:id", agentHandler.DeleteAgent)
 
 	router.GET("/v1/healthcenter/:id", healthCenterHandler.GetSingleHealthCenter)
+	router.POST("/v1/healthcenter", healthCenterHandler.GetHealthCenter)
 	router.PUT("/v1/healthcenter/:id", healthCenterHandler.PutHealthCenter)
 	router.GET("/v1/healthcenter", healthCenterHandler.GetHealthCenter)
 	router.DELETE("/v1/healthcenter/:id", healthCenterHandler.DeleteHealthCenter)
@@ -96,8 +98,8 @@ func main()  {
 	router.GET("/v1/user", userHandler.GetUsers)
 	router.DELETE("/v1/user/:id", userHandler.DeleteUser)
 
-	router.GET("/v1/service/:id", serviceHandler.GetSingleService)
-	router.GET("/v1/service", serviceHandler.GetServices)
+	//router.GET("/v1/service/:id", serviceHandler.GetSingleService)
+	router.GET("/v1/service/:id", serviceHandler.GetServices)
 	router.GET("/v1/pendingservice", serviceHandler.GetPendingServices)
 	router.PUT("/v1/service/:id", serviceHandler.PutService)
 	router.POST("/v1/service", serviceHandler.PostService)

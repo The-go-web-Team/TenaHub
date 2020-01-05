@@ -15,7 +15,9 @@ func NewServiceGormRepo(db *gorm.DB) service.ServiceRepository{
 }
 func (adm *ServiceGormRepo) Service(id uint) (*entity.Service, []error) {
 	var service entity.Service
-	errs := adm.conn.First(&service, id).GetErrors()
+	errs := adm.conn.Where("health_center_id = ? ",id).Find(&service).GetErrors()
+
+
 	if len(errs) > 0 {
 		return nil, errs
 	}
@@ -29,9 +31,9 @@ func (adm *ServiceGormRepo) PendingService() ([]entity.Service, []error) {
 	}
 	return services, errs
 }
-func (adm *ServiceGormRepo) Services() ([]entity.Service, []error) {
+func (adm *ServiceGormRepo) Services(id uint) ([]entity.Service, []error) {
 	var services []entity.Service
-	errs := adm.conn.Find(&services).GetErrors()
+	errs := adm.conn.Where("health_center_id = ? ",id).Find(&services).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
 	}

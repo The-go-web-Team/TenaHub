@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"fmt"
+	"net/url"
+	"errors"
 )
 
 func FetchAgent(id int) (*clientEntity.Agent, error) {
@@ -48,4 +50,43 @@ func FetchAgents() ([]clientEntity.Agent, error) {
 	}
 	return agents, nil
 }
+
+// Authenticate authenticates user
+func AgentAuthenticate(agent *clientEntity.Agent) (*clientEntity.Agent, error) {
+	URL := fmt.Sprintf("%s/%s", baseURL, "agent")
+
+	formval := url.Values{}
+	formval.Add("email", agent.Email)
+	formval.Add("password", agent.Password)
+
+	resp, err := http.PostForm(URL, formval)
+
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	respjson := struct {
+		Status string
+		Content clientEntity.Agent
+	}{}
+
+	err = json.Unmarshal(body, &respjson)
+
+	fmt.Println(respjson)
+
+	if respjson.Status == "error" {
+		return nil, errors.New("error")
+	}
+	return &respjson.Content, nil
+}
+
 

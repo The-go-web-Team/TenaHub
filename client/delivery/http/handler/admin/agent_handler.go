@@ -8,6 +8,9 @@ import (
 	"github.com/TenaHub/api/entity"
 	"bytes"
 	"strconv"
+	"github.com/TenaHub/client/entity"
+	"github.com/TenaHub/client/service"
+	"time"
 )
 
 
@@ -107,3 +110,97 @@ func (adh *AgentHandler) DeleteAgent(w http.ResponseWriter, r *http.Request) {
 type addStatus struct {
 	Success bool
 }
+
+func (adh *AgentHandler) AgentPage(w http.ResponseWriter, r *http.Request) {
+	c, err := r.Cookie("agent")
+
+	if err != nil {
+		//adh.temp.ExecuteTemplate(w, "admin.login.layout",nil)
+		http.Redirect(w, r, "http://localhost:8282/agent/login", http.StatusSeeOther)
+		return
+	} else {
+		fmt.Println(c.Value)
+		fmt.Println(c.MaxAge)
+	}
+	id, _ := strconv.Atoi(c.Value)
+	admin, err := service.FetchAdmin(id)
+	admin.Password = ""
+	agents, err := service.FetchAgents()
+	healthCenters, err := service.FetchHealthCenters()
+	users, err := service.FetchUsers()
+
+	if err != nil {
+		w.WriteHeader(http.StatusNoContent)
+		//http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
+	}
+	adh.temp.ExecuteTemplate(w, "agent_home.layout", data{admin,agents, healthCenters, users})
+
+}
+
+
+
+// Login handles Get /login and POST /login
+func (ah *AgentHandler) AgentLogin(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.Referer())
+	if r.Method == http.MethodGet {
+		ah.temp.ExecuteTemplate(w, "agent.login.layout", nil)
+
+	} else if r.Method == http.MethodPost {
+		email := r.PostFormValue("email")
+		password := r.PostFormValue("password")
+
+		agent := clientEntity.Agent{Email: email, Password: password}
+		fmt.Println(agent)
+
+		resp, err := service.AgentAuthenticate(&agent)
+		//
+		fmt.Println(resp, " error ", err)
+
+		if err != nil {
+			if err.Error() == "error" {
+				//http.Redirect(w,r,"/admin",http.StatusSeeOther)
+				fmt.Println("before executing")
+				ah.temp.ExecuteTemplate(w, "agent.login.layout", "incorrect credentials")
+				return
+			}
+		} else {
+			fmt.Println(resp ," is the correct one")
+
+			cookie := http.Cookie{
+				Name:     "agent",
+				Value:    strconv.Itoa(int(resp.ID)),
+				MaxAge:   60 * 3,
+				Path:     "/",
+				HttpOnly: true,
+			}
+
+			http.SetCookie(w, &cookie)
+			http.Redirect(w, r, "http://localhost:8282/agent", http.StatusSeeOther)
+		}
+	}
+}
+
+// Logout handles GET /logout
+func (uh *AgentHandler) AgentLogout(w http.ResponseWriter, r *http.Request) {
+	c, err := r.Cookie("admin")
+
+	if err != nil {
+		http.Redirect(w, r, "http://localhost:8282/agent/login", http.StatusSeeOther)
+		return
+	}
+	if c != nil {
+		c = &http.Cookie{
+			Name:     "agent",
+			Value:    "",
+			Path:     "/",
+			Expires:  time.Unix(0, 0),
+			MaxAge:   -10,
+			HttpOnly: true,
+		}
+
+		http.SetCookie(w, c)
+	}
+	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+}
+
+
