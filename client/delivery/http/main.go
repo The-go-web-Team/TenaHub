@@ -27,10 +27,10 @@ func main()  {
 		Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("client/ui/assets"))))
 	//router.HandleFunc("/", AdminHandler.AllAgents).Methods("GET")
 	router.HandleFunc("/admin/login", AdminHandler.AdminLogin)
-	router.HandleFunc("/admin/logout", AdminHandler.AdminLogout).Methods("GET")
+	router.HandleFunc("/admin/logout", AdminHandler.AdminLogout)
 	router.HandleFunc("/admin", AdminHandler.AdminPage)
-
 	router.HandleFunc("/admin/updateprofile", AdminHandler.EditAdmin).Methods("POST")
+
 	router.HandleFunc("/agent/addagent", AgentHandler.AddAgent).Methods("POST")
 	router.HandleFunc("/agent/editagent", AgentHandler.EditAgent).Methods("POST")
 	router.HandleFunc("/agent/deleteagent",AgentHandler.DeleteAgent ).Methods("POST")

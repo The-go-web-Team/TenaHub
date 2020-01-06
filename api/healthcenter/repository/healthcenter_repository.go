@@ -4,7 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/TenaHub/api/entity"
 	"github.com/TenaHub/api/healthcenter"
-	"fmt"
+	"github.com/TenaHub/api/delivery/http/handler"
 )
 
 type HealthCenterGormRepo struct {
@@ -25,13 +25,21 @@ func (adm HealthCenterGormRepo) HealthCenterById(id uint) (*entity.HealthCenter,
 }
 func (adm HealthCenterGormRepo) HealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
 	healthcenter := entity.HealthCenter{}
-	errs := adm.conn.Where("email = ? AND password = ?", healthcenterData.Email, healthcenterData.Password).First(&healthcenter).GetErrors()
+	//errs := adm.conn.Where("email = ? AND password = ?", healthcenterData.Email, healthcenterData.Password).First(&healthcenter).GetErrors()
+	//if len(errs) > 0 {
+	//	return nil, errs
+	//}
+	errs := adm.conn.Select("password").Where("email = ? ", healthcenterData.Email).First(&healthcenter).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
 	}
-	return &healthcenter, errs
+	same := handler.VerifyPassword(healthcenterData.Password, healthcenter.Password)
+	if same {
+		errs := adm.conn.Where("email = ?", healthcenterData.Email).First(&healthcenter).GetErrors()
+		return &healthcenter, errs
+	}
+	return nil, errs
 }
-
 
 func (adm *HealthCenterGormRepo) HealthCenters() ([]entity.HealthCenter, []error) {
 	var healthcenters []entity.HealthCenter
@@ -56,12 +64,14 @@ func (adm *HealthCenterGormRepo) DeleteHealthCenter(id uint) (*entity.HealthCent
 
 func (adm *HealthCenterGormRepo) UpdateHealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
 	healthcenter := healthcenterData
-	fmt.Println(healthcenter)
-	errs := adm.conn.Save(healthcenter).GetErrors()
-	if len(errs) > 0 {
-		return nil, errs
+	data := entity.HealthCenter{}
+	healthcenter.Password,_ = handler.HashPassword(healthcenterData.Password)
+	//errs := adm.conn.Save(healthcenter).GetErrors()
+	errs := adm.conn.Model(&data).Updates(healthcenter).Error
+	if errs != nil {
+		return nil, []error{errs}
 	}
-	return healthcenter, errs
+	return healthcenter, []error{errs}
 }
 
 

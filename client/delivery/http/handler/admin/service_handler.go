@@ -48,7 +48,6 @@ func (adh *ServiceHandler) EditService(w http.ResponseWriter, r *http.Request) {
 	data := entity.Service{ID :uint(id),Name:name, Description:description}
 	jsonValue, _ := json.Marshal(data)
 	URL := fmt.Sprintf("http://localhost:8181/v1/service/%d", id)
-	fmt.Println(URL)
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodPut, URL, bytes.NewBuffer(jsonValue))
 	_, err = client.Do(req)

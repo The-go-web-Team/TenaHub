@@ -12,9 +12,15 @@
             <h1>Edit Profile</h1>
             <hr>
             <div class="text-center">
-                <img src="/assets/img/guest_photo.jpg" class="avatar rounded-circle img-circle" alt="profile" width="150px" height = "150px">
+                {{ if .ProfilePic}}
+                    <img src="/assets/img/uploads/healthcenter_uploads/{{.ProfilePic}}" class="avatar rounded-circle img-circle" alt="profile" width="150px" height = "150px">
+
+                {{else}}
+                    <img src="/assets/img/guest_photo.jpg" class="avatar rounded-circle img-circle" alt="profile" width="150px" height = "150px">
+
+                {{end}}
                 <h4>Upload a Cover Photo...</h4>
-                <input type="file" name='upload_image' class="form-control">
+                <input type="file" name="upload_image" class="form-control">
             </div>
         </div>
         <div class="col-md-7 personal-info">
@@ -49,13 +55,13 @@
             <div class="form-group row">
                 <label class="col-md-3 control-label">Password:</label>
                 <div class="col-md-8">
-                    <input class="form-control" name="password" type="password" value="" required>
+                    <input class="form-control" name="password" type="password" value="" minlength="8" >
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-md-3 control-label">Confirm:</label>
                 <div class="col-md-8">
-                    <input class="form-control" name="confirm" type="password" value="" required>
+                    <input class="form-control" name="confirm" type="password" value="" minlength="8">
                 </div>
             </div>
             <div class="form-group">

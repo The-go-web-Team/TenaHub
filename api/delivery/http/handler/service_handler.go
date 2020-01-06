@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"encoding/json"
 	"github.com/TenaHub/api/entity"
-	"fmt"
 	"github.com/TenaHub/api/service/service"
 )
 
@@ -25,7 +24,6 @@ func (adm *ServiceHandler) GetSingleService(w http.ResponseWriter,r *http.Reques
 		return
 	}
 	service, errs := adm.serviceService.Service(uint(id))
-	fmt.Println("after", service)
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -150,8 +148,6 @@ func (adm *ServiceHandler) PutService(w http.ResponseWriter, r *http.Request, ps
 	id, err := strconv.Atoi(ps.ByName("id"))
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	fmt.Println(id)
-
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -160,7 +156,6 @@ func (adm *ServiceHandler) PutService(w http.ResponseWriter, r *http.Request, ps
 	serviceData, errs := adm.serviceService.Service(uint(id))
 	status := serviceData.Status
 	healthCenterId := serviceData.HealthCenterID
-	fmt.Println("dat is ", serviceData)
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -173,8 +168,6 @@ func (adm *ServiceHandler) PutService(w http.ResponseWriter, r *http.Request, ps
 	serviceData.ID = uint(id)
 	serviceData.Status = status
 	serviceData.HealthCenterID = healthCenterId
-
-	fmt.Println("data is ", serviceData)
 
 	serviceData, errs = adm.serviceService.UpdateService(serviceData)
 

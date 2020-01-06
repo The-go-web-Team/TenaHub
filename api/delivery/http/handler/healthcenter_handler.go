@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"encoding/json"
 	"github.com/TenaHub/api/healthcenter"
-	"fmt"
 	"github.com/TenaHub/api/entity"
 )
 
@@ -48,10 +47,10 @@ func (uh *HealthCenterHandler) GetHealthCenter(w http.ResponseWriter, r *http.Re
 	w.Header().Set("Content-type", "application/json")
 	email := r.PostFormValue("email")
 	password := r.PostFormValue("password")
-	fmt.Println(email,password)
 	healthcenter := entity.HealthCenter{Email: email, Password: password}
-	user, errs := uh.healthCenterService.HealthCenter(&healthcenter)
-	if len(errs) > 0 {
+	user, _ := uh.healthCenterService.HealthCenter(&healthcenter)
+
+	if user == nil {
 		data, err := json.MarshalIndent(&response{Status:"error", Content:nil},"", "\t")
 		if err != nil {
 
@@ -111,7 +110,6 @@ func (adm *HealthCenterHandler) DeleteHealthCenter(w http.ResponseWriter, r *htt
 }
 func (adm *HealthCenterHandler) PutHealthCenter(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
-	fmt.Println(id)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	if err != nil {
@@ -130,10 +128,8 @@ func (adm *HealthCenterHandler) PutHealthCenter(w http.ResponseWriter, r *http.R
 	body := make([]byte, l)
 	r.Body.Read(body)
 
-	fmt.Println(healthCenterData," is admin data")
 	json.Unmarshal(body, &healthCenterData)
 	healthCenterData.ID = uint(id)
-	fmt.Println(healthCenterData," now admin data")
 	healthCenterData, errs = adm.healthCenterService.UpdateHealthCenter(healthCenterData)
 
 	if len(errs) > 0 {

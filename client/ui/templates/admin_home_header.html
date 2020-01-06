@@ -104,21 +104,25 @@
             </div>
         </div>
         <ul class="nav" id="main-menu">
-            <ul class="nav" id="main-menu">
-                <li class="nav-item dropdown nav_dropdown">
-                    <a class="nav-link px-3">
-                        <img width="40px" height="40px" class="user-avatar rounded-circle mr-2" src="/assets/img/userimage.png"/>
+        {{with .Admin}}
+
+        <li class="nav-item dropdown nav_dropdown">
+                <a class="nav-link px-3">
+                {{ if .ProfilePic}}
+                    <img width="40px" height="40px" class="user-avatar rounded-circle mr-2" alt="profile pic"
+                         src="/assets/img/uploads/admin_uploads/{{.ProfilePic}}"/>
+                {{else}}
+                    <img width="40px" height="40px" class="user-avatar rounded-circle mr-2" src="/assets/img/userimage.png"/>
+                {{end}}
+                </a>
+                <div class="dropdown" style="display: inline">
+                    <a class="mx-1 dropdown-toggle btn btn-outline-primary" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{.FirstName }} {{.LastName}}
                     </a>
-                    <div class="dropdown" style="display: inline">
-                        <a class="mx-1 dropdown-toggle btn btn-outline-primary" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                           {{with .Admin}}
-                            {{.FirstName }} {{.LastName}}
-                            {{end}}
-                        </a>
-                        <a href="/admin/logout" class="mx-5 btn btn-outline-danger">Logout</a>
-                    </div>
-                </li>
-            </ul>
+                    <a href="/admin/logout" class="mx-5 btn btn-outline-danger">Logout</a>
+                </div>
+            </li>
+        {{end}}
 
         </ul>
     </div>
@@ -138,12 +142,11 @@
             <li>
                 <a href="#"><i class="fa fa-hospital-o"></i><span class="d-none d-md-inline-block">Health Centers</span></a>
             </li>
-
             <li>
                 <a href="#"><i class="fa fa-users"></i><span class="d-none d-md-inline-block">Users</span> </a>
             </li>
-            <li>
-                <a href="../functions/logout.php"><i class="fa fa-sign-out"></i><span class="d-none d-md-inline-block" >Log out</span> </a>
+            <li >
+                    <a class="d-flex btn text-white p-0 py-3 align-items-center" href="/admin/logout" ><i class="fa fa-sign-out"></i><span class="d-none d-md-inline-block" >Log out</span> </a>
             </li>
         </ul>
     </div>

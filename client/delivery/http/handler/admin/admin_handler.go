@@ -53,7 +53,6 @@ func (adh *AdminHandler) AdminPage(w http.ResponseWriter, r *http.Request) {
 	}
 		id, _ := strconv.Atoi(c.Value)
 		admin, err := service.FetchAdmin(id)
-		admin.Password = ""
 		agents, err := service.FetchAgents()
 		healthCenters, err := service.FetchHealthCenters()
 		users, err := service.FetchUsers()
@@ -66,8 +65,10 @@ func (adh *AdminHandler) AdminPage(w http.ResponseWriter, r *http.Request) {
 
 }
 
-
 func (adh *AdminHandler) EditAdmin(w http.ResponseWriter, r *http.Request) {
+	c, err := r.Cookie("admin")
+	id, _ := strconv.Atoi(c.Value)
+
 	firstName := r.FormValue("firstname")
 	lastName := r.FormValue("lastname")
 	username := r.FormValue("username")
@@ -76,38 +77,33 @@ func (adh *AdminHandler) EditAdmin(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 	confirm := r.FormValue("confirm")
 
-
 	if password != confirm {
 		return
 	}
+	fileName, err := FileUpload(r,"admin_uploads")
+	if err != nil{
+		fmt.Println(err)
+	}
 
-	data := entity.Admin{FirstName:firstName, LastName:lastName, UserName:username, Email:email,PhoneNumber:phone,Password:password}
-	fmt.Println(data," is data")
+	data := entity.Admin{FirstName:firstName, LastName:lastName, UserName:username, Email:email,PhoneNumber:phone,Password:password,ProfilePic:fileName}
 	jsonValue, _ := json.Marshal(data)
 	client := &http.Client{}
 
-	URL := fmt.Sprintf("http://localhost:8181/v1/admin/%d", 1)
-	fmt.Println(URL)
-	fmt.Println(data)
+	URL := fmt.Sprintf("http://localhost:8181/v1/admin/%d", id)
 
 	req, err := http.NewRequest(http.MethodPut, URL, bytes.NewBuffer(jsonValue))
 	_, err = client.Do(req)
 	var status addStatus
 	if err != nil {
 		status.Success = false
-		fmt.Println(err)
 	}else {
 		status.Success = true
 	}
-	fmt.Println(err)
 
 	http.Redirect(w, r, r.Header.Get("Referer"), 302)
-	//adh.temp.ExecuteTemplate(w, "admin_home.layout", status)
 }
 
-func VerifyPassword(hashedPassword, password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
-}
+
 //func (u *clientEntity.Admin) Prepare() {
 //	//u.ID = 0
 //	//u.Nickname = html.EscapeString(strings.TrimSpace(u.Nickname))
@@ -193,7 +189,7 @@ func (ah *AdminHandler) AdminLogin(w http.ResponseWriter, r *http.Request) {
 			cookie := http.Cookie{
 				Name:     "admin",
 				Value:    strconv.Itoa(int(resp.ID)),
-				MaxAge:   60 * 3,
+				MaxAge:   60 * 30,
 				Path:     "/",
 				HttpOnly: true,
 			}
@@ -228,3 +224,10 @@ func (uh *AdminHandler) AdminLogout(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func HashPassword(password []byte)(string, error){
+	hashedPassword,err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	return string(hashedPassword), err
+}
+func VerifyPassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}

@@ -12,7 +12,7 @@ import (
 
 func FetchHealthCenters() ([]clientEntity.HealthCenter, error) {
 	client := &http.Client{}
-	URL := fmt.Sprintf("%s/healthcenter", baseURL)
+	URL := fmt.Sprintf("%s/healthcenters", baseURL)
 	req, _ := http.NewRequest("GET", URL, nil)
 	res, err := client.Do(req)
 	if err != nil {

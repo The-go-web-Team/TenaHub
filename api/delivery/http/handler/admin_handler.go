@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"encoding/json"
 	"github.com/TenaHub/api/admin"
-	"fmt"
 	"github.com/TenaHub/api/entity"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AdminHandler struct {
@@ -19,7 +19,6 @@ func NewAdminHandler(adm admin.AdminService) *AdminHandler {
 
 func (adm *AdminHandler) PutAdmin(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
-	fmt.Println(id)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	if err != nil {
@@ -38,10 +37,8 @@ func (adm *AdminHandler) PutAdmin(w http.ResponseWriter, r *http.Request, ps htt
 	body := make([]byte, l)
 	r.Body.Read(body)
 
-	fmt.Println(adminData," is admin data")
 	json.Unmarshal(body, &adminData)
 	adminData.ID = uint(id)
-	fmt.Println(adminData," now admin data")
 	adminData, errs = adm.adminService.UpdateAdmin(adminData)
 
 	if len(errs) > 0 {
@@ -66,10 +63,8 @@ func (adm *AdminHandler) PutAdmin(w http.ResponseWriter, r *http.Request, ps htt
 
 func (adm *AdminHandler) GetSingleAdmin(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
-	fmt.Println("Before Recieving")
 	admin, errs := adm.adminService.AdminById(uint(id))
 
-	fmt.Println("After Recieving", admin)
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -96,10 +91,9 @@ func (uh *AdminHandler) GetAdmin(w http.ResponseWriter, r *http.Request, _ httpr
 	w.Header().Set("Content-type", "application/json")
 	email := r.PostFormValue("email")
 	password := r.PostFormValue("password")
-	fmt.Println(email,password)
 	admin := entity.Admin{Email: email, Password: password}
-	user, errs := uh.adminService.Admin(&admin)
-	if len(errs) > 0 {
+	user, _ := uh.adminService.Admin(&admin)
+	if user == nil {
 		data, err := json.MarshalIndent(&response{Status:"error", Content:nil},"", "\t")
 		if err != nil {
 
@@ -114,4 +108,14 @@ func (uh *AdminHandler) GetAdmin(w http.ResponseWriter, r *http.Request, _ httpr
 	}
 	w.Write(output)
 	return
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
+
+func VerifyPassword(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }

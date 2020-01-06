@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"encoding/json"
 	"github.com/TenaHub/api/entity"
-	"fmt"
 	"github.com/TenaHub/api/agent"
 )
 
@@ -19,7 +18,6 @@ func NewAgentHandler(adm agent.AgentService) *AgentHandler {
 
 
 func (adm *AgentHandler) GetSingleAgent(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
-	fmt.Println("Before")
 	id, err := strconv.Atoi(ps.ByName("id"))
 
 	if err != nil {
@@ -28,7 +26,6 @@ func (adm *AgentHandler) GetSingleAgent(w http.ResponseWriter,r *http.Request, p
 		return
 	}
 	agent, errs := adm.agentService.Agent(uint(id))
-	fmt.Println("after", agent)
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -133,17 +130,12 @@ func (adm *AgentHandler) PostAgent(w http.ResponseWriter, r *http.Request, ps ht
 func (adm *AgentHandler) PutAgent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-
-	fmt.Println(id)
-
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 	agentData, errs := adm.agentService.Agent(uint(id))
-
-	fmt.Println("dat is ", agentData)
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -154,9 +146,6 @@ func (adm *AgentHandler) PutAgent(w http.ResponseWriter, r *http.Request, ps htt
 	r.Body.Read(body)
 	json.Unmarshal(body, &agentData)
 	agentData.ID = uint(id)
-
-	fmt.Println("data is ", agentData)
-
 	agentData, errs = adm.agentService.UpdateAgent(agentData)
 
 	if len(errs) > 0 {

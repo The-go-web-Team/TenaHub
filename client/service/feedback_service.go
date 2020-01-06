@@ -11,7 +11,6 @@ import (
 func FetchFeedbacks(id uint) ([]clientEntity.Comment, error) {
 	client := &http.Client{}
 	URL := fmt.Sprintf("%s/feedback/%d", baseURL, id)
-	fmt.Println(URL)
 	req, _ := http.NewRequest("GET", URL, nil)
 	res, err := client.Do(req)
 	if err != nil {

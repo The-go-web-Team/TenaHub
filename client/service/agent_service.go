@@ -24,7 +24,6 @@ func FetchAgent(id int) (*clientEntity.Agent, error) {
 		return nil, err
 	}
 	err = json.Unmarshal(body, &userdata)
-	fmt.Println("error is ",err)
 	if err != nil {
 		return nil, err
 	}

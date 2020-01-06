@@ -6,11 +6,16 @@ import (
 	"fmt"
 	"strconv"
 	"github.com/TenaHub/api/entity"
-	"encoding/json"
-	"bytes"
+	//"encoding/json"
+	//"bytes"
 	"github.com/TenaHub/client/service"
 	"github.com/TenaHub/client/entity"
 	"time"
+	"os"
+	"io"
+	"path/filepath"
+	"encoding/json"
+	"bytes"
 )
 
 
@@ -28,22 +33,26 @@ type healthcenterData struct {
 }
 
 func (adh *HealthCenterHandler) EditHealthCenter(w http.ResponseWriter, r *http.Request) {
+	c, err := r.Cookie("healthcenter")
+	id, _ := strconv.Atoi(c.Value)
+
 	Name := r.FormValue("name")
 	email := r.FormValue("email")
 	phone := r.FormValue("phone")
 	city := r.FormValue("address")
 	password := r.FormValue("password")
 	confirm := r.FormValue("confirm")
-	//id,_ := strconv.Atoi(r.FormValue("hidden_id"))
-	id := 3
+
 	if password != confirm {
 		return
 	}
-
-	data := entity.HealthCenter{ID:uint(id),Name:Name, Email:email,PhoneNumber:phone,City:city,Password:password}
+	fileName, err := FileUpload(r,"healthcenter_uploads")
+	if err != nil{
+		fmt.Println(err)
+	}
+	data := entity.HealthCenter{ID:uint(id),Name:Name, Email:email,PhoneNumber:phone,City:city,Password:password,ProfilePic:fileName}
 	jsonValue, _ := json.Marshal(data)
 	URL := fmt.Sprintf("http://localhost:8181/v1/healthcenter/%d", id)
-	fmt.Println(URL)
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodPut, URL, bytes.NewBuffer(jsonValue))
 	_, err = client.Do(req)
@@ -57,7 +66,7 @@ func (adh *HealthCenterHandler) EditHealthCenter(w http.ResponseWriter, r *http.
 	fmt.Println(err)
 
 	http.Redirect(w, r, r.Header.Get("Referer"), 302)
-	//adh.temp.ExecuteTemplate(w, "admin_home.layout", status)
+	adh.temp.ExecuteTemplate(w, "admin_home.layout", status)
 }
 
 
@@ -86,7 +95,6 @@ func (adh *HealthCenterHandler) HealthCenterPage(w http.ResponseWriter, r *http.
 	c, err := r.Cookie("healthcenter")
 
 	if err != nil {
-		//adh.temp.ExecuteTemplate(w, "admin.login.layout",nil)
 		http.Redirect(w, r, "http://localhost:8282/healthcenter/login", http.StatusSeeOther)
 		return
 	} else {
@@ -95,23 +103,16 @@ func (adh *HealthCenterHandler) HealthCenterPage(w http.ResponseWriter, r *http.
 	}
 	id, _ := strconv.Atoi(c.Value)
 	healthcenter, err := service.FetchHealthCenter(uint(id))
-	healthcenter.Password = ""
 	feedbacks, err := service.FetchFeedbacks(uint(id))
 	services, err := service.FetchService(uint(id))
 
-	fmt.Println(err, " is error")
-
 	var data = healthcenterData{HealthCenter:healthcenter, FeedBack:feedbacks, Service:services}
-
-	fmt.Println(data)
 	if err != nil {
 		w.WriteHeader(http.StatusNoContent)
 		adh.temp.ExecuteTemplate(w, "healthcenter_home.layout", nil)
 	}
 	adh.temp.ExecuteTemplate(w, "healthcenter_home.layout", data)
 }
-
-
 
 // Login handles Get /login and POST /login
 func (ah *HealthCenterHandler) HealthCenterLogin(w http.ResponseWriter, r *http.Request) {
@@ -122,42 +123,29 @@ func (ah *HealthCenterHandler) HealthCenterLogin(w http.ResponseWriter, r *http.
 	} else if r.Method == http.MethodPost {
 		email := r.PostFormValue("email")
 		password := r.PostFormValue("password")
-
 		healthcenter := clientEntity.HealthCenter{Email: email,Password : password}
-		fmt.Println(healthcenter)
-
 		resp, err := service.HealthCenterAuthenticate(&healthcenter)
-		//
-		fmt.Println(resp, " error ", err)
-
 		if err != nil {
 			if err.Error() == "error" {
-				//http.Redirect(w,r,"/admin",http.StatusSeeOther)
-				fmt.Println("before executing")
 				ah.temp.ExecuteTemplate(w, "healthcenter.login.layout", "incorrect credentials")
 				return
 			}
 		} else {
-			fmt.Println(resp ," is the correct one")
-
 			cookie := http.Cookie{
 				Name:     "healthcenter",
 				Value:    strconv.Itoa(int(resp.ID)),
-				MaxAge:   60 * 3,
+				MaxAge:   60 * 30,
 				Path:     "/",
 				HttpOnly: true,
 			}
-
 			http.SetCookie(w, &cookie)
 			http.Redirect(w, r, "http://localhost:8282/healthcenter", http.StatusSeeOther)
 		}
 	}
 }
-
 // Logout handles GET /logout
 func (uh *HealthCenterHandler) HealthCenterLogout(w http.ResponseWriter, r *http.Request) {
 	c, err := r.Cookie("healthcenter")
-
 	if err != nil {
 		http.Redirect(w, r, "http://localhost:8282/healthcenter/login", http.StatusSeeOther)
 		return
@@ -175,4 +163,27 @@ func (uh *HealthCenterHandler) HealthCenterLogout(w http.ResponseWriter, r *http
 		http.SetCookie(w, c)
 	}
 	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+}
+
+func FileUpload(r *http.Request, folderName string) (string, error) {
+	r.ParseMultipartForm(32 << 20)
+	file, handler, err := r.FormFile("upload_image")
+	if err != nil {
+		return "",err
+	}
+	defer file.Close()
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	path := filepath.Join(wd, "client","ui", "assets", "img", "uploads",folderName, handler.Filename)
+
+	f, err := os.OpenFile(path,os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		return "",err
+	}
+	defer f.Close()
+	io.Copy(f, file)
+	return handler.Filename, nil
 }

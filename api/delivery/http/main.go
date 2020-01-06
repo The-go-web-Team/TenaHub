@@ -92,6 +92,7 @@ func main()  {
 	router.POST("/v1/healthcenter", healthCenterHandler.GetHealthCenter)
 	router.PUT("/v1/healthcenter/:id", healthCenterHandler.PutHealthCenter)
 	router.GET("/v1/healthcenter", healthCenterHandler.GetHealthCenter)
+	router.GET("/v1/healthcenters", healthCenterHandler.GetHealthCenters)
 	router.DELETE("/v1/healthcenter/:id", healthCenterHandler.DeleteHealthCenter)
 
 	router.GET("/v1/user/:id", userHandler.GetSingleUser)
