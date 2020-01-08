@@ -114,16 +114,25 @@ func (uh *UserHandler) Auth(w http.ResponseWriter, r *http.Request) {
 
 // Home handles GET /home
 func (uh *UserHandler) Home(w http.ResponseWriter, r *http.Request) {
+	hcs, err := service.GetTop(4)
+
+	if err != nil {
+		uh.templ.ExecuteTemplate(w, "user.error.layout", nil)
+		return
+	}
+
+	fmt.Println(hcs)
+
 	c, err := r.Cookie("user")
 
 	if err != nil {
-		uh.templ.ExecuteTemplate(w, "user.index.default.layout", "yhe")
+		uh.templ.ExecuteTemplate(w, "user.index.default.layout", hcs)
 		return
 	} else {
 		fmt.Println(c.Value)
 		fmt.Println(c.MaxAge)
 	}
-	uh.templ.ExecuteTemplate(w, "user.index.auth.layout", "yhe")
+	uh.templ.ExecuteTemplate(w, "user.index.auth.layout", hcs)
 }
 
 // SignUp handles GET /signup and POST /signup
@@ -159,10 +168,13 @@ func (uh *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 // Search handles GET /search
 func (uh *UserHandler) Search(w http.ResponseWriter, r *http.Request) {
 	searchkey := r.URL.Query().Get("search-key")
-
+	column := r.URL.Query().Get("column")
+	if column == "" {
+		column = "name"
+	}
 	fmt.Println(searchkey)
 
-	healthcenters, err := service.GetHealthcenters(searchkey)
+	healthcenters, err := service.GetHealthcenters(searchkey, column)
 
 	if err != nil {
 		uh.templ.ExecuteTemplate(w, "user.error.layout", nil)
@@ -173,7 +185,7 @@ func (uh *UserHandler) Search(w http.ResponseWriter, r *http.Request) {
 
 	data := struct {
 		Length  int
-		Content []entity.HealthCenter
+		Content []entity.Hcrating
 	}{
 		Length:  length,
 		Content: healthcenters,
@@ -212,7 +224,7 @@ func (uh *UserHandler) Healthcenters(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rating, err := service.GetRating(uint(id))
-	frating, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", 4.26234), 64)
+	frating, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", rating), 64)
 	fmt.Println("rating: ", rating)
 
 	if err != nil {
@@ -233,7 +245,7 @@ func (uh *UserHandler) Healthcenters(w http.ResponseWriter, r *http.Request) {
 		Rating       float64
 		Healthcenter entity.HealthCenter
 		Services     []entity.Service
-		Comments     []entity.Comment
+		Comments     []entity.UserComment
 		Isvalid      string
 	}{
 		Rating:       frating,
