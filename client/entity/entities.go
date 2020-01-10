@@ -17,6 +17,30 @@ type User struct {
 	Role        string `json:"role"`
 }
 
+
+type Admin struct {
+	ID          uint `json:"id"`
+	FirstName   string `json:"firstname"`
+	LastName    string `json:"lastname"`
+	UserName    string `json:"username"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
+	ProfilePic  string `json:"profilepic"`
+	PhoneNumber string `json:"phonenum" `
+}
+
+type Agent struct {
+	ID          uint `json:"id"`
+	FirstName   string `json:"firstname"`
+	LastName    string `json:"lastname"`
+	UserName    string `json:"username"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
+	ProfilePic  string `json:"profilepic"`
+	PhoneNumber string `json:"phonenum"`
+}
+
+
 // Rating represents users rating
 type Rating struct {
 	ID             uint 
@@ -28,7 +52,7 @@ type Rating struct {
 // Comment represents users comment
 type Comment struct {
 	ID             uint `json:"id"`
-	Comment        string `json:"comment"`
+	Comment        string `json:"comment" gorm:"varchar(255); not null"`
 	UserID         uint	`json:"userid"`
 	HealthCenterID uint	`json:"healthcenterid"`
 	PlacedAt       time.Time `json:"placedat" sql:"DEFAULT:'current_timestamp'"`
@@ -39,6 +63,7 @@ type HealthCenter struct {
 	ID          uint `json:"id"`
 	Name        string `json:"name"`
 	Email       string `json:"email"`
+	Password    string `json:"password"`
 	PhoneNumber string `json:"phonenumber"`
 	City        string `json:"city"`
 	ProfilePic  string `json:"profilepic"`

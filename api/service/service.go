@@ -1,12 +1,12 @@
 package service
 
-import "github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
+import "github.com/TenaHub/api/entity"
 
-// ServicesService is
 type ServicesService interface {
-	Services() ([]entity.Service, []error)
-	Service(id int) (*entity.Service, []error)
-	UpdateService(service *entity.Service) (*entity.Service, []error)
-	DeleteService(id int) (*entity.Service, []error)
-	StoreService(service *entity.Service) (*entity.Service, []error)
+	Service(id uint) (*entity.Service, []error)
+	PendingService(id uint) ([]entity.Service, []error)
+	Services(id uint) ([]entity.Service, []error)
+	UpdateService(user *entity.Service) (*entity.Service, []error)
+	StoreService(user *entity.Service) (*entity.Service, []error)
+	DeleteService(id uint) (*entity.Service, []error)
 }
