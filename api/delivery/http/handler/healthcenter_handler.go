@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/TenaHub/api/healthcenter"
 	"github.com/TenaHub/api/entity"
+	"fmt"
 )
 
 type HealthCenterHandler struct {
@@ -150,7 +151,58 @@ func (adm *HealthCenterHandler) PutHealthCenter(w http.ResponseWriter, r *http.R
 	return
 }
 
+// GetHealthcenters handles GET /healthcenters
+func (hh *HealthCenterHandler) SearchHealthcenters(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	w.Header().Set("Content-type", "application/json")
+	searchKey := r.URL.Query().Get("search-key")
+	column := r.URL.Query().Get("column")
+	fmt.Println(searchKey)
 
+	hcs, errs := hh.healthCenterService.SearchHealthCenters(searchKey, column)
 
+	if len(errs) > 0 {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	output, err := json.MarshalIndent(&hcs, "", "\n")
+
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	w.Write(output)
+	return
+
+}
+
+// GetTop handles Get /healthcenters/top/:amount
+func (hh *HealthCenterHandler) GetTop(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	w.Header().Set("Content-type", "application/json")
+	amount, err := strconv.Atoi(ps.ByName("amount"))
+
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	results, errs := hh.healthCenterService.Top(uint(amount))
+
+	if len(errs) > 0 {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	output, err := json.MarshalIndent(results, "", "\n")
+
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	w.Write(output)
+	return
+}
 
 

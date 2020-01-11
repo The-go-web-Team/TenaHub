@@ -1,4 +1,6 @@
-// package repository
+package repository
+
+var a = 1
 
 // import (
 // 	"github.com/jinzhu/gorm"

@@ -1,18 +1,16 @@
 package service
-<<<<<<< HEAD
 
 import (
-	"bytes"
-	"encoding/json"
-	"errors"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	"net/url"
-	"strings"
 	"time"
-
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/client/entity"
+	"net/http"
+	"io/ioutil"
+	"errors"
+	"encoding/json"
+	"fmt"
+	"bytes"
+	"strings"
+	"net/url"
+	"github.com/TenaHub/client/entity"
 )
 
 type cookie struct {

@@ -12,10 +12,10 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-type response struct{
-	Status string
-	Content interface{}
-}
+// type response struct{
+// 	Status string
+// 	Content interface{}
+// }
 
 // UserHandler handles User related http requests
 type UserHandler struct {

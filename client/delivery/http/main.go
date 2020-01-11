@@ -4,23 +4,23 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/client/delivery/http/handler"
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/client/delivery/http/handler/admin"
+	"github.com/TenaHub/client/delivery/http/handler"
+	"github.com/TenaHub/client/delivery/http/handler/admin"
 	"github.com/gorilla/mux"
 )
 
-var templ = template.Must(template.ParseGlob("../../ui/templates/*"))
+var templ = template.Must(template.ParseGlob("client/ui/templates/*.html"))
 
 func main()  {
 
 
-	AdminHandler := admin.NewAdminHandler(Templ)
-	AgentHandler := admin.NewAgentHandler(Templ)
-	HealthCenterHandler := admin.NewHealthCenterHandler(Templ)
-	UserHandler := admin.NewUserHandler(Templ)
-	ServiceHandler := admin.NewServiceHandler(Templ)
+	AdminHandler := admin.NewAdminHandler(templ)
+	AgentHandler := admin.NewAgentHandler(templ)
+	HealthCenterHandler := admin.NewHealthCenterHandler(templ)
+	UserHandler := admin.NewUserHandler(templ)
+	ServiceHandler := admin.NewServiceHandler(templ)
 	userHandler := handler.NewUserHandler(templ)
-	//FeedbackHandler := admin.NewFeedBackHandlerHandler(Templ)
+	//FeedbackHandler := admin.NewFeedBackHandlerHandler(templ)
 
 
 	router := mux.NewRouter()
@@ -32,6 +32,9 @@ func main()  {
 	router.HandleFunc("/admin", AdminHandler.AdminPage)
 	router.HandleFunc("/admin/updateprofile", AdminHandler.EditAdmin).Methods("POST")
 
+	router.HandleFunc("/agent", AgentHandler.AgentPage)
+	router.HandleFunc("/agent/login", AgentHandler.AgentLogin)
+	router.HandleFunc("/agent/logout", AgentHandler.AgentLogout)
 	router.HandleFunc("/agent/addagent", AgentHandler.AddAgent).Methods("POST")
 	router.HandleFunc("/agent/editagent", AgentHandler.EditAgent).Methods("POST")
 	router.HandleFunc("/agent/deleteagent",AgentHandler.DeleteAgent ).Methods("POST")

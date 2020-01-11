@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/url"
 	"errors"
-	"time"
 )
 // var baseURL = "http://localhost:8181/v1"
 

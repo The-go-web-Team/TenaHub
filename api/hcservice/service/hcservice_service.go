@@ -1,4 +1,4 @@
-// package service
+package service
 
 // import (
 // 	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"

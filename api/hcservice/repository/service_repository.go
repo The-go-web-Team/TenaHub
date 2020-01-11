@@ -3,13 +3,14 @@ package repository
 import (
 	"github.com/jinzhu/gorm"
 	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/api/hcservice"
 )
 
 type ServiceGormRepo struct {
 	conn *gorm.DB
 }
 
-func NewServiceGormRepo(db *gorm.DB) service.ServiceRepository{
+func NewServiceGormRepo(db *gorm.DB) hcservice.ServiceRepository{
 	return &ServiceGormRepo{conn:db}
 }
 func (adm *ServiceGormRepo) Service(id uint) (*entity.Service, []error) {

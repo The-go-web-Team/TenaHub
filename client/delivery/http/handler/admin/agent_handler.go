@@ -5,7 +5,6 @@ import (
 	"html/template"
 	"fmt"
 	"encoding/json"
-	"github.com/TenaHub/api/entity"
 	"bytes"
 	"strconv"
 	"github.com/TenaHub/client/entity"
@@ -124,7 +123,7 @@ func (ah *AgentHandler) AgentLogin(w http.ResponseWriter, r *http.Request) {
 		email := r.PostFormValue("email")
 		password := r.PostFormValue("password")
 
-		agent := clientEntity.Agent{Email: email, Password: password}
+		agent := entity.Agent{Email: email, Password: password}
 		resp, err := service.AgentAuthenticate(&agent)
 		if err != nil {
 			if err.Error() == "error" {

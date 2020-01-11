@@ -6,14 +6,14 @@ import (
 	"strconv"
 	"encoding/json"
 	"github.com/TenaHub/api/entity"
-	"github.com/TenaHub/api/service/service"
+	"github.com/TenaHub/api/hcservice/service"
 )
 
 type ServiceHandler struct {
 	serviceService service.ServiceService
 }
-func NewServiceHandler(adm service.ServiceService) *ServiceHandler {
-	return &ServiceHandler{serviceService: adm}
+func NewServiceHandler(admhc service.ServiceService) *ServiceHandler {
+	return &ServiceHandler{serviceService: admhc}
 }
 
 func (adm *ServiceHandler) GetSingleService(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {

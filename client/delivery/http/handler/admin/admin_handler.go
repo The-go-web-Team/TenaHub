@@ -6,7 +6,6 @@ import (
 	"github.com/TenaHub/client/service"
 	"fmt"
 	"github.com/TenaHub/client/entity"
-	"github.com/TenaHub/api/entity"
 	"encoding/json"
 	"bytes"
 	"golang.org/x/crypto/bcrypt"
@@ -34,14 +33,15 @@ func (adh *AdminHandler) AllAgents(w http.ResponseWriter, r *http.Request) {
 	adh.temp.ExecuteTemplate(w, "check.html", users)
 }
 type data struct {
-	Admin *clientEntity.Admin
-	Agent []clientEntity.Agent
-	HealthCenter []clientEntity.HealthCenter
-	User []clientEntity.User
+	Admin *entity.Admin
+	Agent []entity.Agent
+	HealthCenter []entity.HealthCenter
+	User []entity.User
 
 }
 func (adh *AdminHandler) AdminPage(w http.ResponseWriter, r *http.Request) {
 	c, err := r.Cookie("admin")
+
 
 	if err != nil {
 		//adh.temp.ExecuteTemplate(w, "admin.login.layout",nil)
@@ -57,12 +57,14 @@ func (adh *AdminHandler) AdminPage(w http.ResponseWriter, r *http.Request) {
 		healthCenters, err := service.FetchHealthCenters()
 		users, err := service.FetchUsers()
 
-		if err != nil {
-			w.WriteHeader(http.StatusNoContent)
-			//http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
-		}
+		//if err != nil {
+		//	fmt.Println(err)
+		//	w.WriteHeader(http.StatusNoContent)
+		//
+		//	//http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
+		//}
 		adh.temp.ExecuteTemplate(w, "admin_home.layout", data{admin,agents, healthCenters, users})
-
+		return
 }
 
 func (adh *AdminHandler) EditAdmin(w http.ResponseWriter, r *http.Request) {
@@ -104,7 +106,7 @@ func (adh *AdminHandler) EditAdmin(w http.ResponseWriter, r *http.Request) {
 }
 
 
-//func (u *clientEntity.Admin) Prepare() {
+//func (u *entity.Admin) Prepare() {
 //	//u.ID = 0
 //	//u.Nickname = html.EscapeString(strings.TrimSpace(u.Nickname))
 //	//u.Email = html.EscapeString(strings.TrimSpace(u.Email))
@@ -169,7 +171,7 @@ func (ah *AdminHandler) AdminLogin(w http.ResponseWriter, r *http.Request) {
 		email := r.PostFormValue("email")
 		password := r.PostFormValue("password")
 
-		admin := clientEntity.Admin{Email: email, Password: password}
+		admin := entity.Admin{Email: email, Password: password}
 		fmt.Println(admin)
 
 		resp, err := service.AdminAuthenticate(&admin)

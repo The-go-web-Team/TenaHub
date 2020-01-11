@@ -2,12 +2,13 @@ package service
 
 import (
 	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/api/hcservice"
 )
 
 type ServiceService struct {
-	serviceRepo service.ServiceRepository
+	serviceRepo hcservice.ServiceRepository
 }
-func NewServiceService(serv service.ServicesService)(service ServiceService){
+func NewServiceService(serv hcservice.ServicesService)(service ServiceService){
 	return ServiceService{serviceRepo:serv}
 }
 

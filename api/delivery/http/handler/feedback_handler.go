@@ -1,4 +1,6 @@
-// package handler
+package handler
+
+var a = 1
 
 // import (
 // 	"encoding/json"

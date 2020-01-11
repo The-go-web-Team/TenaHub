@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"fmt"
 	"strconv"
-	"github.com/TenaHub/api/entity"
+	// "github.com/TenaHub/api/entity"
 	//"encoding/json"
 	//"bytes"
 	"github.com/TenaHub/client/service"
@@ -26,9 +26,9 @@ func NewHealthCenterHandler(T *template.Template) *HealthCenterHandler {
 	return &HealthCenterHandler{temp: T}
 }
 type healthcenterData struct {
-	HealthCenter *clientEntity.HealthCenter
-	FeedBack []clientEntity.Comment
-	Service []clientEntity.Service
+	HealthCenter *entity.HealthCenter
+	FeedBack []entity.Comment
+	Service []entity.Service
 
 }
 
@@ -123,7 +123,7 @@ func (ah *HealthCenterHandler) HealthCenterLogin(w http.ResponseWriter, r *http.
 	} else if r.Method == http.MethodPost {
 		email := r.PostFormValue("email")
 		password := r.PostFormValue("password")
-		healthcenter := clientEntity.HealthCenter{Email: email,Password : password}
+		healthcenter := entity.HealthCenter{Email: email,Password : password}
 		resp, err := service.HealthCenterAuthenticate(&healthcenter)
 		if err != nil {
 			if err.Error() == "error" {
