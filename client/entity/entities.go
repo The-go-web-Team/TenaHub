@@ -52,7 +52,7 @@ type Rating struct {
 // Comment represents users comment
 type Comment struct {
 	ID             uint `json:"id"`
-	Comment        string `json:"comment" gorm:"varchar(255); not null"`
+	Comment        string `json:"comment"`
 	UserID         uint	`json:"userid"`
 	HealthCenterID uint	`json:"healthcenterid"`
 	PlacedAt       time.Time `json:"placedat" sql:"DEFAULT:'current_timestamp'"`

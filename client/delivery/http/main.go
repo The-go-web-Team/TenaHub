@@ -5,11 +5,7 @@ import (
 	"html/template"
 	"github.com/TenaHub/client/delivery/http/handler"
 )
-var Templ *template.Template
 
-func init()  {
-	Templ = template.Must(template.ParseGlob("client/ui/templates/*"))
-}
 func main()  {
 	AdminHandler := handler.NewAdminHandler(Templ)
 	AgentHandler := handler.NewAgentHandler(Templ)

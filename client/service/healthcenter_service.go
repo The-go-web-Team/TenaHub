@@ -1,4 +1,5 @@
 package service
+<<<<<<< HEAD
 
 import (
 	"net/http"
@@ -115,3 +116,5 @@ func HealthCenterAuthenticate(healthcenter *clientEntity.HealthCenter) (*clientE
 
 
 
+=======
+>>>>>>> master

@@ -218,3 +218,4 @@ func FileUpload(r *http.Request, folderName string) (string, error) {
 	io.Copy(f, file)
 	return handler.Filename, nil
 }
+
