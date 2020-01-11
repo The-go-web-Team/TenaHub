@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
+	"github.com/TenaHub/api/entity"
 	"github.com/jinzhu/gorm"
 )
 

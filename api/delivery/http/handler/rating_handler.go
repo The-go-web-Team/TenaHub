@@ -1,13 +1,13 @@
 package handler
 
 import (
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
+	"github.com/TenaHub/api/entity"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/rating"
+	"github.com/TenaHub/api/rating"
 	"github.com/julienschmidt/httprouter"
 )
 

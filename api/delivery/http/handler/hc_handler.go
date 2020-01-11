@@ -7,8 +7,7 @@ import (
 	"strconv"
 
 	"github.com/julienschmidt/httprouter"
-
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/healthcenter"
+	"github.com/TenaHub/api/healthcenter"
 )
 
 // HcHanlder handles healthcenter related http requests
@@ -28,7 +27,7 @@ func (hh *HcHanlder) GetHealthcenters(w http.ResponseWriter, r *http.Request, _ 
 	column := r.URL.Query().Get("column")
 	fmt.Println(searchKey)
 
-	hcs, errs := hh.hcServ.HealthCenters(searchKey, column)
+	hcs, errs := hh.hcServ.SearchHealthCenters(searchKey, column)
 
 	if len(errs) > 0 {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -58,7 +57,7 @@ func (hh *HcHanlder) GetHealthcenter(w http.ResponseWriter, r *http.Request, ps 
 		return
 	}
 
-	healthcenter, errs := hh.hcServ.HealthCenter(uint(id))
+	healthcenter, errs := hh.hcServ.HealthCenterById(uint(id))
 
 	if len(errs) > 0 {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)

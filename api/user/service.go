@@ -3,7 +3,6 @@ package user
 import "github.com/TenaHub/api/entity"
 
 type UserService interface {
-	User(id uint) (*entity.User, []error)
 	Users() ([]entity.User, []error)
 	User(user *entity.User) (*entity.User, []error)
 	UserByID(id uint) (*entity.User, []error)

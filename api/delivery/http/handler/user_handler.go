@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
-
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/user"
+	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/api/user"
 	"github.com/julienschmidt/httprouter"
 )
 

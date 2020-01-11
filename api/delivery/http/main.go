@@ -38,15 +38,15 @@ import (
 	"github.com/TenaHub/api/user/repository"
 
 	"github.com/TenaHub/api/user/service"
-	"github.com/jinzhu/gorm"
 	"github.com/julienschmidt/httprouter"
 
+	"github.com/jinzhu/gorm"
 )
 
 
 func main()  {
-	// dbconn, err := gorm.Open("postgres", "postgres://postgres:0912345678@localhost/tenahub?sslmode=disable")
-	dbconn, err := gorm.Open("postgres", "postgres://postgres:password@localhost/tenahubdb?sslmode=disable")
+	dbconn, err := gorm.Open("postgres", "postgres://postgres:0912345678@localhost/tenahub?sslmode=disable")
+	//dbconn, err := gorm.Open("postgres", "postgres://postgres:password@localhost/tenahubdb?sslmode=disable")
 	
 	if err != nil {
 		panic(err)
@@ -184,7 +184,7 @@ func main()  {
 
 	//router.GET("/v1/service/:id", serviceHandler.GetSingleService)
 	router.GET("/v1/services/:id", serviceHandler.GetServices)
-	// router.GET("/v1/pendingservice", serviceHandler.GetPendingServices)
+	router.GET("/v1/pendingservice", serviceHandler.GetPendingServices)
 	router.PUT("/v1/service/:id", serviceHandler.PutService)
 	router.POST("/v1/service", serviceHandler.PostService)
 	router.OPTIONS("/v1/service", serviceHandler.PostService)
