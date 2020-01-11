@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/user"
+	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/api/user"
 )
 
 // UserService implements interface user.UserService

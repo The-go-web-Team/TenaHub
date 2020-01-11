@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/rating"
+	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/api/rating"
 )
 
 // HcRatingService implements rating.RatingService

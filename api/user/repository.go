@@ -9,5 +9,4 @@ type UserRepository interface {
 	UpdateUser(user *entity.User)(*entity.User, []error)
 	DeleteUser(id uint)(*entity.User, []error)
 	StoreUser(user *entity.User)(*entity.User, []error)
-	User(id uint) (*entity.User, []error)
 }
