@@ -9,7 +9,6 @@ var MockUser = User{
 	ID      :  1,
 	FirstName :  "Nathaniel",
 	LastName:"Awel",
-	UserName:"natnaelawel",
 	Email:"natnael.awel@gmail.com",
 	Password :"secretpassword",
 	ProfilePic:"",

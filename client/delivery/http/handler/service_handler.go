@@ -17,6 +17,9 @@ func NewServiceHandler(T *template.Template) *ServiceHandler {
 	return &ServiceHandler{temp: T}
 }
 
+type addStatus struct {
+	Success bool
+}
 
 func (adh *ServiceHandler) AddService(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(r.FormValue("healthcenter_id"))

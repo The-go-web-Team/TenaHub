@@ -9,10 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/client/service"
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/client/session"
-
-	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/client/entity"
+	"github.com/TenaHub/client/service"
+	"github.com/TenaHub/client/session"
+	"github.com/TenaHub/client/entity"
 )
 
 // UserHandler handles user related http requests
