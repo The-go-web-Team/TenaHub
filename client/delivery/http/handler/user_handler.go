@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -9,18 +10,58 @@ import (
 	"time"
 
 	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/client/service"
+	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/client/session"
 
 	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/client/entity"
 )
 
 // UserHandler handles user related http requests
 type UserHandler struct {
-	templ *template.Template
+	templ        *template.Template
+	userSess     *entity.Session
+	loggedInUser *entity.User
+	csrfSignKey  []byte
 }
 
 // NewUserHandler creates object of UserHandler
 func NewUserHandler(tmpl *template.Template) *UserHandler {
 	return &UserHandler{templ: tmpl}
+}
+
+type contextKey string
+
+var ctxUserSessionKey = contextKey("signed_in_user_session")
+
+// Authenticated checks if a user is authenticated to access a given route
+func (uh *UserHandler) Authenticated(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		ok := uh.loggedIn(r)
+		if !ok {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+		ctx := context.WithValue(r.Context(), ctxUserSessionKey, uh.userSess)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	}
+	return http.HandlerFunc(fn)
+}
+
+func (uh *UserHandler) loggedIn(r *http.Request) bool {
+	if uh.userSess == nil {
+		return false
+	}
+	userSess := uh.userSess
+	c, err := r.Cookie(userSess.UUID)
+
+	if err != nil {
+		return false
+	}
+
+	ok, err := session.Valid(c.Value, userSess.SigningKey)
+	if !ok || (err != nil) {
+		return false
+	}
+	return true
 }
 
 // Index handles GET /
@@ -251,7 +292,7 @@ func (uh *UserHandler) Healthcenters(w http.ResponseWriter, r *http.Request) {
 		Rating:       frating,
 		Healthcenter: *hc,
 		Services:     services,
-		Comments: comments,
+		Comments:     comments,
 	}
 
 	c, err := r.Cookie("user")

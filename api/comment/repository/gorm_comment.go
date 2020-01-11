@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
 	"github.com/jinzhu/gorm"
 )
@@ -16,15 +18,18 @@ func NewCommentGormRepo(conn *gorm.DB) *CommentGormRepo {
 }
 
 // Comments returns all health center comments from database
-func (cr *CommentGormRepo) Comments(id uint) ([]entity.Comment, []error) {
-	comments := []entity.Comment{}
-	errs := cr.conn.Where("health_center_id = ?", id).Find(&comments).GetErrors()
+func (cr *CommentGormRepo) Comments(id uint) ([]entity.UserComment, []error) {
+	// comments := []entity.Comment{}
+	usercmt := []entity.UserComment{}
+	errs := cr.conn.Table("comments").Select("comments.*, users.first_name").Joins("left join users on users.id = comments.user_id").Where("comments.health_center_id = ?", id).Scan(&usercmt).GetErrors()
+
+	fmt.Println(usercmt)
 
 	if len(errs) > 0 {
 		return nil, errs
 	}
 
-	return comments, nil
+	return usercmt, nil
 }
 
 // Comment returns single healthcenter comment from database
@@ -79,4 +84,14 @@ func (cr *CommentGormRepo) DeleteComment(id uint) (*entity.Comment, []error) {
 	}
 
 	return comment, nil
+}
+
+// CheckUser checks if user is valid to give feedback
+func (cr *CommentGormRepo) CheckUser(cmt *entity.Comment) []error {
+	comment := cmt
+	errs := cr.conn.Where("user_id = ? and health_center_id = ?", comment.UserID, comment.HealthCenterID).First(comment).GetErrors()
+	if len(errs) > 0 {
+		return errs
+	}
+	return nil
 }

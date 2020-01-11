@@ -177,3 +177,40 @@ func (ch *CommentHandler) PostComment(w http.ResponseWriter, r *http.Request, ps
 	return
 
 }
+
+// Check handles post on /v1/comments/check
+func (ch *CommentHandler) Check(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	w.Header().Set("Content-type", "application/json")
+
+	comment := &entity.Comment{}
+
+	l := r.ContentLength
+	body := make([]byte, l)
+	r.Body.Read(body)
+
+	status := struct {
+		Status string
+	}{}
+
+	err := json.Unmarshal(body, comment)
+
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	errs := ch.cmtService.CheckUser(comment)
+
+	if len(errs) > 0 {
+		// http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		status.Status = "valid"
+		output, _ := json.MarshalIndent(&status, "", "\t")
+		w.Write(output)
+		return
+	}
+	status.Status = "invalid"
+	output, err := json.MarshalIndent(&status, "", "\t")
+
+	w.Write(output)
+	return
+}
