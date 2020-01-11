@@ -84,12 +84,15 @@ func main()  {
 
 	router.GET("/v1/agent", agentHandler.GetAgents)
 	router.PUT("/v1/agent/:id", agentHandler.PutAgent)
-	router.POST("/v1/agent", agentHandler.PostAgent)
+	router.POST("/v1/agent", agentHandler.GetAgent)
+	router.POST("/v1/agents", agentHandler.PostAgent)
 	router.OPTIONS("/v1/agent", agentHandler.PostAgent)
 	router.DELETE("/v1/agent/:id", agentHandler.DeleteAgent)
 
 	router.GET("/v1/healthcenter/:id", healthCenterHandler.GetSingleHealthCenter)
+	router.GET("/v1/healthcenter/:id/agent", healthCenterHandler.GetHealthCentersByAgentId)
 	router.POST("/v1/healthcenter", healthCenterHandler.GetHealthCenter)
+	router.POST("/v1/healthcenters", healthCenterHandler.PostHealthCenter)
 	router.PUT("/v1/healthcenter/:id", healthCenterHandler.PutHealthCenter)
 	router.GET("/v1/healthcenter", healthCenterHandler.GetHealthCenter)
 	router.GET("/v1/healthcenters", healthCenterHandler.GetHealthCenters)
@@ -101,10 +104,10 @@ func main()  {
 
 	//router.GET("/v1/service/:id", serviceHandler.GetSingleService)
 	router.GET("/v1/service/:id", serviceHandler.GetServices)
-	router.GET("/v1/pendingservice", serviceHandler.GetPendingServices)
+	router.GET("/v1/services/pending/:id", serviceHandler.GetPendingServices)
 	router.PUT("/v1/service/:id", serviceHandler.PutService)
-	router.POST("/v1/service", serviceHandler.PostService)
-	router.OPTIONS("/v1/service", serviceHandler.PostService)
+	router.POST("/v1/services", serviceHandler.PostService)
+	router.OPTIONS("/v1/services", serviceHandler.PostService)
 	router.DELETE("/v1/service/:id", serviceHandler.DeleteService)
 
 	//router.GET("/v1/feedback/:id", feedBackHandler.GetComment)

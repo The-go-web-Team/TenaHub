@@ -23,6 +23,16 @@ func (adm HealthCenterGormRepo) HealthCenterById(id uint) (*entity.HealthCenter,
 	}
 	return &healthcenter, errs
 }
+func (adm HealthCenterGormRepo) HealthCenterByAgentId(id uint) ([]entity.HealthCenter, []error) {
+	var healthcenters []entity.HealthCenter
+
+	//errs := adm.conn.Find(&healthcenters, id).GetErrors()
+	errs := adm.conn.Where("agent_id = ?", id).Find(&healthcenters).GetErrors()
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return healthcenters, errs
+}
 func (adm HealthCenterGormRepo) HealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
 	healthcenter := entity.HealthCenter{}
 	//errs := adm.conn.Where("email = ? AND password = ?", healthcenterData.Email, healthcenterData.Password).First(&healthcenter).GetErrors()
@@ -40,7 +50,6 @@ func (adm HealthCenterGormRepo) HealthCenter(healthcenterData *entity.HealthCent
 	}
 	return nil, errs
 }
-
 func (adm *HealthCenterGormRepo) HealthCenters() ([]entity.HealthCenter, []error) {
 	var healthcenters []entity.HealthCenter
 	errs := adm.conn.Find(&healthcenters).GetErrors()
@@ -61,20 +70,25 @@ func (adm *HealthCenterGormRepo) DeleteHealthCenter(id uint) (*entity.HealthCent
 	}
 	return healthcenter, errs
 }
-
 func (adm *HealthCenterGormRepo) UpdateHealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
 	healthcenter := healthcenterData
 	data := entity.HealthCenter{}
 	healthcenter.Password,_ = handler.HashPassword(healthcenterData.Password)
-	//errs := adm.conn.Save(healthcenter).GetErrors()
 	errs := adm.conn.Model(&data).Updates(healthcenter).Error
 	if errs != nil {
 		return nil, []error{errs}
 	}
 	return healthcenter, []error{errs}
 }
-
-
+func (adm *HealthCenterGormRepo) StoreHealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
+	center := healthcenterData
+	center.Password,_ = handler.HashPassword(healthcenterData.Password)
+	errs := adm.conn.Create(&center).GetErrors()
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return center, errs
+}
 
 
 

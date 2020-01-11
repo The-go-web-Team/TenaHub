@@ -16,16 +16,13 @@ func NewUserHandler(adm user.UserService) *UserHandler {
 }
 
 func (adm *UserHandler) GetSingleUser(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
-
 	id, err := strconv.Atoi(ps.ByName("id"))
-
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 	user, errs := adm.userService.User(uint(id))
-
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -45,7 +42,6 @@ func (adm *UserHandler) GetSingleUser(w http.ResponseWriter,r *http.Request, ps 
 }
 func (adm *UserHandler) GetUsers(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
 	users, errs := adm.userService.Users()
-
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -65,7 +61,6 @@ func (adm *UserHandler) GetUsers(w http.ResponseWriter,r *http.Request, ps httpr
 }
 func (adm *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
-
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)

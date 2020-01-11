@@ -1,4 +1,4 @@
-package admin
+package handler
 
 import (
 	"net/http"
@@ -30,6 +30,36 @@ type healthcenterData struct {
 	FeedBack []clientEntity.Comment
 	Service []clientEntity.Service
 
+}
+
+func (adh *HealthCenterHandler) AddHealthCenter(w http.ResponseWriter, r *http.Request) {
+	c, err := r.Cookie("agent")
+	id, _ := strconv.Atoi(c.Value)
+
+	name := r.FormValue("name")
+	email := r.FormValue("email")
+	phone := r.FormValue("phonenum")
+	city := r.FormValue("city")
+	password := r.FormValue("password")
+	confirm := r.FormValue("confirm")
+
+	if password != confirm{
+		fmt.Println("password is not same")
+		return
+	}
+
+	data := entity.HealthCenter{Name:name,Email:email,PhoneNumber:phone,City:city,Password:password, AgentID:uint(id)}
+	fmt.Println("the data is ", data)
+	jsonValue, _ := json.Marshal(data)
+	res, err := http.Post("http://localhost:8181/v1/healthcenters","application/json",bytes.NewBuffer(jsonValue))
+	var status addStatus
+	fmt.Println(res.StatusCode)
+	if err != nil {
+		status.Success = false
+	}else {
+		status.Success = true
+	}
+	http.Redirect(w, r, r.Header.Get("Referer"), 302)
 }
 
 func (adh *HealthCenterHandler) EditHealthCenter(w http.ResponseWriter, r *http.Request) {
@@ -90,7 +120,7 @@ func (adh *HealthCenterHandler) DeleteHealthCenter(w http.ResponseWriter, r *htt
 	http.Redirect(w, r, r.Header.Get("Referer"), 302)
 	}
 
-
+//HealthCenterPage
 func (adh *HealthCenterHandler) HealthCenterPage(w http.ResponseWriter, r *http.Request) {
 	c, err := r.Cookie("healthcenter")
 
@@ -114,7 +144,7 @@ func (adh *HealthCenterHandler) HealthCenterPage(w http.ResponseWriter, r *http.
 	adh.temp.ExecuteTemplate(w, "healthcenter_home.layout", data)
 }
 
-// Login handles Get /login and POST /login
+//HealthCenterLogin
 func (ah *HealthCenterHandler) HealthCenterLogin(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.Referer())
 	if r.Method == http.MethodGet {
@@ -143,7 +173,8 @@ func (ah *HealthCenterHandler) HealthCenterLogin(w http.ResponseWriter, r *http.
 		}
 	}
 }
-// Logout handles GET /logout
+
+//HealthCenterLogout
 func (uh *HealthCenterHandler) HealthCenterLogout(w http.ResponseWriter, r *http.Request) {
 	c, err := r.Cookie("healthcenter")
 	if err != nil {

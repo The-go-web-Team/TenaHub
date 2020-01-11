@@ -30,6 +30,27 @@ func FetchHealthCenters() ([]clientEntity.HealthCenter, error) {
 	return healthcenters, nil
 }
 
+
+func FetchHealthCenterByAgentId(id uint) ([]clientEntity.HealthCenter, error) {
+	client := &http.Client{}
+	URL := fmt.Sprintf("%s/healthcenter/%d/agent", baseURL, id)
+	req, _ := http.NewRequest("GET", URL, nil)
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	var healthcenters []clientEntity.HealthCenter
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(body, &healthcenters)
+	if err != nil {
+		return nil, err
+	}
+	return healthcenters, nil
+}
+
 func FetchHealthCenter(id uint) (*clientEntity.HealthCenter, error) {
 	client := &http.Client{}
 	URL := fmt.Sprintf("%s/healthcenter/%d", baseURL, id)

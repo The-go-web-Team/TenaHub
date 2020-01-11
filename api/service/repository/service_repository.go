@@ -23,9 +23,11 @@ func (adm *ServiceGormRepo) Service(id uint) (*entity.Service, []error) {
 	}
 	return &service, errs
 }
-func (adm *ServiceGormRepo) PendingService() ([]entity.Service, []error) {
+func (adm *ServiceGormRepo) PendingService(id uint) ([]entity.Service, []error) {
 	var services []entity.Service
-	errs := adm.conn.Find(&services).GetErrors()
+	errs := adm.conn.Table("services").Select("services.id,services.name,services.description,services.status").Joins("left join health_centers on health_centers.id = services.health_center_id").Where("agent_id = ? AND status = 'pending'",id).Find(&services).GetErrors()
+
+	//errs := adm.conn.Where("agent_id", id).Find(&services).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
 	}

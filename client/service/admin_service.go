@@ -34,8 +34,6 @@ func FetchAdmin(id int) (*clientEntity.Admin, error) {
 }
 
 
-
-
 type cookie struct {
 	Key        string
 	Expiration time.Time

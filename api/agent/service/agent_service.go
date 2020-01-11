@@ -11,13 +11,19 @@ type AgentService struct {
 func NewAgentService(serv agent.AgentRepository)(admin *AgentService){
 	return &AgentService{agentRepo:serv}
 }
-
-func (adm *AgentService) Agent(id uint) (*entity.Agent, []error) {
-	agent, errs := adm.agentRepo.Agent(id)
+func (adm *AgentService) AgentById(id uint) (*entity.Agent, []error) {
+	agent, errs := adm.agentRepo.AgentById(id)
 	if len(errs) > 0 {
 		return nil, errs
 	}
 	return agent, errs
+}
+func (adm *AgentService) Agent(agent *entity.Agent) (*entity.Agent, []error) {
+	agentData, errs := adm.agentRepo.Agent(agent)
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return agentData, errs
 }
 func (adm *AgentService) Agents() ([]entity.Agent, []error) {
 	Agents, errs := adm.agentRepo.Agents()

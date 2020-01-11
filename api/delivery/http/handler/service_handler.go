@@ -43,7 +43,8 @@ func (adm *ServiceHandler) GetSingleService(w http.ResponseWriter,r *http.Reques
 	return
 }
 func (adm *ServiceHandler) GetPendingServices(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
-	services, errs := adm.serviceService.PendingService()
+	id, err := strconv.Atoi(ps.ByName("id"))
+	services, errs := adm.serviceService.PendingService(uint(id))
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -65,9 +66,7 @@ func (adm *ServiceHandler) GetPendingServices(w http.ResponseWriter,r *http.Requ
 }
 func (adm *ServiceHandler) GetServices(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
-
 	services, errs := adm.serviceService.Services(uint(id))
-
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -80,7 +79,6 @@ func (adm *ServiceHandler) GetServices(w http.ResponseWriter,r *http.Request, ps
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -89,7 +87,6 @@ func (adm *ServiceHandler) GetServices(w http.ResponseWriter,r *http.Request, ps
 }
 func (adm *ServiceHandler) DeleteService(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
-
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)

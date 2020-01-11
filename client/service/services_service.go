@@ -8,9 +8,9 @@ import (
 	"fmt"
 )
 
-func FetchServices(id uint) ([]clientEntity.Service, error) {
+func FetchPendingServices(id uint) ([]clientEntity.Service, error) {
 	client := &http.Client{}
-	URL := fmt.Sprintf("%s/service", baseURL)
+	URL := fmt.Sprintf("%s/services/pending/%d", baseURL, id)
 	req, _ := http.NewRequest("GET", URL, nil)
 	res, err := client.Do(req)
 	if err != nil {

@@ -11,10 +11,15 @@ type HealthCenterService struct {
 func NewHealthCenterService(serv healthcenter.HealthCenterService)(admin *HealthCenterService){
 	return &HealthCenterService{healthCenterRepo:serv}
 }
-
-
 func (adm *HealthCenterService) HealthCenterById(id uint) (*entity.HealthCenter, []error) {
 	healthCenter, errs := adm.healthCenterRepo.HealthCenterById(id)
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return healthCenter, errs
+}
+func (adm *HealthCenterService) HealthCenterByAgentId(id uint) ([]entity.HealthCenter, []error) {
+	healthCenter, errs := adm.healthCenterRepo.HealthCenterByAgentId(id)
 	if len(errs) > 0 {
 		return nil, errs
 	}
@@ -43,6 +48,13 @@ func (adm *HealthCenterService) DeleteHealthCenter(id uint) (*entity.HealthCente
 }
 func (adm *HealthCenterService) UpdateHealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
 	healthcenter, errs := adm.healthCenterRepo.UpdateHealthCenter(healthcenterData)
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return healthcenter, errs
+}
+func (adm *HealthCenterService) StoreHealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
+	healthcenter, errs := adm.healthCenterRepo.StoreHealthCenter(healthcenterData)
 	if len(errs) > 0 {
 		return nil, errs
 	}
