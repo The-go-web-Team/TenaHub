@@ -1,53 +1,70 @@
 package main
 
 import (
-	"net/http"
 	"html/template"
+	"net/http"
+
 	"github.com/TenaHub/client/delivery/http/handler"
+	"github.com/TenaHub/client/delivery/http/handler/admin"
+	"github.com/gorilla/mux"
 )
-var Templ *template.Template
 
-func init()  {
-	Templ = template.Must(template.ParseGlob("client/ui/templates/*"))
-}
+var templ = template.Must(template.ParseGlob("client/ui/templates/*.html"))
+
 func main()  {
-	AdminHandler := handler.NewAdminHandler(Templ)
-	AgentHandler := handler.NewAgentHandler(Templ)
-	HealthCenterHandler := handler.NewHealthCenterHandler(Templ)
-	UserHandler := handler.NewUserHandler(Templ)
-	ServiceHandler := handler.NewServiceHandler(Templ)
-	//FeedbackHandler := handler.NewFeedBackHandlerHandler(Templ)
 
-	fs := http.FileServer(http.Dir("client/ui/assets"))
-	http.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
-	http.HandleFunc("/admin/login", AdminHandler.AdminLogin)
-	http.HandleFunc("/admin/logout", AdminHandler.AdminLogout)
-	http.HandleFunc("/admin", AdminHandler.AdminPage)
-	http.HandleFunc("/admin/updateprofile", AdminHandler.EditAdmin)
+	AdminHandler := admin.NewAdminHandler(templ)
+	AgentHandler := admin.NewAgentHandler(templ)
+	HealthCenterHandler := admin.NewHealthCenterHandler(templ)
+	UserHandler := admin.NewUserHandler(templ)
+	ServiceHandler := admin.NewServiceHandler(templ)
+	userHandler := handler.NewUserHandler(templ)
+	//FeedbackHandler := admin.NewFeedBackHandlerHandler(templ)
 
-	http.HandleFunc("/agent/addagent", AgentHandler.AddAgent)
-	http.HandleFunc("/agent/updateprofile", AgentHandler.UpdateAgent)
-	http.HandleFunc("/admin/updateagent", AgentHandler.EditAgent)
-	http.HandleFunc("/agent/deleteagent",AgentHandler.DeleteAgent )
 
-	http.HandleFunc("/agent", AgentHandler.AgentPage)
-	http.HandleFunc("/agent/login", AgentHandler.AgentLogin)
-	http.HandleFunc("/agent/logout", AgentHandler.AgentLogout)
+	router := mux.NewRouter()
+	router.PathPrefix("/assets/").
+		Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("client/ui/assets"))))
+	//router.HandleFunc("/", AdminHandler.AllAgents).Methods("GET")
+	router.HandleFunc("/admin/login", AdminHandler.AdminLogin)
+	router.HandleFunc("/admin/logout", AdminHandler.AdminLogout)
+	router.HandleFunc("/admin", AdminHandler.AdminPage)
+	router.HandleFunc("/admin/updateprofile", AdminHandler.EditAdmin).Methods("POST")
 
-	http.HandleFunc("/user/delete",UserHandler.DeleteUser )
+	router.HandleFunc("/agent", AgentHandler.AgentPage)
+	router.HandleFunc("/agent/login", AgentHandler.AgentLogin)
+	router.HandleFunc("/agent/logout", AgentHandler.AgentLogout)
+	router.HandleFunc("/agent/addagent", AgentHandler.AddAgent).Methods("POST")
+	router.HandleFunc("/agent/editagent", AgentHandler.EditAgent).Methods("POST")
+	router.HandleFunc("/agent/deleteagent",AgentHandler.DeleteAgent ).Methods("POST")
+	router.HandleFunc("/healthcenter/delete",HealthCenterHandler.DeleteHealthCenter ).Methods("POST")
+	router.HandleFunc("/user/delete",UserHandler.DeleteUser ).Methods("POST")
 
-	http.HandleFunc("/healthcenter/login", HealthCenterHandler.HealthCenterLogin)
-	http.HandleFunc("/healthcenter/logout", HealthCenterHandler.HealthCenterLogout)
-	http.HandleFunc("/healthcenter", HealthCenterHandler.HealthCenterPage)
-	http.HandleFunc("/healthcenter/add", HealthCenterHandler.AddHealthCenter)
-	http.HandleFunc("/healthcenter/updateprofile", HealthCenterHandler.EditHealthCenter)
-	http.HandleFunc("/healthcenter/delete",HealthCenterHandler.DeleteHealthCenter )
 
-	http.HandleFunc("/service/addservice",ServiceHandler.AddService )
-	http.HandleFunc("/service/editservice",ServiceHandler.EditService )
-	http.HandleFunc("/service/deleteservice",ServiceHandler.DeleteService )
+	router.HandleFunc("/healthcenter/login", HealthCenterHandler.HealthCenterLogin)
+	router.HandleFunc("/healthcenter/logout", HealthCenterHandler.HealthCenterLogout)
+	router.HandleFunc("/healthcenter", HealthCenterHandler.HealthCenterPage)
+	router.HandleFunc("/healthcenter/updateprofile", HealthCenterHandler.EditHealthCenter).Methods("POST")
 
-	http.ListenAndServe(":8282", nil)
+
+	router.HandleFunc("/service/addservice",ServiceHandler.AddService ).Methods("POST")
+	router.HandleFunc("/service/editservice",ServiceHandler.EditService ).Methods("POST")
+	router.HandleFunc("/service/deleteservice",ServiceHandler.DeleteService ).Methods("POST")
+
+
+	// router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("../../ui/assets"))))
+	router.HandleFunc("/", userHandler.Index)
+	router.HandleFunc("/login", userHandler.Login)
+	router.HandleFunc("/auth", userHandler.Auth)
+	router.HandleFunc("/signup", userHandler.SignUp)
+	router.HandleFunc("/search", userHandler.Search)
+	router.HandleFunc("/home", userHandler.Home)
+	router.HandleFunc("/healthcenters", userHandler.Healthcenters)
+	router.HandleFunc("/logout", userHandler.Logout)
+	router.HandleFunc("/feedback", userHandler.Feedback)
+
+
+	http.ListenAndServe(":8282", router)
 
 }

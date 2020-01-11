@@ -1,51 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2d2d325e-68ae-4756-bd0a-b1a2b9d7467a" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/api/entity/mock_entities.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/ui/assets/img/uploads/agent_uploads/adminphoto.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/admin/repository/admin_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/admin/repository/admin_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/agent/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/agent/repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/agent/repository/agent_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/agent/repository/agent_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/agent/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/agent/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/agent/service/agent_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/agent/service/agent_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/delivery/http/handler/admin_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/delivery/http/handler/admin_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/delivery/http/handler/agent_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/delivery/http/handler/agent_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/delivery/http/handler/feedback_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/delivery/http/handler/feedback_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/delivery/http/handler/healthcenter_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/delivery/http/handler/healthcenter_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/delivery/http/handler/service_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/delivery/http/handler/service_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/delivery/http/handler/user_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/delivery/http/handler/user_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/delivery/http/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/delivery/http/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/healthcenter/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/healthcenter/repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/healthcenter/repository/healthcenter_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/healthcenter/repository/healthcenter_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/healthcenter/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/healthcenter/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/healthcenter/service/healthcenter_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/healthcenter/service/healthcenter_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/service/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/service/repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/service/repository/service_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/service/repository/service_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/service/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/service/service/service_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/service/service/service_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/delivery/http/handler/admin/admin_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/client/delivery/http/handler/admin_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/delivery/http/handler/admin/agent_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/client/delivery/http/handler/agent_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/delivery/http/handler/admin/dashboard_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/client/delivery/http/handler/dashboard_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/delivery/http/handler/admin/feedback_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/client/delivery/http/handler/feedback_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/delivery/http/handler/admin/healthcenter_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/client/delivery/http/handler/healthcenter_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/delivery/http/handler/admin/service_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/client/delivery/http/handler/service_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/delivery/http/handler/admin/user_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/client/delivery/http/handler/user_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/delivery/http/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/client/delivery/http/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/service/admin_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/client/service/admin_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/service/healthcenter_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/client/service/healthcenter_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/service/services_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/client/service/services_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ui/templates/admin_home.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/ui/templates/admin_home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ui/templates/admin_home_header.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/ui/templates/admin_home_header.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ui/templates/admin_manage_agent.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/ui/templates/admin_manage_agent.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ui/templates/agent_edit_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/ui/templates/agent_edit_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ui/templates/agent_home.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/ui/templates/agent_home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ui/templates/agent_home_header.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/ui/templates/agent_home_header.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ui/templates/agent_login.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/ui/templates/agent_login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ui/templates/agent_manage_healthcenter.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/ui/templates/agent_manage_healthcenter.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/ui/templates/agent_service_notification.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/ui/templates/agent_service_notification.html" afterDir="false" />
-    </list>
+    <list default="true" id="2d2d325e-68ae-4756-bd0a-b1a2b9d7467a" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -72,8 +28,8 @@
       <file leaf-file-name="healthcenter_repository.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/healthcenter/repository/healthcenter_repository.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="94" selection-start-line="94" selection-end-line="94" />
+            <state relative-caret-position="136">
+              <caret line="13" column="37" selection-start-line="13" selection-start-column="37" selection-end-line="13" selection-end-column="37" />
               <folding>
                 <element signature="n#!!block;n#HealthCenterById#0" />
                 <element signature="n#!!block;n#HealthCenterByAgentId#0" />
@@ -87,11 +43,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="entities.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/entity/entities.go">
+      <file leaf-file-name="healthcenter_service.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/api/healthcenter/service/healthcenter_service.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="10" column="19" selection-end-line="83" />
+            <state relative-caret-position="697">
+              <caret line="44" column="18" lean-forward="true" selection-start-line="44" selection-start-column="18" selection-end-line="44" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -105,11 +61,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="main.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/delivery/http/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3">
-              <caret line="24" column="48" selection-start-line="24" selection-start-column="48" selection-end-line="24" selection-end-column="48" />
+            <state relative-caret-position="340">
+              <caret line="35" column="15" lean-forward="true" selection-start-line="35" selection-start-column="15" selection-end-line="35" selection-end-column="15" />
               <folding>
                 <element signature="e#14#136#0" expanded="true" />
               </folding>
@@ -117,11 +73,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="entities.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="entities.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/entity/entities.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="187">
-              <caret line="14" column="15" lean-forward="true" selection-start-line="14" selection-start-column="15" selection-end-line="14" selection-end-column="15" />
+              <caret line="14" column="42" lean-forward="true" selection-start-line="14" selection-start-column="42" selection-end-line="14" selection-end-column="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="repository.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/api/healthcenter/repository.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="9" column="21" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -167,22 +132,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="user_handler.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/delivery/http/handler/user_handler.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="969">
-              <caret line="63" selection-start-line="63" selection-end-line="63" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="main.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/delivery/http/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1173">
-              <caret line="89" column="23" selection-start-line="89" selection-start-column="23" selection-end-line="89" selection-end-column="23" />
+            <state relative-caret-position="223">
+              <caret line="39" lean-forward="true" selection-start-line="39" selection-end-line="39" />
               <folding>
                 <element signature="e#14#857#0" expanded="true" />
+                <element signature="e#1039#1103#0" />
               </folding>
             </state>
           </provider>
@@ -343,6 +300,19 @@
               <item name="TenaHub" type="b2602c69:ProjectViewProjectNode" />
               <item name="TenaHub" type="462c0819:PsiDirectoryNode" />
               <item name="api" type="462c0819:PsiDirectoryNode" />
+              <item name="delivery" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TenaHub" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TenaHub" type="462c0819:PsiDirectoryNode" />
+              <item name="api" type="462c0819:PsiDirectoryNode" />
+              <item name="delivery" type="462c0819:PsiDirectoryNode" />
+              <item name="http" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TenaHub" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TenaHub" type="462c0819:PsiDirectoryNode" />
+              <item name="api" type="462c0819:PsiDirectoryNode" />
               <item name="entity" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -350,6 +320,59 @@
               <item name="TenaHub" type="462c0819:PsiDirectoryNode" />
               <item name="api" type="462c0819:PsiDirectoryNode" />
               <item name="healthcenter" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TenaHub" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TenaHub" type="462c0819:PsiDirectoryNode" />
+              <item name="api" type="462c0819:PsiDirectoryNode" />
+              <item name="healthcenter" type="462c0819:PsiDirectoryNode" />
+              <item name="repository" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TenaHub" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TenaHub" type="462c0819:PsiDirectoryNode" />
+              <item name="api" type="462c0819:PsiDirectoryNode" />
+              <item name="healthcenter" type="462c0819:PsiDirectoryNode" />
+              <item name="service" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TenaHub" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TenaHub" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TenaHub" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TenaHub" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+              <item name="delivery" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TenaHub" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TenaHub" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+              <item name="delivery" type="462c0819:PsiDirectoryNode" />
+              <item name="http" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TenaHub" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TenaHub" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+              <item name="ui" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TenaHub" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TenaHub" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+              <item name="ui" type="462c0819:PsiDirectoryNode" />
+              <item name="assets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TenaHub" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TenaHub" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+              <item name="ui" type="462c0819:PsiDirectoryNode" />
+              <item name="assets" type="462c0819:PsiDirectoryNode" />
+              <item name="img" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -447,7 +470,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="784" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22012103" />
       <window_info anchor="bottom" id="TODO" order="7" visible="true" weight="0.32972136" />
@@ -594,20 +616,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
           <caret line="9" column="22" lean-forward="true" selection-start-line="9" selection-end-line="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/healthcenter/repository.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/healthcenter/service/healthcenter_service.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="55" column="49" selection-start-line="55" selection-start-column="49" selection-end-line="55" selection-end-column="49" />
         </state>
       </provider>
     </entry>
@@ -817,32 +825,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/delivery/http/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1173">
-          <caret line="89" column="23" selection-start-line="89" selection-start-column="23" selection-end-line="89" selection-end-column="23" />
-          <folding>
-            <element signature="e#14#857#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/healthcenter/repository/healthcenter_repository.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="94" selection-start-line="94" selection-end-line="94" />
-          <folding>
-            <element signature="n#!!block;n#HealthCenterById#0" />
-            <element signature="n#!!block;n#HealthCenterByAgentId#0" />
-            <element signature="n#!!block;n#HealthCenter#0" />
-            <element signature="n#!!block;n#HealthCenters#0" />
-            <element signature="n#!!block;n#DeleteHealthCenter#0" />
-            <element signature="n#!!block;n#UpdateHealthCenter#0" />
-            <element signature="n#!!block;n#StoreHealthCenter#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/entity/entities.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -885,16 +867,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/delivery/http/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3">
-          <caret line="24" column="48" selection-start-line="24" selection-start-column="48" selection-end-line="24" selection-end-column="48" />
-          <folding>
-            <element signature="e#14#136#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/service/admin_service.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
@@ -905,7 +877,58 @@
     <entry file="file://$PROJECT_DIR$/client/entity/entities.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
-          <caret line="14" column="15" lean-forward="true" selection-start-line="14" selection-start-column="15" selection-end-line="14" selection-end-column="15" />
+          <caret line="14" column="42" lean-forward="true" selection-start-line="14" selection-start-column="42" selection-end-line="14" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/healthcenter/repository.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="21" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/healthcenter/service/healthcenter_service.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="697">
+          <caret line="44" column="18" lean-forward="true" selection-start-line="44" selection-start-column="18" selection-end-line="44" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/healthcenter/repository/healthcenter_repository.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="13" column="37" selection-start-line="13" selection-start-column="37" selection-end-line="13" selection-end-column="37" />
+          <folding>
+            <element signature="n#!!block;n#HealthCenterById#0" />
+            <element signature="n#!!block;n#HealthCenterByAgentId#0" />
+            <element signature="n#!!block;n#HealthCenter#0" />
+            <element signature="n#!!block;n#HealthCenters#0" />
+            <element signature="n#!!block;n#DeleteHealthCenter#0" />
+            <element signature="n#!!block;n#UpdateHealthCenter#0" />
+            <element signature="n#!!block;n#StoreHealthCenter#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/delivery/http/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="223">
+          <caret line="39" lean-forward="true" selection-start-line="39" selection-end-line="39" />
+          <folding>
+            <element signature="e#14#857#0" expanded="true" />
+            <element signature="e#1039#1103#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/delivery/http/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="35" column="15" lean-forward="true" selection-start-line="35" selection-start-column="15" selection-end-line="35" selection-end-column="15" />
+          <folding>
+            <element signature="e#14#136#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

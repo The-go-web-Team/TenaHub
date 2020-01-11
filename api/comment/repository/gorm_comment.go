@@ -1,8 +1,10 @@
 package repository
 
 import (
-"github.com/jinzhu/gorm"
-	"github.com/TenaHub/api/entity"
+	"fmt"
+
+	"github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
+	"github.com/jinzhu/gorm"
 )
 
 // CommentGormRepo implements comment.CommentRepository
@@ -16,14 +18,18 @@ func NewCommentGormRepo(conn *gorm.DB) *CommentGormRepo {
 }
 
 // Comments returns all health center comments from database
-func (cr *CommentGormRepo) Comments(id uint) ([]entity.Comment, []error) {
-	comments := []entity.Comment{}
-	errs := cr.conn.Where("health_center_id = ?", id).Find(&comments).GetErrors()
+func (cr *CommentGormRepo) Comments(id uint) ([]entity.UserComment, []error) {
+	// comments := []entity.Comment{}
+	usercmt := []entity.UserComment{}
+	errs := cr.conn.Table("comments").Select("comments.*, users.first_name").Joins("left join users on users.id = comments.user_id").Where("comments.health_center_id = ?", id).Scan(&usercmt).GetErrors()
+
+	fmt.Println(usercmt)
 
 	if len(errs) > 0 {
 		return nil, errs
 	}
-	return comments, nil
+
+	return usercmt, nil
 }
 
 // Comment returns single healthcenter comment from database
@@ -52,21 +58,39 @@ func (cr *CommentGormRepo) UpdateComment(comment *entity.Comment) (*entity.Comme
 // StoreComment stores comment to the database
 func (cr *CommentGormRepo) StoreComment(comment *entity.Comment) (*entity.Comment, []error) {
 	cmt := comment
+
 	errs := cr.conn.Create(cmt).GetErrors()
+
 	if len(errs) > 0 {
 		return nil, errs
 	}
+
 	return cmt, nil
 }
+
 // DeleteComment deletes single comment from the database
 func (cr *CommentGormRepo) DeleteComment(id uint) (*entity.Comment, []error) {
 	comment, errs := cr.Comment(id)
+
 	if len(errs) > 0 {
 		return nil, errs
 	}
+
 	errs = cr.conn.Delete(&comment, id).GetErrors()
+
 	if len(errs) > 0 {
 		return nil, errs
 	}
+
 	return comment, nil
+}
+
+// CheckUser checks if user is valid to give feedback
+func (cr *CommentGormRepo) CheckUser(cmt *entity.Comment) []error {
+	comment := cmt
+	errs := cr.conn.Where("user_id = ? and health_center_id = ?", comment.UserID, comment.HealthCenterID).First(comment).GetErrors()
+	if len(errs) > 0 {
+		return errs
+	}
+	return nil
 }

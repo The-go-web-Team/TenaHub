@@ -8,15 +8,15 @@ import (
 	"fmt"
 )
 
-func FetchPendingServices(id uint) ([]clientEntity.Service, error) {
+func FetchServices(id uint) ([]entity.Service, error) {
 	client := &http.Client{}
-	URL := fmt.Sprintf("%s/services/pending/%d", baseURL, id)
+	URL := fmt.Sprintf("%s/services", baseURL)
 	req, _ := http.NewRequest("GET", URL, nil)
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
-	var services []clientEntity.Service
+	var services []entity.Service
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
@@ -27,7 +27,7 @@ func FetchPendingServices(id uint) ([]clientEntity.Service, error) {
 	}
 	return services, nil
 }
-func FetchService(id uint) ([]clientEntity.Service, error) {
+func FetchService(id uint) ([]entity.Service, error) {
 	client := &http.Client{}
 	URL := fmt.Sprintf("%s/service/%d", baseURL, id)
 	req, _ := http.NewRequest("GET", URL, nil)
@@ -35,7 +35,7 @@ func FetchService(id uint) ([]clientEntity.Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	var service []clientEntity.Service
+	var service []entity.Service
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err

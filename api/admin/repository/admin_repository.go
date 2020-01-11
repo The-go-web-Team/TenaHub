@@ -18,6 +18,11 @@ func NewAdminGormRepo(db *gorm.DB) admin.AdminRepository{
 
 func (adm *AdminGormRepo) Admin(adminData *entity.Admin) (*entity.Admin, []error) {
 	admin := entity.Admin{}
+	//errs := adm.conn.Where("email = ? AND password = ?", adminData.Email, adminData.Password).First(&admin).GetErrors()
+	//if len(errs) > 0 {
+	//	return nil, errs
+	//}
+	//return &admin, errs
 	errs := adm.conn.Select("password").Where("email = ? ", adminData.Email).First(&admin).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
@@ -42,10 +47,16 @@ func (adm *AdminGormRepo) AdminById(id uint) (*entity.Admin, []error) {
 
 func (adm *AdminGormRepo) UpdateAdmin(adminData *entity.Admin) (*entity.Admin, []error) {
 	admin := adminData
+	//errs := adm.conn.Save(admin).GetErrors()
+	//if len(errs) > 0 {
+	//	return nil, errs
+	//}
+	//return admin, errs
 	data := entity.Admin{}
 	if adminData.Password != "" {
 		admin.Password,_ = handler.HashPassword(adminData.Password)
 	}
+	//errs := adm.conn.Save(healthcenter).GetErrors()
 	errs := adm.conn.Model(&data).Updates(admin).Error
 	if errs != nil {
 		return nil, []error{errs}

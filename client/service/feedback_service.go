@@ -8,7 +8,7 @@ import (
 	"fmt"
 )
 
-func FetchFeedbacks(id uint) ([]clientEntity.Comment, error) {
+func FetchFeedbacks(id uint) ([]entity.Comment, error) {
 	client := &http.Client{}
 	URL := fmt.Sprintf("%s/feedback/%d", baseURL, id)
 	req, _ := http.NewRequest("GET", URL, nil)
@@ -16,7 +16,7 @@ func FetchFeedbacks(id uint) ([]clientEntity.Comment, error) {
 	if err != nil {
 		return nil, err
 	}
-	var feedbacks []clientEntity.Comment
+	var feedbacks []entity.Comment
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err

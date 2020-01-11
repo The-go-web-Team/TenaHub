@@ -6,14 +6,14 @@ import (
 	"strconv"
 	"encoding/json"
 	"github.com/TenaHub/api/entity"
-	"github.com/TenaHub/api/service/service"
+	"github.com/TenaHub/api/hcservice/service"
 )
 
 type ServiceHandler struct {
 	serviceService service.ServiceService
 }
-func NewServiceHandler(adm service.ServiceService) *ServiceHandler {
-	return &ServiceHandler{serviceService: adm}
+func NewServiceHandler(admhc service.ServiceService) *ServiceHandler {
+	return &ServiceHandler{serviceService: admhc}
 }
 
 func (adm *ServiceHandler) GetSingleService(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
@@ -43,8 +43,7 @@ func (adm *ServiceHandler) GetSingleService(w http.ResponseWriter,r *http.Reques
 	return
 }
 func (adm *ServiceHandler) GetPendingServices(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
-	id, err := strconv.Atoi(ps.ByName("id"))
-	services, errs := adm.serviceService.PendingService(uint(id))
+	services, errs := adm.serviceService.PendingService()
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -66,7 +65,9 @@ func (adm *ServiceHandler) GetPendingServices(w http.ResponseWriter,r *http.Requ
 }
 func (adm *ServiceHandler) GetServices(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
+
 	services, errs := adm.serviceService.Services(uint(id))
+
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -79,6 +80,7 @@ func (adm *ServiceHandler) GetServices(w http.ResponseWriter,r *http.Request, ps
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -87,6 +89,7 @@ func (adm *ServiceHandler) GetServices(w http.ResponseWriter,r *http.Request, ps
 }
 func (adm *ServiceHandler) DeleteService(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
+
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)

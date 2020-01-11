@@ -8,11 +8,10 @@ import (
 	"fmt"
 	"net/url"
 	"errors"
-	"time"
 )
-var baseURL = "http://localhost:8181/v1"
+// var baseURL = "http://localhost:8181/v1"
 
-func FetchAdmin(id int) (*clientEntity.Admin, error) {
+func FetchAdmin(id int) (*entity.Admin, error) {
 	client := &http.Client{}
 	URL := fmt.Sprintf("%s/admin/%d", baseURL, id)
 	req, _ := http.NewRequest("GET", URL, nil)
@@ -20,7 +19,7 @@ func FetchAdmin(id int) (*clientEntity.Admin, error) {
 	if err != nil {
 		return nil, err
 	}
-	adminData := clientEntity.Admin{}
+	adminData := entity.Admin{}
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
@@ -34,42 +33,22 @@ func FetchAdmin(id int) (*clientEntity.Admin, error) {
 }
 
 
-type cookie struct {
-	Key        string
-	Expiration time.Time
-}
 
-type response struct {
-	Status string
-	Content interface{}
-}
 
-var loggedIn = make([]cookie, 10)
+// type cookie struct {
+// 	Key        string
+// 	Expiration time.Time
+// }
 
-func getResponse(request *http.Request) []byte {
-	client := &http.Client{}
-	resp, err := client.Do(request)
+// type response struct {
+// 	Status string
+// 	Content interface{}
+// }
 
-	if err != nil {
-		panic(err)
-	}
-
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-
-	if err != nil {
-		panic(err)
-	}
-
-	if 200 != resp.StatusCode {
-		panic(errors.New("status not correct"))
-	}
-	return body
-}
-
+// var loggedIn = make([]cookie, 10)
 
 // Authenticate authenticates user
-func AdminAuthenticate(admin *clientEntity.Admin) (*clientEntity.Admin, error) {
+func AdminAuthenticate(admin *entity.Admin) (*entity.Admin, error) {
 	URL := fmt.Sprintf("%s/%s", baseURL, "admin")
 
 	formval := url.Values{}
@@ -93,7 +72,7 @@ func AdminAuthenticate(admin *clientEntity.Admin) (*clientEntity.Admin, error) {
 
 	respjson := struct {
 		Status string
-		Content clientEntity.Admin
+		Content entity.Admin
 	}{}
 
 	err = json.Unmarshal(body, &respjson)
@@ -108,7 +87,7 @@ func AdminAuthenticate(admin *clientEntity.Admin) (*clientEntity.Admin, error) {
 
 
 //
-//func FetchHealthCenter(id int) (*clientEntity.HealthCenter, error) {
+//func FetchHealthCenter(id int) (*entity.HealthCenter, error) {
 //	client := &http.Client{}
 //	URL := fmt.Sprintf("%s/healthcenter/%d", baseURL, id)
 //	req, _ := http.NewRequest("GET", URL, nil)
@@ -116,7 +95,7 @@ func AdminAuthenticate(admin *clientEntity.Admin) (*clientEntity.Admin, error) {
 //	if err != nil {
 //		return nil, err
 //	}
-//	healthcenter := &clientEntity.HealthCenter{}
+//	healthcenter := &entity.HealthCenter{}
 //	body, err := ioutil.ReadAll(res.Body)
 //	if err != nil {
 //		return nil, err
@@ -128,7 +107,7 @@ func AdminAuthenticate(admin *clientEntity.Admin) (*clientEntity.Admin, error) {
 //	return healthcenter, nil
 //}
 //
-//func FetchUser(id int) (*clientEntity.User, error) {
+//func FetchUser(id int) (*entity.User, error) {
 //	client := &http.Client{}
 //	URL := fmt.Sprintf("%s/user/%d", baseURL, id)
 //	req, _ := http.NewRequest("GET", URL, nil)
@@ -136,7 +115,7 @@ func AdminAuthenticate(admin *clientEntity.Admin) (*clientEntity.Admin, error) {
 //	if err != nil {
 //		return nil, err
 //	}
-//	userdata := &clientEntity.User{}
+//	userdata := &entity.User{}
 //	body, err := ioutil.ReadAll(res.Body)
 //	if err != nil {
 //		return nil, err

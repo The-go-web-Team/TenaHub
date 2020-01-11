@@ -59,6 +59,8 @@ func (adm *AdminHandler) PutAdmin(w http.ResponseWriter, r *http.Request, ps htt
 	return
 }
 
+
+
 func (adm *AdminHandler) GetSingleAdmin(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
 	admin, errs := adm.adminService.AdminById(uint(id))
