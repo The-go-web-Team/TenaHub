@@ -1,9 +1,9 @@
 package user
 
-import "github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
+import "github.com/TenaHub/api/entity"
 
-// UserService is
 type UserService interface {
+	User(id uint) (*entity.User, []error)
 	Users() ([]entity.User, []error)
 	User(user *entity.User) (*entity.User, []error)
 	UserByID(id uint) (*entity.User, []error)

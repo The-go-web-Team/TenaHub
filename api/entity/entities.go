@@ -16,6 +16,8 @@ type User struct {
 	Role        string `json:"role" gorm:"varchar(255);not null"`
 }
 
+
+
 // Rating represents users rating
 type Rating struct {
 	ID             uint

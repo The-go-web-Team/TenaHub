@@ -52,7 +52,6 @@ func (cr *CommentGormRepo) UpdateComment(comment *entity.Comment) (*entity.Comme
 	if len(errs) > 0 {
 		return nil, errs
 	}
-
 	return cmt, nil
 }
 

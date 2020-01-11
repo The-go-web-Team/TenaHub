@@ -9,7 +9,6 @@ import (
 type CommentService struct {
 	cmtRepo comment.CommentRepository
 }
-
 // NewCommentService creates object of CommentService
 func NewCommentService(repo comment.CommentRepository) *CommentService {
 	return &CommentService{cmtRepo: repo}
@@ -43,7 +42,6 @@ func (cs *CommentService) UpdateComment(comment *entity.Comment) (*entity.Commen
 	if len(errs) > 0 {
 		return nil, errs
 	}
-
 	return cmt, nil
 }
 

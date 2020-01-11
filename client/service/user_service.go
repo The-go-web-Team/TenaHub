@@ -1,4 +1,5 @@
 package service
+<<<<<<< HEAD
 
 import (
 	"bytes"
@@ -130,7 +131,7 @@ func Authenticate(user *entity.User) (*entity.User, error) {
 
 // GetHealthcenters gets healthcenters
 func GetHealthcenters(name string, column string) ([]entity.Hcrating, error) {
-	URL := fmt.Sprintf("%s%s?search-key=%s&column=%s", baseURL, "healthcenters", name, column)
+	URL := fmt.Sprintf("%s%s?search-key=%s&column=%s", baseURL, "healthcenters/search", name, column)
 
 	fmt.Println(URL)
 	resp, err := http.Get(URL)
@@ -374,3 +375,24 @@ func GetFeedback(id uint)([]entity.UserComment, error) {
 	return comments, nil
 
 }
+
+func FetchUsers() ([]entity.User, error) {
+	client := &http.Client{}
+	URL := fmt.Sprintf("%s/user", baseURL)
+	req, _ := http.NewRequest("GET", URL, nil)
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	var users []entity.User
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(body, &users)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+

@@ -1,13 +1,15 @@
 package healthcenter
 
-import "github.com/NatnaelBerhanu-1/tenahub/TenaHub/api/entity"
+import "github.com/TenaHub/api/entity"
 
-// HealthCenterService is
 type HealthCenterService interface {
 	HealthCenter(id uint) (*entity.HealthCenter, []error)
 	HealthCenters(value string, column string) ([]entity.Hcrating, []error)
 	Top(amount uint)([]entity.Hcrating, []error)
-	UpdateHealthCenter(hc entity.HealthCenter) (*entity.HealthCenter, []error)
-	StoreHealthCenter(hc entity.HealthCenter) (*entity.HealthCenter, []error)
+	HealthCenterById(id uint) (*entity.HealthCenter, []error)
+	HealthCenter(healthcenter *entity.HealthCenter) (*entity.HealthCenter, []error)
+	HealthCenters() ([]entity.HealthCenter, []error)
 	DeleteHealthCenter(id uint) (*entity.HealthCenter, []error)
+	UpdateHealthCenter(healthcenter *entity.HealthCenter) (*entity.HealthCenter, []error)
+
 }
