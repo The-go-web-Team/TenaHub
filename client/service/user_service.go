@@ -1,4 +1,5 @@
 package service
+<<<<<<< HEAD
 
 import (
 	"net/http"
@@ -27,3 +28,5 @@ func FetchUsers() ([]clientEntity.User, error) {
 	}
 	return users, nil
 }
+=======
+>>>>>>> master

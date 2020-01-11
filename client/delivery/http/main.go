@@ -6,11 +6,7 @@ import (
 	"html/template"
 	"github.com/gorilla/mux"
 )
-var Templ *template.Template
 
-func init()  {
-	Templ = template.Must(template.ParseGlob("client/ui/templates/*"))
-}
 func main()  {
 
 
