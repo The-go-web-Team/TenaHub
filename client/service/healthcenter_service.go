@@ -1,5 +1,4 @@
 package service
-<<<<<<< HEAD
 
 import (
 	"net/http"
@@ -11,7 +10,7 @@ import (
 	"errors"
 )
 
-func FetchHealthCenters() ([]clientEntity.HealthCenter, error) {
+func FetchHealthCenters() ([]entity.HealthCenter, error) {
 	client := &http.Client{}
 	URL := fmt.Sprintf("%s/healthcenters", baseURL)
 	req, _ := http.NewRequest("GET", URL, nil)
@@ -19,7 +18,7 @@ func FetchHealthCenters() ([]clientEntity.HealthCenter, error) {
 	if err != nil {
 		return nil, err
 	}
-	var healthcenters []clientEntity.HealthCenter
+	var healthcenters []entity.HealthCenter
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
@@ -31,7 +30,7 @@ func FetchHealthCenters() ([]clientEntity.HealthCenter, error) {
 	return healthcenters, nil
 }
 
-func FetchHealthCenter(id uint) (*clientEntity.HealthCenter, error) {
+func FetchHealthCenter(id uint) (*entity.HealthCenter, error) {
 	client := &http.Client{}
 	URL := fmt.Sprintf("%s/healthcenter/%d", baseURL, id)
 	req, _ := http.NewRequest("GET", URL, nil)
@@ -39,7 +38,7 @@ func FetchHealthCenter(id uint) (*clientEntity.HealthCenter, error) {
 	if err != nil {
 		return nil, err
 	}
-	var healthcenters *clientEntity.HealthCenter
+	var healthcenters *entity.HealthCenter
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
@@ -54,7 +53,7 @@ func FetchHealthCenter(id uint) (*clientEntity.HealthCenter, error) {
 
 
 // Authenticate authenticates user
-func HealthCenterAuthenticate(healthcenter *clientEntity.HealthCenter) (*clientEntity.HealthCenter, error) {
+func HealthCenterAuthenticate(healthcenter *entity.HealthCenter) (*entity.HealthCenter, error) {
 	URL := fmt.Sprintf("%s/%s", baseURL, "healthcenter")
 
 	formval := url.Values{}
@@ -78,7 +77,7 @@ func HealthCenterAuthenticate(healthcenter *clientEntity.HealthCenter) (*clientE
 
 	respjson := struct {
 		Status string
-		Content clientEntity.HealthCenter
+		Content entity.HealthCenter
 	}{}
 
 	err = json.Unmarshal(body, &respjson)
@@ -95,5 +94,3 @@ func HealthCenterAuthenticate(healthcenter *clientEntity.HealthCenter) (*clientE
 
 
 
-=======
->>>>>>> master

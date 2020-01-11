@@ -3,12 +3,14 @@ package service
 import (
 	"github.com/TenaHub/api/entity"
 	"github.com/TenaHub/api/healthcenter"
+	"fmt"
 )
 
 type HealthCenterService struct {
 	healthCenterRepo healthcenter.HealthCenterRepository
 }
-func NewHealthCenterService(serv healthcenter.HealthCenterService)(admin *HealthCenterService){
+
+func NewHealthCenterService(serv healthcenter.HealthCenterRepository)(admin *HealthCenterService){
 	return &HealthCenterService{healthCenterRepo:serv}
 }
 
@@ -47,4 +49,34 @@ func (adm *HealthCenterService) UpdateHealthCenter(healthcenterData *entity.Heal
 		return nil, errs
 	}
 	return healthcenter, errs
+}
+
+// HealthCenter returns single healthcenter data
+func (hcs *HealthCenterService) SingleHealthCenter(id uint) (*entity.HealthCenter, []error) {
+	healthcenter, errs := hcs.healthCenterRepo.SingleHealthCenter(uint(id))
+
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return healthcenter, nil
+}
+
+// HealthCenters returns all healthcenters data
+func (hcs *HealthCenterService) SearchHealthCenters(value string, column string) ([]entity.Hcrating, []error) {
+	healthcenters, errs := hcs.healthCenterRepo.SearchHealthCenters(value, column)
+
+	if errs != nil {
+		return nil, errs
+	}
+	return healthcenters, nil
+}
+
+// Top returns healthcenters with rating from database
+func (hcs *HealthCenterService) Top(amount uint) ([]entity.Hcrating, []error) {
+	result, errs := hcs.healthCenterRepo.Top(amount)
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	fmt.Println(result)
+	return result, nil
 }

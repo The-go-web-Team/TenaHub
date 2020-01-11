@@ -10,7 +10,7 @@ import (
 	"errors"
 )
 
-func FetchAgent(id int) (*clientEntity.Agent, error) {
+func FetchAgent(id int) (*entity.Agent, error) {
 	client := &http.Client{}
 	URL := fmt.Sprintf("%s/agent/%d", baseURL, id)
 	req, _ := http.NewRequest("GET", URL, nil)
@@ -18,7 +18,7 @@ func FetchAgent(id int) (*clientEntity.Agent, error) {
 	if err != nil {
 		return nil, err
 	}
-	userdata := clientEntity.Agent{}
+	userdata := entity.Agent{}
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func FetchAgent(id int) (*clientEntity.Agent, error) {
 	return &userdata, nil
 }
 
-func FetchAgents() ([]clientEntity.Agent, error) {
+func FetchAgents() ([]entity.Agent, error) {
 	client := &http.Client{}
 	URL := fmt.Sprintf("%s/agent", baseURL)
 	req, _ := http.NewRequest("GET", URL, nil)
@@ -38,7 +38,7 @@ func FetchAgents() ([]clientEntity.Agent, error) {
 	if err != nil {
 		return nil, err
 	}
-	var agents []clientEntity.Agent
+	var agents []entity.Agent
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func FetchAgents() ([]clientEntity.Agent, error) {
 }
 
 // Authenticate authenticates user
-func AgentAuthenticate(agent *clientEntity.Agent) (*clientEntity.Agent, error) {
+func AgentAuthenticate(agent *entity.Agent) (*entity.Agent, error) {
 	URL := fmt.Sprintf("%s/%s", baseURL, "agent")
 
 	formval := url.Values{}
@@ -75,7 +75,7 @@ func AgentAuthenticate(agent *clientEntity.Agent) (*clientEntity.Agent, error) {
 
 	respjson := struct {
 		Status string
-		Content clientEntity.Agent
+		Content entity.Agent
 	}{}
 
 	err = json.Unmarshal(body, &respjson)

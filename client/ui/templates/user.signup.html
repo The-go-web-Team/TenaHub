@@ -1,0 +1,49 @@
+{{ define "user.signup.layout" }}
+{{ template "user.header.default.layout" }}
+{{ template "user.signup.content" . }}
+{{ template "user.footer.default.layout"}}
+{{ end }}
+
+{{ define "user.signup.content" }}
+<div class="container-fluid body-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 d-flex">
+                <div class="form-img mx-auto align-self-center">
+                    <img src="../assets/img/sign-up.png" alt="">
+                    <h2 class="text-center text-primary">TenaHub signup</h2>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="form-holder form shadow p-3 mb-5 bg-white">
+                    <form method="post" id="signup-form" action="/signup">
+                        <div class="form-group">
+                            <p class="text-danger">{{ . }}</p>
+                            <label for="firstname">Firstname</label>
+                            <input type="text" name="firstname" class="form-control" id="firstname"  placeholder="Enter Firstname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname">Lastname</label>
+                            <input type="text" class="form-control" name="lastname" id="lastname" placeholder="Enter Lastname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Enter email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phonenum">Phone</label>
+                            <input type="tel" class="form-control" name="phonenum" id="phonenum" placeholder="Enter phone number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+                        </div>
+                        <p id="input-error" class="text-danger"></p>
+                        <button type="submit" class="btn btn-primary">Signup</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}
