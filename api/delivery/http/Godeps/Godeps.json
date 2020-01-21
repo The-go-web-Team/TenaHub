@@ -1,0 +1,155 @@
+{
+	"ImportPath": "github.com/TenaHub/api/delivery/http",
+	"GoVersion": "go1.13",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/TenaHub/api/admin",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/admin/repository",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/admin/service",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/agent",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/agent/repository",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/agent/service",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/comment",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/comment/repository",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/comment/service",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/entity",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/hcservice",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/hcservice/repository",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/hcservice/service",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/healthcenter",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/healthcenter/repository",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/healthcenter/service",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/rating",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/rating/repository",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/rating/service",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/session",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/session/repository",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/session/service",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/user",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/user/repository",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/TenaHub/api/user/service",
+			"Rev": "0965d94e6891b3631483d6fea62a205931405bad"
+		},
+		{
+			"ImportPath": "github.com/jinzhu/gorm",
+			"Comment": "v1.9.11-36-g79a77d7",
+			"Rev": "79a77d771dee4e4b60e9c543e8663bbc80466670"
+		},
+		{
+			"ImportPath": "github.com/jinzhu/gorm/dialects/postgres",
+			"Comment": "v1.9.11-36-g79a77d7",
+			"Rev": "79a77d771dee4e4b60e9c543e8663bbc80466670"
+		},
+		{
+			"ImportPath": "github.com/jinzhu/inflection",
+			"Comment": "v1.0.0",
+			"Rev": "f5c5f50e6090ae76a29240b61ae2a90dd810112e"
+		},
+		{
+			"ImportPath": "github.com/julienschmidt/httprouter",
+			"Comment": "v1.3.0-19-g08a3b3d",
+			"Rev": "08a3b3d20bbeeab9ca4889bcdb65fec0423ef882"
+		},
+		{
+			"ImportPath": "github.com/lib/pq",
+			"Comment": "v1.2.0-14-gf91d341",
+			"Rev": "f91d3411e481ed313eeab65ebfe9076466c39d01"
+		},
+		{
+			"ImportPath": "github.com/lib/pq/hstore",
+			"Comment": "v1.2.0-14-gf91d341",
+			"Rev": "f91d3411e481ed313eeab65ebfe9076466c39d01"
+		},
+		{
+			"ImportPath": "github.com/lib/pq/oid",
+			"Comment": "v1.2.0-14-gf91d341",
+			"Rev": "f91d3411e481ed313eeab65ebfe9076466c39d01"
+		},
+		{
+			"ImportPath": "github.com/lib/pq/scram",
+			"Comment": "v1.2.0-14-gf91d341",
+			"Rev": "f91d3411e481ed313eeab65ebfe9076466c39d01"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/bcrypt",
+			"Rev": "becbf705a91575484002d598f87d74f0002801e7"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/blowfish",
+			"Rev": "becbf705a91575484002d598f87d74f0002801e7"
+		}
+	]
+}

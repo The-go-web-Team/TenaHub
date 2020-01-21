@@ -1,0 +1,15 @@
+godep save
+for dependecy
+
+heroku create tenahub
+to create a heroku app
+
+git push heroku master
+to push the project to remote heroku repository
+
+heroku git:remote -a tenahub
+set ti git remote
+
+heroku buildpacks:set heroku/go
+setting go lang as build pack
+
