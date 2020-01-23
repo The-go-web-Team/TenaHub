@@ -15,7 +15,7 @@ func NewCommentService(repo comment.CommentRepository) *CommentService {
 }
 
 // Comments returns all health center comments
-func (cs *CommentService) Comments(id uint) ([]entity.UserComment, []error) {
+func (cs *CommentService) Comments(id uint) ([]entity.Comment, []error) {
 	comments, errs := cs.cmtRepo.Comments(id)
 
 	if len(errs) > 0 {

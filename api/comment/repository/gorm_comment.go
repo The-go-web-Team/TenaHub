@@ -5,6 +5,7 @@ import (
 
 	"github.com/TenaHub/api/entity"
 	"github.com/jinzhu/gorm"
+	"github.com/TenaHub/api/comment"
 )
 
 // CommentGormRepo implements comment.CommentRepository
@@ -13,14 +14,14 @@ type CommentGormRepo struct {
 }
 
 // NewCommentGormRepo creates object of CommentGormRepo
-func NewCommentGormRepo(conn *gorm.DB) *CommentGormRepo {
+func NewCommentGormRepo(conn *gorm.DB) comment.CommentRepository {
 	return &CommentGormRepo{conn: conn}
 }
 
 // Comments returns all health center comments from database
-func (cr *CommentGormRepo) Comments(id uint) ([]entity.UserComment, []error) {
+func (cr *CommentGormRepo) Comments(id uint) ([]entity.Comment, []error) {
 	// comments := []entity.Comment{}
-	usercmt := []entity.UserComment{}
+	usercmt := []entity.Comment{}
 	errs := cr.conn.Table("comments").Select("comments.*, users.first_name").Joins("left join users on users.id = comments.user_id").Where("comments.health_center_id = ?", id).Scan(&usercmt).GetErrors()
 
 	fmt.Println(usercmt)

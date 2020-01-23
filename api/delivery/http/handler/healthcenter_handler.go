@@ -204,5 +204,3 @@ func (hh *HealthCenterHandler) GetTop(w http.ResponseWriter, r *http.Request, ps
 	w.Write(output)
 	return
 }
-
-
