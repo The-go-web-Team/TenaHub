@@ -8,10 +8,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
 	"github.com/TenaHub/client/service"
 	"github.com/TenaHub/client/session"
-	"github.com/TenaHub/client/entity"
+	"github.com/TenaHub/api/entity"
 )
 
 // UserHandler handles user related http requests

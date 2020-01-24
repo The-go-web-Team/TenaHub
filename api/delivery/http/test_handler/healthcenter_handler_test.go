@@ -1,4 +1,4 @@
-package handler
+package test_handler
 
 import (
 	"testing"
@@ -10,6 +10,7 @@ import (
 	healthCenterRepo "github.com/TenaHub/api/healthcenter/repository"
 	healthCenterServ "github.com/TenaHub/api/healthcenter/service"
 	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/api/delivery/http/handler"
 	"reflect"
 )
 
@@ -17,7 +18,7 @@ func TestHealthCenters(t *testing.T) {
 
 	hcRepo := healthCenterRepo.NewMockHealthCenterGormRepo(nil)
 	hcServ := healthCenterServ.NewHealthCenterService(hcRepo)
-	hcHandler := NewHealthCenterHandler(hcServ)
+	hcHandler := handler.NewHealthCenterHandler(hcServ)
 
 	mux := httprouter.New()
 	mux.GET("/v1/healthcenters", hcHandler.GetHealthCenters)
@@ -57,7 +58,7 @@ func TestHealthCenters(t *testing.T) {
 func TestHealthCenter(t *testing.T) {
 	hcRepo := healthCenterRepo.NewMockHealthCenterGormRepo(nil)
 	hcServ := healthCenterServ.NewHealthCenterService(hcRepo)
-	hcHandler := NewHealthCenterHandler(hcServ)
+	hcHandler := handler.NewHealthCenterHandler(hcServ)
 
 	mux := httprouter.New()
 	mux.GET("/v1/healthcenters/:id", hcHandler.GetHealthCenters)

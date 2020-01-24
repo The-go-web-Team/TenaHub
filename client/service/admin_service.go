@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"io/ioutil"
 	"encoding/json"
-	"github.com/TenaHub/client/entity"
 	"fmt"
 	"net/url"
 	"errors"
+	"github.com/TenaHub/api/entity"
 )
 // var baseURL = "http://localhost:8181/v1"
 

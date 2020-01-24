@@ -5,12 +5,12 @@ import (
 	"html/template"
 	"github.com/TenaHub/client/service"
 	"fmt"
-	"github.com/TenaHub/client/entity"
 	"encoding/json"
 	"bytes"
 	"golang.org/x/crypto/bcrypt"
 	"strconv"
 	"time"
+	"github.com/TenaHub/api/entity"
 )
 
 

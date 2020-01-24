@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/TenaHub/api/entity"
 	"github.com/TenaHub/api/agent"
+	"github.com/TenaHub/api/delivery/http/handler"
 )
 
 type AgentGormRepo struct {
@@ -14,7 +15,21 @@ func NewAgentGormRepo(db *gorm.DB) agent.AgentRepository{
 	return &AgentGormRepo{conn:db}
 }
 
-func (adm *AgentGormRepo) Agent(id uint) (*entity.Agent, []error) {
+func (adm *AgentGormRepo) Agent(agentData *entity.Agent) (*entity.Agent, []error) {
+	agent := entity.Agent{}
+	errs := adm.conn.Select("password").Where("email = ? ", agentData.Email).First(&agent).GetErrors()
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	same := handler.VerifyPassword(agentData.Password, agent.Password)
+	if same {
+		errs := adm.conn.Where("email = ?", agentData.Email).First(&agent).GetErrors()
+		return &agent, errs
+	}
+	return nil, errs
+
+}
+func (adm *AgentGormRepo) AgentById(id uint) (*entity.Agent, []error) {
 	agent := entity.Agent{}
 	errs := adm.conn.First(&agent, id).GetErrors()
 	if len(errs) > 0 {
@@ -48,7 +63,7 @@ func (adm *AgentGormRepo) StoreAgent(agentData *entity.Agent) (*entity.Agent, []
 	return agent, errs
 }
 func (adm *AgentGormRepo) DeleteAgent(id uint) (*entity.Agent, []error) {
-	agent, errs := adm.Agent(id)
+	agent, errs := adm.AgentById(id)
 	if len(errs) > 0 {
 		return nil, errs
 	}

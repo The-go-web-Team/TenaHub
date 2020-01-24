@@ -1,4 +1,4 @@
-package handler
+package test_handler
 
 import (
 	"testing"
@@ -10,6 +10,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"reflect"
 	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/api/delivery/http/handler"
 	"encoding/json"
 )
 
@@ -17,7 +18,7 @@ func TestUsers(t *testing.T) {
 
 	userRepo := userRepo.NewMockUserGormRepo(nil)
 	userServ := userServ.NewUserService(userRepo)
-	userHandler := NewUserHander(userServ)
+	userHandler := handler.NewUserHander(userServ)
 
 	mux := httprouter.New()
 	mux.GET("/v1/users", userHandler.GetUsers)
@@ -58,7 +59,7 @@ func TestUser(t *testing.T) {
 
 	userRepo := userRepo.NewMockUserGormRepo(nil)
 	userServ := userServ.NewUserService(userRepo)
-	userHandler := NewUserHander(userServ)
+	userHandler :=handler.NewUserHander(userServ)
 
 	mux := httprouter.New()
 	mux.GET("/v1/users/:id", userHandler.GetSingleUser)

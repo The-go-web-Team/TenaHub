@@ -1,4 +1,4 @@
-package handler
+package test_handler
 //
 import (
 	"testing"
@@ -10,6 +10,7 @@ import (
 	serviceRepo "github.com/TenaHub/api/hcservice/repository"
 	serviceServ "github.com/TenaHub/api/hcservice/service"
 	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/api/delivery/http/handler"
 	"reflect"
 )
 
@@ -17,7 +18,7 @@ func TestServices(t *testing.T) {
 
 	serviceRepo := serviceRepo.NewMockServiceGormRepo(nil)
 	serviceServ := serviceServ.NewServiceService(serviceRepo)
-	serviceHandler := NewServiceHandler(serviceServ)
+	serviceHandler := handler.NewServiceHandler(serviceServ)
 
 	mux := httprouter.New()
 	mux.GET("/v1/services/:id", serviceHandler.GetServices)
@@ -58,7 +59,7 @@ func TestPendingService(t *testing.T) {
 
 	serviceRepo := serviceRepo.NewMockServiceGormRepo(nil)
 	serviceServ := serviceServ.NewServiceService(serviceRepo)
-	serviceHandler := NewServiceHandler(serviceServ)
+	serviceHandler := handler.NewServiceHandler(serviceServ)
 
 	mux := httprouter.New()
 	mux.GET("/v1/pendingservice", serviceHandler.GetPendingServices)

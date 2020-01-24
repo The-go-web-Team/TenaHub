@@ -20,6 +20,11 @@ func (adm MockHealthCenterGormRepo) HealthCenterById(id uint) (*entity.HealthCen
 	healthcenter = entity.MockHealthCenter
 	return &healthcenter, nil
 }
+func (adm MockHealthCenterGormRepo) HealthCenterByAgentId(id uint) ([]entity.HealthCenter, []error) {
+	var healthcenters []entity.HealthCenter
+	healthcenters = append(healthcenters, entity.MockHealthCenter,entity.MockHealthCenter)
+	return healthcenters, nil
+}
 func (adm MockHealthCenterGormRepo) HealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
 	healthcenter := entity.MockHealthCenter
 	return &healthcenter, nil
@@ -61,6 +66,10 @@ func (adm *MockHealthCenterGormRepo) Top(amount uint) ([]entity.Hcrating, []erro
 	result := []entity.Hcrating{}
 	result = append(result, entity.Hcrating{}, entity.Hcrating{})
 	return result, nil
+}
+func (adm *MockHealthCenterGormRepo) StoreHealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
+	center := healthcenterData
+	return center, nil
 }
 
 

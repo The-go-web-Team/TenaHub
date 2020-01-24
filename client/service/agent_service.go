@@ -1,18 +1,19 @@
 package service
 
 import (
-	"github.com/TenaHub/client/entity"
 	"net/http"
 	"io/ioutil"
 	"encoding/json"
 	"fmt"
 	"net/url"
 	"errors"
+	"github.com/TenaHub/api/entity"
 )
 
 func FetchAgent(id int) (*entity.Agent, error) {
 	client := &http.Client{}
 	URL := fmt.Sprintf("%s/agent/%d", baseURL, id)
+	fmt.Println(URL)
 	req, _ := http.NewRequest("GET", URL, nil)
 	res, err := client.Do(req)
 	if err != nil {
@@ -23,10 +24,12 @@ func FetchAgent(id int) (*entity.Agent, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(body)
 	err = json.Unmarshal(body, &userdata)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(userdata)
 	return &userdata, nil
 }
 
@@ -53,7 +56,7 @@ func FetchAgents() ([]entity.Agent, error) {
 // Authenticate authenticates user
 func AgentAuthenticate(agent *entity.Agent) (*entity.Agent, error) {
 	URL := fmt.Sprintf("%s/%s", baseURL, "agent")
-
+	fmt.Println(URL)
 	formval := url.Values{}
 	formval.Add("email", agent.Email)
 	formval.Add("password", agent.Password)

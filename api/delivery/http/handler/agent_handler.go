@@ -25,7 +25,7 @@ func (adm *AgentHandler) GetSingleAgent(w http.ResponseWriter,r *http.Request, p
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-	agent, errs := adm.agentService.Agent(uint(id))
+	agent, errs := adm.agentService.AgentById(uint(id))
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -126,7 +126,6 @@ func (adm *AgentHandler) PostAgent(w http.ResponseWriter, r *http.Request, ps ht
 	//}
 	return
 }
-
 func (adm *AgentHandler) PutAgent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -135,7 +134,7 @@ func (adm *AgentHandler) PutAgent(w http.ResponseWriter, r *http.Request, ps htt
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-	agentData, errs := adm.agentService.Agent(uint(id))
+	agentData, errs := adm.agentService.AgentById(uint(id))
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -167,7 +166,28 @@ func (adm *AgentHandler) PutAgent(w http.ResponseWriter, r *http.Request, ps htt
 	w.Write(output)
 	return
 }
+func (uh *AgentHandler) GetAgent(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	w.Header().Set("Content-type", "application/json")
+	email := r.PostFormValue("email")
+	password := r.PostFormValue("password")
+	agent := entity.Agent{Email: email, Password: password}
+	user, _ := uh.agentService.Agent(&agent)
 
+	if user == nil {
+		data, err := json.MarshalIndent(&response{Status:"error", Content:nil},"", "\t")
+		if err != nil {
 
+		}
+		http.Error(w, string(data) , http.StatusNotFound)
+		return
+	}
+	output, err := json.MarshalIndent(response{Status:"success", Content:&user}, "", "\n")
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+	w.Write(output)
+	return
+}
 
 

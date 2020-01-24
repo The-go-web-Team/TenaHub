@@ -6,13 +6,13 @@ import (
 	"strconv"
 	"encoding/json"
 	"github.com/TenaHub/api/entity"
-	"github.com/TenaHub/api/hcservice/service"
+	"github.com/TenaHub/api/service"
 )
 
 type ServiceHandler struct {
-	serviceService service.ServiceService
+	serviceService service.ServicesService
 }
-func NewServiceHandler(admhc service.ServiceService) *ServiceHandler {
+func NewServiceHandler(admhc service.ServicesService) *ServiceHandler {
 	return &ServiceHandler{serviceService: admhc}
 }
 
@@ -43,7 +43,8 @@ func (adm *ServiceHandler) GetSingleService(w http.ResponseWriter,r *http.Reques
 	return
 }
 func (adm *ServiceHandler) GetPendingServices(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
-	services, errs := adm.serviceService.PendingService()
+	id, err := strconv.Atoi(ps.ByName("id"))
+	services, errs := adm.serviceService.PendingService(uint(id))
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
