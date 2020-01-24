@@ -178,10 +178,7 @@ func (adm *HealthCenterHandler) PostHealthCenter(w http.ResponseWriter, r *http.
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-	//if r.Method == "OPTIONS" {
-	w.WriteHeader(http.StatusOK)
-	//return
-	//}
+	w.WriteHeader(http.StatusCreated)
 	return
 }
 

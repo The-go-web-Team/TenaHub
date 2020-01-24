@@ -110,10 +110,7 @@ func (adm *ServiceHandler) DeleteService(w http.ResponseWriter, r *http.Request,
 	return
 }
 func (adm *ServiceHandler) PostService(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	////data, _ := ioutil.ReadAll(r.Body)
-	//w.Header().Set("Access-Control-Allow-Origin", "*")
-	//w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	//w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 	header := w.Header()
 	header.Add("Access-Control-Allow-Origin", "*")
 	header.Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
@@ -139,10 +136,7 @@ func (adm *ServiceHandler) PostService(w http.ResponseWriter, r *http.Request, p
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-	//if r.Method == "OPTIONS" {
-	w.WriteHeader(http.StatusOK)
-	//return
-	//}
+	w.WriteHeader(http.StatusCreated)
 	return
 }
 func (adm *ServiceHandler) PutService(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

@@ -96,6 +96,7 @@ func (rh *RatingHandler) PostRating(w http.ResponseWriter, r *http.Request, _ ht
 		return
 	}
 
+	w.WriteHeader(http.StatusCreated)
 	w.Write(output)
 	return
 }
