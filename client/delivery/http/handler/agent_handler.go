@@ -7,9 +7,9 @@ import (
 	"encoding/json"
 	"bytes"
 	"strconv"
-	"github.com/TenaHub/client/entity"
 	"github.com/TenaHub/client/service"
 	"time"
+	"github.com/TenaHub/api/entity"
 )
 
 
@@ -31,7 +31,7 @@ func (adh *AgentHandler) AddAgent(w http.ResponseWriter, r *http.Request) {
 	hashedPassword,err := HashPassword(password)
 	data := entity.Agent{FirstName:firstName, LastName:lastName, UserName:username, Email:email,PhoneNumber:phone,Password:hashedPassword}
 	jsonValue, _ := json.Marshal(data)
-	_, err = http.Post("http://localhost:8181/v1/agent","application/json",bytes.NewBuffer(jsonValue))
+	_, err = http.Post("http://localhost:8181/v1/agents","application/json",bytes.NewBuffer(jsonValue))
 	var status addStatus
 	if err != nil {
 		status.Success = false
@@ -53,7 +53,7 @@ func (adh *AgentHandler) EditAgent(w http.ResponseWriter, r *http.Request) {
 
 	data := entity.Agent{ID:uint(id), FirstName:firstName, LastName:lastName, UserName:username, Email:email,PhoneNumber:phone,Password:password}
 	jsonValue, _ := json.Marshal(data)
-	URL := fmt.Sprintf("http://localhost:8181/v1/agent/%d", id)
+	URL := fmt.Sprintf("http://localhost:8181/v1/agents/%d", id)
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodPut, URL, bytes.NewBuffer(jsonValue))
 	_, err = client.Do(req)
@@ -91,23 +91,34 @@ func (adh *AgentHandler) DeleteAgent(w http.ResponseWriter, r *http.Request) {
 type addStatus struct {
 	Success bool
 }
-
+type agentDatas struct {
+	Agent entity.Agent
+	HealthCenters []entity.HealthCenter
+	PendingServices []entity.Service
+}
 func (adh *AgentHandler) AgentPage(w http.ResponseWriter, r *http.Request) {
 	c, err := r.Cookie("agent")
+
+	fmt.Println(c.Value, " is value")
 	if err != nil {
 		http.Redirect(w, r, "http://localhost:8282/agent/login", http.StatusSeeOther)
 		return
 	}
 	id, _ := strconv.Atoi(c.Value)
-	admin, err := service.FetchAdmin(id)
-	agents, err := service.FetchAgents()
-	healthCenters, err := service.FetchHealthCenters()
-	users, err := service.FetchUsers()
+	agentData, err := service.FetchAgent(id)
+	healthcentersByAgent, err := service.FetchHealthCenterByAgentId(uint(id))
+	pendingServices, err := service.FetchPendingServices(uint(id))
 
-	if err != nil {
-		w.WriteHeader(http.StatusNoContent)
-	}
-	adh.temp.ExecuteTemplate(w, "agent_home.layout", data{admin,agents, healthCenters, users})
+	fmt.Println("agent are ", agentData)
+	fmt.Println("healtcenters are ", healthcentersByAgent)
+	fmt.Println("pending services are ", pendingServices)
+	data := agentDatas{Agent: *agentData, HealthCenters:healthcentersByAgent, PendingServices:pendingServices}
+	fmt.Println("the data is ", data)
+	//if err != nil {
+	//	w.WriteHeader(http.StatusNoContent)
+	//}
+	adh.temp.ExecuteTemplate(w, "agent_home.layout",data)
+	//adh.temp.ExecuteTemplate(w, "agent_home.layout", data{admin,agents, healthCenters, users})
 
 }
 
@@ -123,9 +134,11 @@ func (ah *AgentHandler) AgentLogin(w http.ResponseWriter, r *http.Request) {
 		password := r.PostFormValue("password")
 
 		agent := entity.Agent{Email: email, Password: password}
+		fmt.Println(agent)
 		resp, err := service.AgentAuthenticate(&agent)
 		if err != nil {
 			if err.Error() == "error" {
+				fmt.Println("password is not correct")
 				ah.temp.ExecuteTemplate(w, "agent.login.layout", "incorrect credentials")
 				return
 			}

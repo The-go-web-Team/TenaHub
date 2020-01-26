@@ -9,13 +9,13 @@ import (
 	//"encoding/json"
 	//"bytes"
 	"github.com/TenaHub/client/service"
-	"github.com/TenaHub/client/entity"
 	"time"
 	"os"
 	"io"
 	"path/filepath"
 	"encoding/json"
 	"bytes"
+	"github.com/TenaHub/api/entity"
 )
 
 
@@ -30,6 +30,35 @@ type healthcenterData struct {
 	FeedBack []entity.Comment
 	Service []entity.Service
 
+}
+func (adh *HealthCenterHandler) AddHealthCenter(w http.ResponseWriter, r *http.Request) {
+	c, err := r.Cookie("agent")
+	id, _ := strconv.Atoi(c.Value)
+
+	name := r.FormValue("name")
+	email := r.FormValue("email")
+	phone := r.FormValue("phonenum")
+	city := r.FormValue("city")
+	password := r.FormValue("password")
+	confirm := r.FormValue("confirm")
+
+	if password != confirm{
+		fmt.Println("password is not same")
+		return
+	}
+
+	data := entity.HealthCenter{Name:name,Email:email,PhoneNumber:phone,City:city,Password:password, AgentID:uint(id)}
+	fmt.Println("the data is ", data)
+	jsonValue, _ := json.Marshal(data)
+	res, err := http.Post("http://localhost:8181/v1/healthcenter/addhealthcenter","application/json",bytes.NewBuffer(jsonValue))
+	var status addStatus
+	fmt.Println(res.StatusCode)
+	if err != nil {
+		status.Success = false
+	}else {
+		status.Success = true
+	}
+	http.Redirect(w, r, r.Header.Get("Referer"), 302)
 }
 
 func (adh *HealthCenterHandler) EditHealthCenter(w http.ResponseWriter, r *http.Request) {
@@ -103,14 +132,13 @@ func (adh *HealthCenterHandler) HealthCenterPage(w http.ResponseWriter, r *http.
 	}
 	id, _ := strconv.Atoi(c.Value)
 	healthcenter, err := service.FetchHealthCenter(uint(id))
-	feedbacks, err := service.FetchFeedbacks(uint(id))
 	services, err := service.FetchService(uint(id))
+	fmt.Println("service is ", services)
+	feedbacks, err := service.FetchFeedbacks(uint(id))
 
-	var data = healthcenterData{HealthCenter:healthcenter, FeedBack:feedbacks, Service:services}
-	if err != nil {
-		w.WriteHeader(http.StatusNoContent)
-		adh.temp.ExecuteTemplate(w, "healthcenter_home.layout", nil)
-	}
+	data := healthcenterData{HealthCenter:healthcenter, FeedBack:feedbacks, Service:services}
+	fmt.Println("data is ", data)
+
 	adh.temp.ExecuteTemplate(w, "healthcenter_home.layout", data)
 }
 

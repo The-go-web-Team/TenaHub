@@ -11,5 +11,7 @@ type HealthCenterService interface {
 	HealthCenters() ([]entity.HealthCenter, []error)
 	DeleteHealthCenter(id uint) (*entity.HealthCenter, []error)
 	UpdateHealthCenter(healthcenter *entity.HealthCenter) (*entity.HealthCenter, []error)
+	StoreHealthCenter(healthcenter *entity.HealthCenter) (*entity.HealthCenter, []error)
+	HealthCenterByAgentId(id uint) ([]entity.HealthCenter, []error)
 
 }

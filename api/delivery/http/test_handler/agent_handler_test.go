@@ -1,4 +1,4 @@
-package handler
+package test_handler
 
 import (
 	"testing"
@@ -10,6 +10,7 @@ import (
 	agentRepo "github.com/TenaHub/api/agent/repository"
 	agentServ "github.com/TenaHub/api/agent/service"
 	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/api/delivery/http/handler"
 	"reflect"
 )
 
@@ -17,7 +18,7 @@ func TestAgents(t *testing.T) {
 
 	agentRepo := agentRepo.NewMockAgentGormRepo(nil)
 	agentServ := agentServ.NewAgentService(agentRepo)
-	agentHandler := NewAgentHandler(agentServ)
+	agentHandler := handler.NewAgentHandler(agentServ)
 
 	mux := httprouter.New()
 	mux.GET("/v1/agent", agentHandler.GetAgents)
@@ -57,7 +58,7 @@ func TestAgents(t *testing.T) {
 func TestAgent(t *testing.T) {
 	agentRepo := agentRepo.NewMockAgentGormRepo(nil)
 	agentServ := agentServ.NewAgentService(agentRepo)
-	agentHandler := NewAgentHandler(agentServ)
+	agentHandler := handler.NewAgentHandler(agentServ)
 
 	mux := httprouter.New()
 	mux.GET("/v1/agent/:id", agentHandler.GetSingleAgent)

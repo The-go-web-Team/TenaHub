@@ -86,6 +86,16 @@ func (adm *HealthCenterGormRepo) SingleHealthCenter(id uint) (*entity.HealthCent
 
 	return &hcs, nil
 }
+func (adm HealthCenterGormRepo) HealthCenterByAgentId(id uint) ([]entity.HealthCenter, []error) {
+	var healthcenters []entity.HealthCenter
+
+	//errs := adm.conn.Find(&healthcenters, id).GetErrors()
+	errs := adm.conn.Where("agent_id = ?", id).Find(&healthcenters).GetErrors()
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return healthcenters, errs
+}
 
 // HealthCenters returns all healthcenters data from database
 func (adm *HealthCenterGormRepo) SearchHealthCenters(value string, column string) ([]entity.Hcrating, []error) {
@@ -158,6 +168,15 @@ func (adm *HealthCenterGormRepo) Top(amount uint) ([]entity.Hcrating, []error) {
 	}
 	fmt.Println(result)
 	return result, nil
+}
+func (adm *HealthCenterGormRepo) StoreHealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
+	center := healthcenterData
+	center.Password,_ = handler.HashPassword(healthcenterData.Password)
+	errs := adm.conn.Create(&center).GetErrors()
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return center, errs
 }
 
 

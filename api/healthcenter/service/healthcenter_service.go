@@ -22,6 +22,13 @@ func (adm *HealthCenterService) HealthCenterById(id uint) (*entity.HealthCenter,
 	}
 	return healthCenter, errs
 }
+func (adm *HealthCenterService) HealthCenterByAgentId(id uint) ([]entity.HealthCenter, []error) {
+	healthCenter, errs := adm.healthCenterRepo.HealthCenterByAgentId(id)
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return healthCenter, errs
+}
 func (adm *HealthCenterService) HealthCenter(healthcenter *entity.HealthCenter) (*entity.HealthCenter, []error) {
 	healthCenter, errs := adm.healthCenterRepo.HealthCenter(healthcenter)
 	if len(errs) > 0 {
@@ -79,4 +86,12 @@ func (hcs *HealthCenterService) Top(amount uint) ([]entity.Hcrating, []error) {
 	}
 	fmt.Println(result)
 	return result, nil
+}
+
+func (adm *HealthCenterService) StoreHealthCenter(healthcenterData *entity.HealthCenter) (*entity.HealthCenter, []error) {
+	healthcenter, errs := adm.healthCenterRepo.StoreHealthCenter(healthcenterData)
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return healthcenter, errs
 }

@@ -48,6 +48,7 @@ func main()  {
 	router.HandleFunc("/healthcenter/login", HealthCenterHandler.HealthCenterLogin)
 	router.HandleFunc("/healthcenter/logout", HealthCenterHandler.HealthCenterLogout)
 	router.HandleFunc("/healthcenter", HealthCenterHandler.HealthCenterPage)
+	router.HandleFunc("/healthcenter/add", HealthCenterHandler.AddHealthCenter)
 	router.HandleFunc("/healthcenter/updateprofile", HealthCenterHandler.EditHealthCenter)
 
 

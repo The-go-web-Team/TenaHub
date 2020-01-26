@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+<<<<<<< HEAD
 	"github.com/TenaHub/client/service"
 	"github.com/TenaHub/client/session"
 
@@ -16,6 +17,12 @@ import (
 	"github.com/TenaHub/client/form"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/TenaHub/client/permission"
+=======
+	"time"
+	"github.com/TenaHub/client/service"
+	"github.com/TenaHub/client/session"
+	"github.com/TenaHub/api/entity"
+>>>>>>> ce0279da1e25a7ed5b10304701ed0b75ea510d22
 )
 
 // UserHandler handles user related http requests

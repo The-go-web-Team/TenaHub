@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"io/ioutil"
 	"encoding/json"
-	"github.com/TenaHub/client/entity"
 	"fmt"
+	"github.com/TenaHub/api/entity"
 )
 
 func FetchFeedbacks(id uint) ([]entity.Comment, error) {

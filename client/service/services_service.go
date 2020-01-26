@@ -1,11 +1,11 @@
 package service
 
 import (
-	"github.com/TenaHub/client/entity"
 	"net/http"
 	"io/ioutil"
 	"encoding/json"
 	"fmt"
+	"github.com/TenaHub/api/entity"
 )
 
 func FetchServices(id uint) ([]entity.Service, error) {
@@ -29,7 +29,9 @@ func FetchServices(id uint) ([]entity.Service, error) {
 }
 func FetchService(id uint) ([]entity.Service, error) {
 	client := &http.Client{}
-	URL := fmt.Sprintf("%s/service/%d", baseURL, id)
+	fmt.Println(id)
+	URL := fmt.Sprintf("%s/services/%d", baseURL, id)
+	fmt.Println(URL)
 	req, _ := http.NewRequest("GET", URL, nil)
 	res, err := client.Do(req)
 	if err != nil {
@@ -42,8 +44,29 @@ func FetchService(id uint) ([]entity.Service, error) {
 	}
 	err = json.Unmarshal(body, &service)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	return service, nil
 }
 
+func FetchPendingServices(id uint) ([]entity.Service, error) {
+	client := &http.Client{}
+	URL := fmt.Sprintf("%s/pending/services/%d", baseURL, id)
+	fmt.Println(URL)
+	req, _ := http.NewRequest("GET", URL, nil)
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	var services []entity.Service
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(body, &services)
+	if err != nil {
+		return nil, err
+	}
+	return services, nil
+}

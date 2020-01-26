@@ -8,8 +8,8 @@ import (
 type ServiceService struct {
 	serviceRepo service.ServiceRepository
 }
-func NewServiceService(serv service.ServicesService)(service ServiceService){
-	return ServiceService{serviceRepo:serv}
+func NewServiceService(serv service.ServicesService) service.ServicesService{
+	return &ServiceService{serviceRepo:serv}
 }
 
 func (adm *ServiceService) Service(id uint) (*entity.Service, []error){

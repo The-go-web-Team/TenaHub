@@ -10,8 +10,8 @@ import (
 
 	"github.com/TenaHub/api/delivery/http/handler"
 
-	hcserviceRepository "github.com/TenaHub/api/hcservice/repository"
-	hcserviceService "github.com/TenaHub/api/hcservice/service"
+	hcserviceRepository "github.com/TenaHub/api/service/repository"
+	hcserviceService "github.com/TenaHub/api/service/service"
 
 	commentRepository "github.com/TenaHub/api/comment/repository"
 	commentService "github.com/TenaHub/api/comment/service"
@@ -54,8 +54,7 @@ func main()  {
 
 	defer dbconn.Close()
 
-	//errs := dbconn.CreateTable(&entity.Admin{},&entity.Agent{}).GetErrors()
-	//
+	//errs := dbconn.CreateTable(&entity.Comment{}).GetErrors()
 	//fmt.Println(errs)
 	//
 	//if len(errs) > 0 {
@@ -154,10 +153,6 @@ func main()  {
 	////////
 
 
-
-
-
-
 	router := httprouter.New()
 
 	router.GET("/v1/admin/:id", adminHandler.GetSingleAdmin)
@@ -166,8 +161,9 @@ func main()  {
 	router.GET("/v1/agent/:id", agentHandler.GetSingleAgent)
 
 	router.GET("/v1/agent", agentHandler.GetAgents)
-	router.PUT("/v1/agent/:id", agentHandler.PutAgent)
-	router.POST("/v1/agent", agentHandler.PostAgent)
+	router.PUT("/v1/agents/:id", agentHandler.PutAgent)
+	router.POST("/v1/agents", agentHandler.PostAgent)
+	router.POST("/v1/agent", agentHandler.GetAgent)
 	router.OPTIONS("/v1/agent", agentHandler.PostAgent)
 	router.DELETE("/v1/agent/:id", agentHandler.DeleteAgent)
 
@@ -184,7 +180,7 @@ func main()  {
 
 	//router.GET("/v1/service/:id", serviceHandler.GetSingleService)
 	router.GET("/v1/services/:id", serviceHandler.GetServices)
-	router.GET("/v1/pendingservice", serviceHandler.GetPendingServices)
+	router.GET("/v1/pending/services/:id", serviceHandler.GetPendingServices)
 	router.PUT("/v1/service/:id", serviceHandler.PutService)
 	router.POST("/v1/service", serviceHandler.PostService)
 	router.OPTIONS("/v1/service", serviceHandler.PostService)
@@ -219,6 +215,8 @@ func main()  {
 
 	router.GET("/v1/healthcenter/:id", healthCenterHandler.GetSingleHealthCenter)
 	router.POST("/v1/healthcenter", healthCenterHandler.GetHealthCenter)
+	router.GET("/v1/healthcenter/:id/agent", healthCenterHandler.GetHealthCentersByAgentId)
+	router.POST("/v1/healthcenter/addhealthcenter", healthCenterHandler.PostHealthCenter)
 	router.PUT("/v1/healthcenter/:id", healthCenterHandler.PutHealthCenter)
 	router.GET("/v1/healthcenter", healthCenterHandler.GetHealthCenter)
 	router.GET("/v1/healthcenters", healthCenterHandler.GetHealthCenters)

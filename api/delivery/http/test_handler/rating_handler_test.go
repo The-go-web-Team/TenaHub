@@ -1,4 +1,4 @@
-package handler
+package test_handler
 
 import (
 	"testing"
@@ -10,13 +10,14 @@ import (
 	ratingRepo "github.com/TenaHub/api/rating/repository"
 	ratingServ "github.com/TenaHub/api/rating/service"
 	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/api/delivery/http/handler"
 	"reflect"
 )
 
 func TestRating(t *testing.T) {
 	ratingRepo := ratingRepo.NewMockGormRatingRepository(nil)
 	ratingServ := ratingServ.NewHcRatingService(ratingRepo)
-	ratingHandler := NewRatingHandler(ratingServ)
+	ratingHandler := handler.NewRatingHandler(ratingServ)
 
 	mux := httprouter.New()
 	mux.GET("/v1/rating/:id", ratingHandler.GetRating)

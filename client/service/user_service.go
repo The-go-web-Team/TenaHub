@@ -10,7 +10,7 @@ import (
 	"bytes"
 	"strings"
 	"net/url"
-	"github.com/TenaHub/client/entity"
+	"github.com/TenaHub/api/entity"
 )
 
 type cookie struct {
@@ -25,7 +25,7 @@ type response struct {
 
 var loggedIn = make([]cookie, 10)
 
-const baseURL string = "http://localhost:8181/v1/"
+const baseURL string = "http://localhost:8181/v1"
 
 func getResponse(request *http.Request) []byte {
 	client := &http.Client{}
@@ -52,7 +52,7 @@ func getResponse(request *http.Request) []byte {
 // PostUser posts user to api
 func PostUser(user *entity.User) error {
 	requestBody, err := json.MarshalIndent(user, "", "\n")
-	URL := fmt.Sprintf("%s%s", baseURL, "users")
+	URL := fmt.Sprintf("%s/%s", baseURL, "users")
 
 	if err != nil {
 		fmt.Println(err)
@@ -88,7 +88,7 @@ func PostUser(user *entity.User) error {
 // Authenticate authenticates user
 func Authenticate(user *entity.User) (*entity.User, error) {
 	// requestBody, err := json.MarshalIndent(user, "", "\n")
-	URL := fmt.Sprintf("%s%s", baseURL, "user")
+	URL := fmt.Sprintf("%s/%s", baseURL, "user")
 
 	// fmt.Println(requestBody, URL)
 	// if err != nil {
@@ -133,7 +133,7 @@ func Authenticate(user *entity.User) (*entity.User, error) {
 
 // GetHealthcenters gets healthcenters
 func GetHealthcenters(name string, column string) ([]entity.Hcrating, error) {
-	URL := fmt.Sprintf("%s%s?search-key=%s&column=%s", baseURL, "healthcenters/search", name, column)
+	URL := fmt.Sprintf("%s/%s?search-key=%s&column=%s", baseURL, "healthcenters/search", name, column)
 
 	fmt.Println(URL)
 	resp, err := http.Get(URL)
@@ -163,7 +163,7 @@ func GetHealthcenters(name string, column string) ([]entity.Hcrating, error) {
 
 // GetHealthcenter gets health center by id
 func GetHealthcenter(id uint) (*entity.HealthCenter, error) {
-	URL := fmt.Sprintf("%s%s/%d", baseURL, "healthcenter", id)
+	URL := fmt.Sprintf("%s/%s/%d", baseURL, "healthcenter", id)
 
 	fmt.Println(URL)
 	resp, err := http.Get(URL)
@@ -193,7 +193,7 @@ func GetHealthcenter(id uint) (*entity.HealthCenter, error) {
 
 // GetServices gets healthcenters services
 func GetServices(id uint) ([]entity.Service, error) {
-	URL := fmt.Sprintf("%s%s/%d", baseURL, "services", id)
+	URL := fmt.Sprintf("%s/%s/%d", baseURL, "services", id)
 
 	fmt.Println(URL)
 	resp, err := http.Get(URL)
@@ -223,7 +223,7 @@ func GetServices(id uint) ([]entity.Service, error) {
 
 // GetRating gets healthcenters rating
 func GetRating(id uint) (float64, error) {
-	URL := fmt.Sprintf("%s%s/%d", baseURL, "rating", id)
+	URL := fmt.Sprintf("%s/%s/%d", baseURL, "rating", id)
 
 	fmt.Println(URL)
 	resp, err := http.Get(URL)
@@ -316,7 +316,7 @@ func CheckValidity(uid uint, hid uint) (string, error) {
 
 // GetTop returns top rated healthcenters
 func GetTop(amount uint)([]entity.Hcrating, error) {
-	URL := fmt.Sprintf("%s%s/%s/%d", baseURL, "healthcenters", "top", amount)
+	URL := fmt.Sprintf("%s/%s/%s/%d", baseURL, "healthcenters", "top", amount)
 	client := http.Client{}
 
 	request, err := http.NewRequest(http.MethodGet, URL, nil)
@@ -350,7 +350,7 @@ func GetTop(amount uint)([]entity.Hcrating, error) {
 
 // GetFeedback gets feedback
 func GetFeedback(id uint)([]entity.UserComment, error) {
-	URL := fmt.Sprintf("%s%s/%d",baseURL, "comments", id)
+	URL := fmt.Sprintf("%s/%s/%d",baseURL, "comments", id)
 	fmt.Println(URL)
 	comments := []entity.UserComment{}
 

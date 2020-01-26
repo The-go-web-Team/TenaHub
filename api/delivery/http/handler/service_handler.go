@@ -6,13 +6,13 @@ import (
 	"strconv"
 	"encoding/json"
 	"github.com/TenaHub/api/entity"
-	"github.com/TenaHub/api/hcservice/service"
+	"github.com/TenaHub/api/service"
 )
 
 type ServiceHandler struct {
-	serviceService service.ServiceService
+	serviceService service.ServicesService
 }
-func NewServiceHandler(admhc service.ServiceService) *ServiceHandler {
+func NewServiceHandler(admhc service.ServicesService) *ServiceHandler {
 	return &ServiceHandler{serviceService: admhc}
 }
 
@@ -43,7 +43,8 @@ func (adm *ServiceHandler) GetSingleService(w http.ResponseWriter,r *http.Reques
 	return
 }
 func (adm *ServiceHandler) GetPendingServices(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
-	services, errs := adm.serviceService.PendingService()
+	id, err := strconv.Atoi(ps.ByName("id"))
+	services, errs := adm.serviceService.PendingService(uint(id))
 
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -109,10 +110,7 @@ func (adm *ServiceHandler) DeleteService(w http.ResponseWriter, r *http.Request,
 	return
 }
 func (adm *ServiceHandler) PostService(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	////data, _ := ioutil.ReadAll(r.Body)
-	//w.Header().Set("Access-Control-Allow-Origin", "*")
-	//w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	//w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 	header := w.Header()
 	header.Add("Access-Control-Allow-Origin", "*")
 	header.Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
@@ -138,10 +136,8 @@ func (adm *ServiceHandler) PostService(w http.ResponseWriter, r *http.Request, p
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-	//if r.Method == "OPTIONS" {
+
 	w.WriteHeader(http.StatusCreated)
-	//return
-	//}
 	return
 }
 func (adm *ServiceHandler) PutService(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

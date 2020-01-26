@@ -1,4 +1,4 @@
-package handler
+package test_handler
 
 import (
 	"testing"
@@ -10,6 +10,7 @@ import (
 	commentRepo "github.com/TenaHub/api/comment/repository"
 	commentServ "github.com/TenaHub/api/comment/service"
 	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/api/delivery/http/handler"
 	"reflect"
 )
 
@@ -17,7 +18,7 @@ func TestComments(t *testing.T) {
 
 	commentRepo := commentRepo.NewCommentGormRepo(nil)
 	commentServ := commentServ.NewCommentService(commentRepo)
-	commentHandler := NewCommentHandler(commentServ)
+	commentHandler :=handler.NewCommentHandler(commentServ)
 
 	mux := httprouter.New()
 	mux.GET("/v1/comments", commentHandler.GetComments)
@@ -58,7 +59,7 @@ func TestComment(t *testing.T) {
 
 	commentRepo := commentRepo.NewCommentGormRepo(nil)
 	commentServ := commentServ.NewCommentService(commentRepo)
-	commentHandler := NewCommentHandler(commentServ)
+	commentHandler := handler.NewCommentHandler(commentServ)
 
 	mux := httprouter.New()
 	mux.GET("/v1/comments/:id", commentHandler.GetComments)
