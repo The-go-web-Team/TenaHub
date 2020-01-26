@@ -69,12 +69,16 @@ func PostUser(user *entity.User) error {
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
+	fmt.Printf("reading: %s", err)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
 
-	if strings.Compare(string(body), "Not Found") != 0 {
+	cmp := strings.Compare(string(body), "Not Found")
+	fmt.Println(string(body))
+	fmt.Printf("comparison: %d",cmp)
+	if  string(body) == "Not Found" {
 		return errors.New("duplicate")
 	}
 	fmt.Println(string(body))

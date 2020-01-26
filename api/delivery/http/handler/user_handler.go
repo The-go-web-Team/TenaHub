@@ -36,7 +36,7 @@ func (uh *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request, _ httpro
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-	
+
 	output, err := json.MarshalIndent(users, "", "\n")
 
 	if err != nil {
@@ -60,7 +60,7 @@ func (uh *UserHandler) GetUser(w http.ResponseWriter, r *http.Request, _ httprou
 	usr := entity.User{Email: email, Password: password}
 
 	user, errs := uh.userService.User(&usr)
-
+	fmt.Println(errs)
 	if len(errs) > 0 {
 		data, err := json.MarshalIndent(&response{Status:"error", Content:nil},"", "\t")
 		if err != nil {
@@ -71,7 +71,6 @@ func (uh *UserHandler) GetUser(w http.ResponseWriter, r *http.Request, _ httprou
 	}
 
 	output, err := json.MarshalIndent(response{Status:"success", Content:&user}, "", "\n")
-
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
@@ -199,19 +198,23 @@ func (uh *UserHandler) PostUser(w http.ResponseWriter, r *http.Request, ps httpr
 	r.Body.Read(body)
 
 	err := json.Unmarshal(body, &user)
+	fmt.Printf("unmarshaling: %s",err)
 
 	if err != nil {
+		fmt.Println("here")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
 	u, errs := uh.userService.StoreUser(&user)
-
+	fmt.Printf("storing: %s",errs)
 	if len(errs) > 0 {
+		fmt.Println("here")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
+	fmt.Println("everything okay")
 	p := fmt.Sprintf("/v1/users/%d", u.ID)
 	w.Header().Set("Location", p)
 	w.WriteHeader(http.StatusCreated)

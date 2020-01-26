@@ -7,7 +7,7 @@
 {{ define "user.hc.default.content" }}
 <div class="container-fluid">
     <div class="container">
-            <div class='health_center_image row border-bottom mt-3 mb-3 pb-1'>
+        <div class='health_center_image row border-bottom mt-3 mb-3 pb-1'>
                 <div class='col-md-12'>
                     <img src="../assets/img/health_center_hd.jpg" alt='' id='health-center-img-banner'>
                 </div>
@@ -92,7 +92,8 @@
           </button>
         </div>
         <div class="modal-body">
-            <form action="/auth" method="POST">
+            <form action="/login" method="POST">
+                <input hidden="true" type="text" value='{{ .FormValue.CSRF }}' name="_csrf"/>
                 <div class="form-group">
                     <label for="">Email</label>
                     <input type="text" class="form-control" name="email">

@@ -45,8 +45,8 @@ import (
 
 
 func main()  {
-	dbconn, err := gorm.Open("postgres", "postgres://postgres:0912345678@localhost/tenahub?sslmode=disable")
-	//dbconn, err := gorm.Open("postgres", "postgres://postgres:password@localhost/tenahubdb?sslmode=disable")
+	//dbconn, err := gorm.Open("postgres", "postgres://postgres:0912345678@localhost/tenahub?sslmode=disable")
+	dbconn, err := gorm.Open("postgres", "postgres://postgres:password@localhost/tenahubdb?sslmode=disable")
 	
 	if err != nil {
 		panic(err)
@@ -234,8 +234,6 @@ func main()  {
 	router.GET("/v1/session", sesHandl.GetSession)
 	router.POST("/v1/session", sesHandl.PostSession)
 	router.DELETE("/v1/session/:uuid", sesHandl.DeleteSession)
-
-
 	http.ListenAndServe(":8181", router)
 }
 

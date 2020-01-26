@@ -139,7 +139,7 @@ func (adm *ServiceHandler) PostService(w http.ResponseWriter, r *http.Request, p
 		return
 	}
 	//if r.Method == "OPTIONS" {
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 	//return
 	//}
 	return

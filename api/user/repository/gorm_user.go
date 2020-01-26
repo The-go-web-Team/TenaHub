@@ -5,6 +5,7 @@ import (
 	"github.com/lib/pq"
 	"github.com/TenaHub/api/entity"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // UserGormRepo is repository implements user.UserRepository
@@ -31,8 +32,14 @@ func (ur *UserGormRepo) Users() ([]entity.User, []error) {
 
 // User returns a single users from the database with user name and password
 func (ur *UserGormRepo) User(user *entity.User) (*entity.User, []error) {
+	lgusr := user
 	usr := entity.User{}
-	errs := ur.conn.Where("email = ? AND password = ?", user.Email, user.Password).First(&usr).GetErrors()
+	errs := ur.conn.Where("email = ?", user.Email).First(&usr).GetErrors()
+	err := bcrypt.CompareHashAndPassword([]byte(usr.Password), []byte(lgusr.Password))
+	fmt.Println(err)
+	if err != nil {
+		return nil, []error{err}
+	}
 
 	if len(errs) > 0 {
 		return nil, errs

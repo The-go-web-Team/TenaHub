@@ -3,7 +3,6 @@
 {{ template "user.hc.auth.content" . }}
 {{ template "user.footer.default.layout" }}
 {{ end }}
-
 {{ define "user.hc.auth.content" }}
 <div class="container-fluid">
     <div class="container">
@@ -52,6 +51,7 @@
                     {{ if .Isvalid }}
                     <form id="comment-form" method="post">
                         <div class="col-md-9 pl-0">
+                            <input hidden="true" type="text" name="_csrf" id="csrf" value='{{ .FormValue.CSRF }}' />
                             <div class="form-group">
                                 <!-- <select class='custom-select mb-2 ml-0' id="rating" name="rating" requried>
                                     <option value=""  disabled selected>Rating</option>
@@ -77,6 +77,7 @@
                         </div>
                     </form>
                     {{ end }}
+
                 </div>
                 {{ range .Comments }}
                 <div class='review border-bottom col-md-6 mb-2 border p-2 rounded'>
@@ -129,9 +130,11 @@
         $("#comment-form").submit(function(e){
             e.preventDefault();
             comment = $("#comment").val();
+            csrf = $("#csrf").val();
             console.log("comment:"+comment+"rating:"+rating+"hid:"+hid);
             $.post("http://localhost:8282/feedback",
             {
+                _csrf: csrf,
                 userrating: rating,
                 usercomment: comment,
                 hcid:hid

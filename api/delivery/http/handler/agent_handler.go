@@ -121,7 +121,7 @@ func (adm *AgentHandler) PostAgent(w http.ResponseWriter, r *http.Request, ps ht
 		return
 	}
 	//if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusCreated)
 		//return
 	//}
 	return
