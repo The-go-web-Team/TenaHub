@@ -59,7 +59,7 @@ func (uh *HealthCenterHandler) GetHealthCenter(w http.ResponseWriter, r *http.Re
 		http.Error(w, string(data) , http.StatusNotFound)
 		return
 	}
-	output, err := json.MarshalIndent(response{Status:"success", Content:&user}, "", "\n")
+	output, err := json.MarshalIndent(response{Status:"success", Content:*user}, "", "\n")
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return

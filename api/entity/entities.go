@@ -16,31 +16,6 @@ type User struct {
 	Role        string `json:"role" gorm:"varchar(255);not null"`
 }
 
-type Agent struct {
-	ID          uint `json:"id" `
-	FirstName   string `json:"firstname" gorm:"type:varchar(255);not null"`
-	LastName    string `json:"lastname" gorm:"type:varchar(255);not null"`
-	UserName    string `json:"username" gorm:"type:varchar(255);not null"`
-	Email       string `json:"email" gorm:"type:varchar(255);not null"`
-	Password    string `json:"password" gorm:"type:varchar(255);not null"`
-	ProfilePic  string `json:"profilepic" gorm:"type:varchar(255);"`
-	PhoneNumber string `json:"phonenum" gorm:"type:varchar(255);not null"`
-}
-
-
-
-type Admin struct {
-	ID          uint `json:"id"`
-	FirstName   string `json:"firstname" gorm:"type:varchar(255);not null"`
-	LastName    string `json:"lastname" gorm:"type:varchar(255);not null"`
-	UserName    string `json:"username" gorm:"type:varchar(255);not null"`
-	Email       string `json:"email" gorm:"type:varchar(255);not null"`
-	Password    string `json:"password" gorm:"type:varchar(255);not null"`
-	ProfilePic  string `json:"profilepic" gorm:"type:varchar(255);"`
-	PhoneNumber string `json:"phonenum" gorm:"type:varchar(255);not null"`
-}
-
-
 // Rating represents users rating
 type Rating struct {
 	ID             uint

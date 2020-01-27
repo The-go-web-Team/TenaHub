@@ -9,12 +9,8 @@ import (
 	"github.com/TenaHub/api/entity"
 	"github.com/TenaHub/api/user"
 	"github.com/julienschmidt/httprouter"
+	"golang.org/x/crypto/bcrypt"
 )
-
-// type response struct{
-// 	Status string
-// 	Content interface{}
-// }
 
 // UserHandler handles User related http requests
 type UserHandler struct {
@@ -27,10 +23,10 @@ func NewUserHander(us user.UserService) *UserHandler {
 }
 
 // GetUsers handles GET /v1/users request
-func (uh *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (uh *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	role := ps.ByName("id")
 	w.Header().Set("Content-type", "application/json")
-
-	users, errs := uh.userService.Users()
+	users, errs := uh.userService.Users(role)
 
 	if len(errs) > 0 {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -48,6 +44,12 @@ func (uh *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request, _ httpro
 	return
 
 }
+
+type response struct{
+	Status string
+	Content interface{}
+}
+
 
 // GetUser handles POST /v1/user
 func (uh *UserHandler) GetUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -157,7 +159,7 @@ func (uh *UserHandler) PutUser(w http.ResponseWriter, r *http.Request, ps httpro
 
 }
 
-// DeleteUser Handler DELETE /v1/users/:id
+// DeleteUser Handler is DELETE /v1/users/:id
 func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-type", "application/json")
 
@@ -219,4 +221,16 @@ func (uh *UserHandler) PostUser(w http.ResponseWriter, r *http.Request, ps httpr
 	w.Header().Set("Location", p)
 	w.WriteHeader(http.StatusCreated)
 	return
+}
+
+
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
+
+func VerifyPassword(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }

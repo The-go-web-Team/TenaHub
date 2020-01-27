@@ -21,14 +21,14 @@ func TestUsers(t *testing.T) {
 	userHandler := handler.NewUserHander(userServ)
 
 	mux := httprouter.New()
-	mux.GET("/v1/users", userHandler.GetUsers)
+	mux.GET("/v1/users/user/type", userHandler.GetUsers)
 	ts := httptest.NewTLSServer(mux)
 	defer ts.Close()
 
 	tc := ts.Client()
 	url := ts.URL
 
-	resp, err := tc.Get(url + "/v1/users")
+	resp, err := tc.Get(url + "/v1/users/user/type")
 	if err != nil {
 		t.Fatal(err)
 	}
