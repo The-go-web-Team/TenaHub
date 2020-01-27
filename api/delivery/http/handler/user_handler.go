@@ -159,7 +159,7 @@ func (uh *UserHandler) PutUser(w http.ResponseWriter, r *http.Request, ps httpro
 
 }
 
-// DeleteUser Handler DELETE /v1/users/:id
+// DeleteUser Handler is DELETE /v1/users/:id
 func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-type", "application/json")
 

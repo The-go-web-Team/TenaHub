@@ -46,19 +46,6 @@ type data struct {
 }
 func (adh *AdminHandler) AdminPage(w http.ResponseWriter, r *http.Request) {
 
-
-	//c, err := r.Cookie("admin")
-	//if err != nil {
-	//	//adh.temp.ExecuteTemplate(w, "admin.login.layout",nil)
-	//	http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
-	//	return
-	//} else {
-	//	fmt.Println(c.Value)
-	//	fmt.Println(c.MaxAge)
-	//}
-	//	id, _ := strconv.Atoi(c.Value)
-	//	usr := adh.userHandl.LoggedInUser
-	//	fmt.Println(usr)
 		token, err := rtoken.CSRFToken(adh.CsrfSignKey)
 		agentForm := struct {
 			Values  url.Values

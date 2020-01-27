@@ -1,9 +1,7 @@
 package main
 
 import (
-	// "fmt"
 	"net/http"
-	// "github.com/TenaHub/api/entity"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/TenaHub/api/delivery/http/handler"
 
@@ -18,13 +16,6 @@ import (
 
 	sesRepository "github.com/TenaHub/api/session/repository"
 	sesService "github.com/TenaHub/api/session/service"
-
-	// serviceRepo "github.com/TenaHub/api/service/repository"
-	// serviceServ "github.com/TenaHub/api/service/service"
-	//adminRepo "github.com/TenaHub/api/admin/repository"
-	//adminServ "github.com/TenaHub/api/admin/service"
-	//agentRepo "github.com/TenaHub/api/agent/repository"
-	//agentServ "github.com/TenaHub/api/agent/service"
 
 	healthCenterRepo "github.com/TenaHub/api/healthcenter/repository"
 	healthCenterServ "github.com/TenaHub/api/healthcenter/service"
