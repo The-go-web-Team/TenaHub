@@ -13,27 +13,9 @@ var MockUser = User{
 	Password :"secretpassword",
 	ProfilePic:"",
 	PhoneNumber: "0912443434",
+	Role:"admin",
 }
-var MockAgent = Agent{
-	ID      :  1,
-	FirstName :  "Nathaniel",
-	LastName:"Awel",
-	UserName:"natnaelawel",
-	Email:"natnael.awel@gmail.com",
-	Password :"secretpassword",
-	ProfilePic:"",
-	PhoneNumber: "0912443434",
-}
-var MockAdmin = Admin{
-	ID      :  1,
-	FirstName :  "Nathaniel",
-	LastName:"Awel",
-	UserName:"natnaelawel",
-	Email:"natnael.awel@gmail.com",
-	Password :"secretpassword",
-	ProfilePic:"",
-	PhoneNumber: "0912443434",
-}
+
 var MockHealthCenter = HealthCenter{
 	ID      :  1,
 	Name :  "Nathaniel",

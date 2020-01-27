@@ -18,8 +18,8 @@ func NewUserService(repo user.UserRepository) *UserService {
 }
 
 // Users returns all application users 
-func (us *UserService) Users() ([]entity.User, []error) {
-	users, errs := us.userRepo.Users()
+func (us *UserService) Users(role string) ([]entity.User, []error) {
+	users, errs := us.userRepo.Users(role)
 	if len(errs) > 0 {
 		return nil, errs
 	}

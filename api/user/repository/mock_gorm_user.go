@@ -17,7 +17,7 @@ func NewMockUserGormRepo(dbConn *gorm.DB) user.UserRepository {
 }
 
 // Users returns all users from the database
-func (ur *MockUserGormRepo) Users() ([]entity.User, []error) {
+func (ur *MockUserGormRepo) Users(role string) ([]entity.User, []error) {
 	users := []entity.User{}
 	users = append(users, entity.MockUser, entity.MockUser)
 	return users, nil

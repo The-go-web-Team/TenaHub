@@ -45,8 +45,9 @@ type data struct {
 	Form form.Input
 }
 func (adh *AdminHandler) AdminPage(w http.ResponseWriter, r *http.Request) {
-	//c, err := r.Cookie("admin")
 
+
+	//c, err := r.Cookie("admin")
 	//if err != nil {
 	//	//adh.temp.ExecuteTemplate(w, "admin.login.layout",nil)
 	//	http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
