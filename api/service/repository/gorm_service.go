@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/TenaHub/api/entity"
 	"github.com/TenaHub/api/service"
+	"fmt"
 )
 
 type ServiceGormRepo struct {
@@ -14,14 +15,14 @@ func NewServiceGormRepo(db *gorm.DB) service.ServiceRepository{
 	return &ServiceGormRepo{conn:db}
 }
 func (adm *ServiceGormRepo) Service(id uint) (*entity.Service, []error) {
-	var service entity.Service
-	errs := adm.conn.Where("health_center_id = ? ",id).Find(&service).GetErrors()
-
+	var serv entity.Service
+	fmt.Println(id)
+	errs := adm.conn.Where("id = ? ",id).Find(&serv).GetErrors()
 
 	if len(errs) > 0 {
 		return nil, errs
 	}
-	return &service, errs
+	return &serv, errs
 }
 func (adm *ServiceGormRepo) PendingService(id uint) ([]entity.Service, []error) {
 	var services []entity.Service

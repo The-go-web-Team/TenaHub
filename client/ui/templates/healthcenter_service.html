@@ -60,7 +60,8 @@
 <div id="addServiceModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="/service/addservice" id="addAgentForm" name="addServiceForm" method="POST">
+            <form action="/healthcenter/service/addservice" id="addAgentForm" name="addServiceForm" method="POST">
+                <input type="hidden" name="_csrf" value='{{ .Form.CSRF }}'>
                 <div class="modal-header">
                     <h4 class="modal-title">Add Service</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -95,7 +96,8 @@
     <div class="modal-dialog">
         <div class="modal-content">
 
-            <form action="/service/editservice" method="POST" name="editServiceForm" id = "editServiceForm">
+            <form action="/healthcenter/service/editservice" method="POST" name="editServiceForm" id = "editServiceForm">
+                <input type="hidden" name="_csrf" value='{{ .Form.CSRF }}'>
                 <div class="modal-header">
                     <h4 class="modal-title">Edit Service</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -126,7 +128,8 @@
 <div id="deleteServiceModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="deleteServiceForm" action="/service/deleteservice" method="POST">
+            <form id="deleteServiceForm" action="/healthcenter/service/deleteservice" method="POST">
+                <input type="hidden" name="_csrf" value='{{ .Form.CSRF }}'>
                 <div class="modal-header">
                     <h4 class="modal-title">Delete Agents</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

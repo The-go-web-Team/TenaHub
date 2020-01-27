@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/url"
 	"errors"
-	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/client/entity"
 )
 
 func FetchAgent(id int) (*entity.Agent, error) {
@@ -33,7 +33,7 @@ func FetchAgent(id int) (*entity.Agent, error) {
 	return &userdata, nil
 }
 
-func FetchAgents() ([]entity.Agent, error) {
+func FetchAgents() ([]entity.User, error) {
 	client := &http.Client{}
 	URL := fmt.Sprintf("%s/agent", baseURL)
 	req, _ := http.NewRequest("GET", URL, nil)
@@ -41,7 +41,7 @@ func FetchAgents() ([]entity.Agent, error) {
 	if err != nil {
 		return nil, err
 	}
-	var agents []entity.Agent
+	var agents []entity.User
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err

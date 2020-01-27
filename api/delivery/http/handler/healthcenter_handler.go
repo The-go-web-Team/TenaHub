@@ -111,6 +111,7 @@ func (adm *HealthCenterHandler) DeleteHealthCenter(w http.ResponseWriter, r *htt
 }
 func (adm *HealthCenterHandler) PutHealthCenter(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
+
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	if err != nil {
@@ -130,6 +131,7 @@ func (adm *HealthCenterHandler) PutHealthCenter(w http.ResponseWriter, r *http.R
 	r.Body.Read(body)
 
 	json.Unmarshal(body, &healthCenterData)
+	fmt.Println(healthCenterData)
 	healthCenterData.ID = uint(id)
 	healthCenterData, errs = adm.healthCenterService.UpdateHealthCenter(healthCenterData)
 

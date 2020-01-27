@@ -26,7 +26,7 @@ var authorities = authority{
 		methods: []string{"GET", "POST"},
 	},
 	"/login": permission{
-		roles:   []string{"USER", ""},
+		roles:   []string{"USER", "","ADMIN","AGENT"},
 		methods: []string{"GET", "POST"},
 	},
 	"/about": permission{
@@ -34,7 +34,7 @@ var authorities = authority{
 		methods: []string{"GET"},
 	},
 	"/logout": permission{
-		roles:   []string{"USER", ""},
+		roles:   []string{"USER", "","ADMIN","AGENT"},
 		methods: []string{"GET"},
 	},
 	"/search": permission{
@@ -72,7 +72,14 @@ func HasPermission(path string, role string, method string) bool {
 	fmt.Printf("Path: %s, Role: %s, Method: %s\n", path, role, method)
 	if strings.HasPrefix(path, "/admin") {
 		path = "/admin"
+	}else if strings.HasPrefix(path, "/agent"){
+		path = "/agent"
+	}else if strings.HasPrefix(path, "/healthcenters"){
+		path = "/healthcenters"
+	}else if strings.HasPrefix(path, "/healthcenter"){
+		path = "/healthcenter"
 	}
+	fmt.Println("path: " + path)
 	perm := authorities[path]
 	checkedRole := checkRole(role, perm.roles)
 	checkedMethod := checkMethod(method, perm.methods)

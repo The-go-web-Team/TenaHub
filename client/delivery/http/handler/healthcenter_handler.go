@@ -9,82 +9,181 @@ import (
 	//"encoding/json"
 	//"bytes"
 	"github.com/TenaHub/client/service"
-	"time"
 	"os"
 	"io"
 	"path/filepath"
 	"encoding/json"
 	"bytes"
-	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/client/entity"
+	"github.com/TenaHub/client/rtoken"
+	"net/url"
+	"github.com/TenaHub/client/form"
+	"github.com/TenaHub/client/session"
+	"strings"
+	"context"
+	"github.com/TenaHub/client/permission"
 )
 
 
 type HealthCenterHandler struct {
 	temp *template.Template
+	UserSess     *entity.Session
+	LoggedInUser *entity.HealthCenter
+	CsrfSignKey  []byte
 }
-func NewHealthCenterHandler(T *template.Template) *HealthCenterHandler {
-	return &HealthCenterHandler{temp: T}
+func NewHealthCenterHandler(T *template.Template, usrSess *entity.Session, csKey []byte) *HealthCenterHandler {
+	return &HealthCenterHandler{temp: T, UserSess:usrSess, CsrfSignKey:csKey}
 }
 type healthcenterData struct {
 	HealthCenter *entity.HealthCenter
 	FeedBack []entity.Comment
 	Service []entity.Service
-
+	Form form.Input
 }
-func (adh *HealthCenterHandler) AddHealthCenter(w http.ResponseWriter, r *http.Request) {
-	c, err := r.Cookie("agent")
-	id, _ := strconv.Atoi(c.Value)
 
-	name := r.FormValue("name")
-	email := r.FormValue("email")
-	phone := r.FormValue("phonenum")
-	city := r.FormValue("city")
-	password := r.FormValue("password")
-	confirm := r.FormValue("confirm")
-
-	if password != confirm{
-		fmt.Println("password is not same")
-		return
+func (uh *HealthCenterHandler) LoggedIn(r *http.Request) bool {
+	if uh.UserSess == nil {
+		return false
 	}
-
-	data := entity.HealthCenter{Name:name,Email:email,PhoneNumber:phone,City:city,Password:password, AgentID:uint(id)}
-	fmt.Println("the data is ", data)
-	jsonValue, _ := json.Marshal(data)
-	res, err := http.Post("http://localhost:8181/v1/healthcenter/addhealthcenter","application/json",bytes.NewBuffer(jsonValue))
-	var status addStatus
-	fmt.Println(res.StatusCode)
+	UserSess := uh.UserSess
+	fmt.Printf("usersess: %q\n", UserSess)
+	c, err := r.Cookie(UserSess.UUID)
+	//fmt.Println(c)
 	if err != nil {
-		status.Success = false
-	}else {
-		status.Success = true
+		return false
 	}
-	http.Redirect(w, r, r.Header.Get("Referer"), 302)
+
+	fmt.Printf("logged In: %s" ,UserSess.SigningKey)
+	ok, err := session.Valid(c.Value, UserSess.SigningKey)
+	fmt.Println(err)
+	if !ok || (err != nil) {
+		return false
+	}
+	return true
+}
+
+func (hch *HealthCenterHandler) Authenticated(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		ok := hch.LoggedIn(r)
+		fmt.Println(ok)
+		if !ok {
+			http.Redirect(w, r, "/healthcenter/login", http.StatusSeeOther)
+			return
+		}
+		ctx := context.WithValue(r.Context(), ctxUserSessionKey, hch.UserSess)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	}
+	return http.HandlerFunc(fn)
+}
+
+// Authorized checks if a user has proper authority to access a give route
+func (hch *HealthCenterHandler) Authorized(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		role := ""
+		if !(hch.LoggedInUser == nil) {
+			role = "HEALTH_CENTER"
+		}
+		//roles, errs := uh.userService.UserRoles(uh.LoggedInUser)
+		//if len(errs) > 0 {
+		//	http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		//	return
+		//}
+
+		//for _, role := range roles {
+		//	permitted := permission.HasPermission(r.URL.Path, role.Name, r.Method)
+		//	if !permitted {
+		//		http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		//		return
+		//	}
+		//}
+
+		permitted := permission.HasPermission(r.URL.Path, strings.ToUpper(role) , r.Method)
+		fmt.Printf("permitted: %t\n", permitted)
+		if !permitted {
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			return
+		}
+		fmt.Println("here 1")
+		if r.Method == http.MethodPost {
+			fmt.Println("here")
+			fmt.Println(r.PostFormValue("_csrf"))
+			ok, err := rtoken.ValidCSRF(r.FormValue("_csrf"), hch.CsrfSignKey)
+			if !ok || (err != nil) {
+				fmt.Println("also here")
+				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+				return
+			}
+		}
+		next.ServeHTTP(w, r)
+	})
 }
 
 func (adh *HealthCenterHandler) EditHealthCenter(w http.ResponseWriter, r *http.Request) {
-	c, err := r.Cookie("healthcenter")
-	id, _ := strconv.Atoi(c.Value)
+	//c, err := r.Cookie("healthcenter")
+	//id, _ := strconv.Atoi(c.Value)
+	fmt.Println("editing healthcenter")
+	token, err := rtoken.CSRFToken(adh.CsrfSignKey)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	}
+	formData := form.Input{Values: r.PostForm, VErrors: form.ValidationErrors{}}
+	formData.Required("name","email", "address", "phone", "password", "confirmpassword")
+	formData.MatchesPattern("email", form.EmailRX)
+	//formData.MatchesPattern("phone", form.PhoneRX)
+	formData.MinLength("password", 8)
+	formData.PasswordMatches("password", "confirmpassword")
+	formData.CSRF = token
+
+	if !formData.Valid() {
+		fmt.Println("From Is Valid")
+		fmt.Println(formData.VErrors)
+		id := adh.LoggedInUser.ID
+		healthcenter, err := service.FetchHealthCenter(uint(id))
+		if err != nil {
+			http.Redirect(w, r, "/healthcenter/login", http.StatusSeeOther)
+		}
+		services, err := service.FetchService(uint(id))
+		fmt.Println("service is ", services)
+		feedbacks, err := service.FetchFeedbacks(uint(id))
+
+		data := healthcenterData{HealthCenter:healthcenter, FeedBack:feedbacks, Service:services, Form:formData}
+		fmt.Println("data is ", data)
+		adh.temp.ExecuteTemplate(w, "healthcenter_home.layout", data)
+		//adh.temp.ExecuteTemplate(w, "healthcenter_edit_profile.layout", struct {Form form.Input}{formData})
+		return
+	}
+	fmt.Println("From Is Valid")
+
+	id := adh.LoggedInUser.ID
 
 	Name := r.FormValue("name")
 	email := r.FormValue("email")
 	phone := r.FormValue("phone")
 	city := r.FormValue("address")
 	password := r.FormValue("password")
-	confirm := r.FormValue("confirm")
+	confirm := r.FormValue("confirmpassword")
 
 	if password != confirm {
+		fmt.Println("Passwords Doesn't match")
 		return
 	}
-	fileName, err := FileUpload(r,"healthcenter_uploads")
-	if err != nil{
-		fmt.Println(err)
+	var fileName string
+	f, _, _ := r.FormFile("upload_image")
+	if f != nil {
+		fileName, err = FileUpload(r,"healthcenter_uploads")
+		if err != nil{
+			fmt.Println(err)
+		}
 	}
+	fileName = ""
 	data := entity.HealthCenter{ID:uint(id),Name:Name, Email:email,PhoneNumber:phone,City:city,Password:password,ProfilePic:fileName}
 	jsonValue, _ := json.Marshal(data)
 	URL := fmt.Sprintf("http://localhost:8181/v1/healthcenter/%d", id)
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodPut, URL, bytes.NewBuffer(jsonValue))
-	_, err = client.Do(req)
+	resp, err := client.Do(req)
+
+	fmt.Println(resp)
 	var status addStatus
 	if err != nil {
 		status.Success = false
@@ -95,7 +194,7 @@ func (adh *HealthCenterHandler) EditHealthCenter(w http.ResponseWriter, r *http.
 	fmt.Println(err)
 
 	http.Redirect(w, r, r.Header.Get("Referer"), 302)
-	adh.temp.ExecuteTemplate(w, "admin_home.layout", status)
+	//adh.temp.ExecuteTemplate(w, "admin_home.layout", status)
 }
 
 
@@ -120,83 +219,139 @@ func (adh *HealthCenterHandler) DeleteHealthCenter(w http.ResponseWriter, r *htt
 	}
 
 
-func (adh *HealthCenterHandler) HealthCenterPage(w http.ResponseWriter, r *http.Request) {
-	c, err := r.Cookie("healthcenter")
-
-	if err != nil {
-		http.Redirect(w, r, "http://localhost:8282/healthcenter/login", http.StatusSeeOther)
-		return
-	} else {
-		fmt.Println(c.Value)
-		fmt.Println(c.MaxAge)
+func (ah *HealthCenterHandler) HealthCenterPage(w http.ResponseWriter, r *http.Request) {
+	token, err := rtoken.CSRFToken(ah.CsrfSignKey)
+	formData := struct {
+		Values  url.Values
+		VErrors form.ValidationErrors
+		CSRF    string
+	}{
+		Values:  nil,
+		VErrors: nil,
+		CSRF:    token,
 	}
-	id, _ := strconv.Atoi(c.Value)
+	//c, err := r.Cookie("healthcenter")
+
+	//if ah.LoggedInUser==nil{
+	//	http.Redirect(w, r, "http://localhost:8282/healthcenter/login", http.StatusSeeOther)
+	//	return
+	//} else {
+	//	//fmt.Println(c.Value)
+	//	//fmt.Println(c.MaxAge)
+	//}
+	//id, _ := strconv.Atoi(cd.Value)
+	id := ah.LoggedInUser.ID
 	healthcenter, err := service.FetchHealthCenter(uint(id))
+	if err != nil {
+		http.Redirect(w, r, "/healthcenter/login", http.StatusSeeOther)
+	}
 	services, err := service.FetchService(uint(id))
 	fmt.Println("service is ", services)
 	feedbacks, err := service.FetchFeedbacks(uint(id))
 
-	data := healthcenterData{HealthCenter:healthcenter, FeedBack:feedbacks, Service:services}
+	data := healthcenterData{HealthCenter:healthcenter, FeedBack:feedbacks, Service:services, Form:formData}
 	fmt.Println("data is ", data)
 
-	adh.temp.ExecuteTemplate(w, "healthcenter_home.layout", data)
+	ah.temp.ExecuteTemplate(w, "healthcenter_home.layout", data)
 }
 
 // Login handles Get /login and POST /login
 func (ah *HealthCenterHandler) HealthCenterLogin(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.Referer())
+	token, err := rtoken.CSRFToken(ah.CsrfSignKey)
+
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	}
 	if r.Method == http.MethodGet {
-		ah.temp.ExecuteTemplate(w, "healthcenter.login.layout", nil)
+		loginForm := struct {
+			Values  url.Values
+			VErrors form.ValidationErrors
+			CSRF    string
+		}{
+			Values:  nil,
+			VErrors: nil,
+			CSRF:    token,
+		}
+		ah.temp.ExecuteTemplate(w, "healthcenter.login.layout", loginForm)
 
 	} else if r.Method == http.MethodPost {
+		err := r.ParseForm()
+		if err != nil {
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+
+		loginForm := form.Input{Values: r.PostForm, VErrors: form.ValidationErrors{}}
+
 		email := r.PostFormValue("email")
 		password := r.PostFormValue("password")
+		loginForm.Required("password")
 		healthcenter := entity.HealthCenter{Email: email,Password : password}
 		resp, err := service.HealthCenterAuthenticate(&healthcenter)
+		//fmt.Printf("responsee: %q\n", resp)
 		if err != nil {
 			if err.Error() == "error" {
-				ah.temp.ExecuteTemplate(w, "healthcenter.login.layout", "incorrect credentials")
+				loginForm.VErrors.Add("generic", "email or password not correct")
+				ah.temp.ExecuteTemplate(w, "healthcenter.login.layout", loginForm)
 				return
 			}
-		} else {
-			cookie := http.Cookie{
-				Name:     "healthcenter",
-				Value:    strconv.Itoa(int(resp.ID)),
-				MaxAge:   60 * 30,
-				Path:     "/",
-				HttpOnly: true,
+		} else{
+			ah.LoggedInUser = resp
+			claims := rtoken.Claims(resp.Email, ah.UserSess.Expires)
+			session.Create(claims, ah.UserSess.UUID, ah.UserSess.SigningKey, w)
+			fmt.Printf("sess: %s", ah.UserSess.SigningKey)
+			newSess, err := service.StoreSession(ah.UserSess)
+			fmt.Println("here", ah.UserSess.SigningKey)
+			if err!=nil{
+				loginForm.VErrors.Add("generic", "Failed to store session")
+				ah.temp.ExecuteTemplate(w, "healthcenter.login.layout", loginForm)
+				return
 			}
-			http.SetCookie(w, &cookie)
+			ah.UserSess = newSess
+			//cookie := http.Cookie{
+			//	Name:     "healthcenter",
+			//	Value:    strconv.Itoa(int(resp.ID)),
+			//	MaxAge:   60 * 30,
+			//	Path:     "/",
+			//	HttpOnly: true,
+			//}
+			//http.SetCookie(w, &cookie)
 			http.Redirect(w, r, "http://localhost:8282/healthcenter", http.StatusSeeOther)
 		}
 	}
 }
 // Logout handles GET /logout
 func (uh *HealthCenterHandler) HealthCenterLogout(w http.ResponseWriter, r *http.Request) {
-	c, err := r.Cookie("healthcenter")
-	if err != nil {
-		http.Redirect(w, r, "http://localhost:8282/healthcenter/login", http.StatusSeeOther)
-		return
-	}
-	if c != nil {
-		c = &http.Cookie{
-			Name:     "healthcenter",
-			Value:    "",
-			Path:     "/",
-			Expires:  time.Unix(0, 0),
-			MaxAge:   -10,
-			HttpOnly: true,
-		}
-
-		http.SetCookie(w, c)
-	}
-	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+	//c, err := r.Cookie("healthcenter")
+	//if err != nil {
+	//	http.Redirect(w, r, "http://localhost:8282/healthcenter/login", http.StatusSeeOther)
+	//	return
+	//}
+	//if c != nil {
+	//	c = &http.Cookie{
+	//		Name:     "healthcenter",
+	//		Value:    "",
+	//		Path:     "/",
+	//		Expires:  time.Unix(0, 0),
+	//		MaxAge:   -10,
+	//		HttpOnly: true,
+	//	}
+	//
+	//	http.SetCookie(w, c)
+	//}
+	session.Remove(uh.UserSess.UUID, w)
+	service.DeleteSession(uh.UserSess.UUID)
+	uh.LoggedInUser = nil
+	fmt.Println("logging out")
+	http.Redirect(w, r, "http://localhost:8282/healthcenter/login", http.StatusSeeOther)
 }
 
 func FileUpload(r *http.Request, folderName string) (string, error) {
 	r.ParseMultipartForm(32 << 20)
-	file, handler, err := r.FormFile("upload_image")
+	file, header, err := r.FormFile("upload_image")
 	if err != nil {
+		panic(err)
 		return "",err
 	}
 	defer file.Close()
@@ -205,13 +360,14 @@ func FileUpload(r *http.Request, folderName string) (string, error) {
 		panic(err)
 	}
 
-	path := filepath.Join(wd, "client","ui", "assets", "img", "uploads",folderName, handler.Filename)
+	path := filepath.Join(wd, "client","ui", "assets", "img", "uploads",folderName, header.Filename)
 
 	f, err := os.OpenFile(path,os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
+		panic(err)
 		return "",err
 	}
 	defer f.Close()
 	io.Copy(f, file)
-	return handler.Filename, nil
+	return header.Filename, nil
 }

@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/TenaHub/api/entity"
 	"github.com/TenaHub/api/agent"
+	"fmt"
 )
 
 type AgentHandler struct {
@@ -95,11 +96,12 @@ func (adm *AgentHandler) PostAgent(w http.ResponseWriter, r *http.Request, ps ht
 	header.Add("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
 	header.Add("Access-Control-Max-Age","86400")
 
-
+	fmt.Println("adding agent")
 	l := r.ContentLength
 	body := make([]byte, l)
 	r.Body.Read(body)
-	agentData := &entity.Agent{}
+	//agentData := &entity.Agent{}
+	agentData := &entity.User{}
 
 	err := json.Unmarshal(body, agentData)
 
@@ -125,13 +127,17 @@ func (adm *AgentHandler) PostAgent(w http.ResponseWriter, r *http.Request, ps ht
 func (adm *AgentHandler) PutAgent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	fmt.Println(err)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
+	fmt.Println("putting")
 	agentData, errs := adm.agentService.AgentById(uint(id))
+	fmt.Println(errs)
 	if len(errs) > 0 {
+		//panic(errs)
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
@@ -142,15 +148,18 @@ func (adm *AgentHandler) PutAgent(w http.ResponseWriter, r *http.Request, ps htt
 	json.Unmarshal(body, &agentData)
 	agentData.ID = uint(id)
 	agentData, errs = adm.agentService.UpdateAgent(agentData)
-
+	fmt.Println(errs)
 	if len(errs) > 0 {
+		//panic(errs)
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 	output, err := json.MarshalIndent(agentData, "", "\t\t")
-
+	fmt.Println(output)
+	fmt.Println(errs)
 	if err != nil {
+		//panic(err)
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return

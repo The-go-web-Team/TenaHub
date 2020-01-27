@@ -34,10 +34,10 @@
         }
     </style>
 </head>
-<body style="background: url('/assets/img/banner-bg.jpg')">
+<body style="background: url('../assets/img/banner-bg.jpg')">
 <header>
     <div id="nav" class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom shadow-sm">
-        <h4 class="my-0 mr-md-auto logo"><a href="#"><b>TenaHub</b></a></h4>
+        <h4 class="my-0 mr-md-auto logo"><a href="/home"><b>TenaHub</b></a></h4>
         <nav class="my-2 my-md-0 mr-md-3">
             <a class="p-2 text-dark " href="#">Health Center Page</a>
         </nav>
@@ -63,16 +63,22 @@
                     </div>
 
                     <form method="POST" id="login-form" class="p-2" action="http://localhost:8282/healthcenter/login">
+                        <input type="hidden" name="_csrf" value='{{ .CSRF }}'>
                         <div class="form-group">
-                            <p class="text-danger">{{.}}</p>
-                            <label for="exampleInputPassword1">Email</label>
+                            <p class="text-danger">
+                            {{with .VErrors.Get "generic" }} {{ . }} {{end}}
+                            </p>
+                            <label for="email">Email</label>
                             <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" required>
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                            <label for="password">Password
+                            <label for="password" class="text-danger">{{with .VErrors.Get "password" }} {{ . }} {{end}}</label>
+                            </label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" >
                         </div>
-                        <p id="input-error" class="text-danger"></p>
+                        <p id="input-error" class="text-danger">
+                        </p>
                         <button type="submit" name="submit" class="btn btn-primary">Login</button>
                     </form>
 

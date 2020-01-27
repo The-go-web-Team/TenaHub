@@ -58,14 +58,14 @@ func (adh *ServiceHandler) EditService(w http.ResponseWriter, r *http.Request) {
 	}else {
 		status.Success = true
 	}
-	http.Redirect(w, r, r.Header.Get("Referer"), 302)
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
 }
 
 func (adh *ServiceHandler) DeleteService(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 	id,_ := strconv.Atoi(r.FormValue("hidden_service_id"))
 	URL := fmt.Sprintf("http://localhost:8181/v1/service/%d",id)
-
+	fmt.Println("We are here")
 	req, err := http.NewRequest(http.MethodDelete,URL,nil)
 	var status addStatus
 

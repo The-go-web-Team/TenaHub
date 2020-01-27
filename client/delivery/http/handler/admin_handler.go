@@ -10,15 +10,20 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"strconv"
 	"time"
-	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/client/entity"
+	"net/url"
+	"github.com/TenaHub/client/rtoken"
+	"github.com/TenaHub/client/form"
 )
 
 
 type AdminHandler struct {
 	temp *template.Template
+	userHandl *UserHandler
+	CsrfSignKey  []byte
 }
-func NewAdminHandler(T *template.Template) *AdminHandler {
-	return &AdminHandler{temp: T}
+func NewAdminHandler(T *template.Template, uh *UserHandler, csk []byte) *AdminHandler {
+	return &AdminHandler{temp: T, userHandl:uh, CsrfSignKey:csk}
 }
 
 
@@ -34,36 +39,50 @@ func (adh *AdminHandler) AllAgents(w http.ResponseWriter, r *http.Request) {
 }
 type data struct {
 	Admin *entity.Admin
-	Agent []entity.Agent
+	Agent []entity.User
 	HealthCenter []entity.HealthCenter
 	User []entity.User
-
+	Form form.Input
 }
 func (adh *AdminHandler) AdminPage(w http.ResponseWriter, r *http.Request) {
-	c, err := r.Cookie("admin")
+	//c, err := r.Cookie("admin")
 
-
-	if err != nil {
-		//adh.temp.ExecuteTemplate(w, "admin.login.layout",nil)
-		http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
-		return
-	} else {
-		fmt.Println(c.Value)
-		fmt.Println(c.MaxAge)
-	}
-		id, _ := strconv.Atoi(c.Value)
+	//if err != nil {
+	//	//adh.temp.ExecuteTemplate(w, "admin.login.layout",nil)
+	//	http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
+	//	return
+	//} else {
+	//	fmt.Println(c.Value)
+	//	fmt.Println(c.MaxAge)
+	//}
+	//	id, _ := strconv.Atoi(c.Value)
+	//	usr := adh.userHandl.LoggedInUser
+	//	fmt.Println(usr)
+		token, err := rtoken.CSRFToken(adh.CsrfSignKey)
+		agentForm := struct {
+			Values  url.Values
+			VErrors form.ValidationErrors
+			CSRF    string
+		}{
+			Values:  nil,
+			VErrors: nil,
+			CSRF:    token,
+		}
+		id, _ := strconv.Atoi(r.URL.Query().Get("id"))
 		admin, err := service.FetchAdmin(id)
+		fmt.Println(admin)
 		agents, err := service.FetchAgents()
 		healthCenters, err := service.FetchHealthCenters()
 		users, err := service.FetchUsers()
 
-		//if err != nil {
-		//	fmt.Println(err)
-		//	w.WriteHeader(http.StatusNoContent)
-		//
-		//	//http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
-		//}
-		adh.temp.ExecuteTemplate(w, "admin_home.layout", data{admin,agents, healthCenters, users})
+		if err != nil {
+			fmt.Println("here")
+			fmt.Println(err)
+			w.WriteHeader(http.StatusNoContent)
+			return
+			//http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
+		}
+		adh.temp.ExecuteTemplate(w, "admin_home.layout", data{admin,agents, healthCenters, users, agentForm})
 		return
 }
 

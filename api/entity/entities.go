@@ -91,7 +91,7 @@ type Service struct {
 	Name           string `json:"name" gorm:"varchar(255); not null"`
 	Description    string `json:"description" gorm:"varchar(255); not null"`
 	HealthCenterID uint   `json:"healthcenterid"`
-	// HealthCenter   HealthCenter
+	//HealthCenter   HealthCenter
 	Status string `json:"status" gorm:"varchar(255); not null;default:'pending'"`
 }
 

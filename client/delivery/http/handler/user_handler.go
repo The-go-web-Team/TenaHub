@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-<<<<<<< HEAD
 	"github.com/TenaHub/client/service"
 	"github.com/TenaHub/client/session"
 
@@ -17,40 +16,39 @@ import (
 	"github.com/TenaHub/client/form"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/TenaHub/client/permission"
-=======
-	"time"
-	"github.com/TenaHub/client/service"
-	"github.com/TenaHub/client/session"
-	"github.com/TenaHub/api/entity"
->>>>>>> ce0279da1e25a7ed5b10304701ed0b75ea510d22
 )
 
 // UserHandler handles user related http requests
 type UserHandler struct {
-	templ        *template.Template
-	userSess     *entity.Session
-	loggedInUser *entity.User
-	csrfSignKey  []byte
+	Templ        *template.Template
+	UserSess     *entity.Session
+	LoggedInUser *entity.User
+	CsrfSignKey  []byte
 }
 
 // NewUserHandler creates object of UserHandler
 func NewUserHandler(tmpl *template.Template,	usrSess *entity.Session, csKey []byte) *UserHandler {
-	return &UserHandler{templ: tmpl, userSess:usrSess, csrfSignKey:csKey}
+	return &UserHandler{Templ: tmpl, UserSess:usrSess, CsrfSignKey:csKey}
 }
 
 type contextKey string
 
 var ctxUserSessionKey = contextKey("signed_in_user_session")
 
+func (uh *UserHandler) GetLoggedInUser()*entity.User{
+	return uh.LoggedInUser
+}
+
 // Authenticated checks if a user is authenticated to access a given route
 func (uh *UserHandler) Authenticated(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		ok := uh.loggedIn(r)
+		ok := uh.LoggedIn(r)
+		fmt.Println(ok)
 		if !ok {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
-		ctx := context.WithValue(r.Context(), ctxUserSessionKey, uh.userSess)
+		ctx := context.WithValue(r.Context(), ctxUserSessionKey, uh.UserSess)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 	return http.HandlerFunc(fn)
@@ -60,10 +58,10 @@ func (uh *UserHandler) Authenticated(next http.Handler) http.Handler {
 func (uh *UserHandler) Authorized(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		role := ""
-		if !(uh.loggedInUser == nil) {
-			role = uh.loggedInUser.Role
+		if !(uh.LoggedInUser == nil) {
+			role = uh.LoggedInUser.Role
 		}
-		//roles, errs := uh.userService.UserRoles(uh.loggedInUser)
+		//roles, errs := uh.userService.UserRoles(uh.LoggedInUser)
 		//if len(errs) > 0 {
 		//	http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 		//	return
@@ -78,7 +76,7 @@ func (uh *UserHandler) Authorized(next http.Handler) http.Handler {
 		//}
 
 		permitted := permission.HasPermission(r.URL.Path, strings.ToUpper(role) , r.Method)
-		fmt.Printf("permitted: %s\n", permitted)
+		fmt.Printf("permitted: %t\n", permitted)
 		if !permitted {
 			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 			return
@@ -87,7 +85,7 @@ func (uh *UserHandler) Authorized(next http.Handler) http.Handler {
 		if r.Method == http.MethodPost {
 			fmt.Println("here")
 			fmt.Println(r.PostFormValue("_csrf"))
-			ok, err := rtoken.ValidCSRF(r.FormValue("_csrf"), uh.csrfSignKey)
+			ok, err := rtoken.ValidCSRF(r.FormValue("_csrf"), uh.CsrfSignKey)
 			if !ok || (err != nil) {
 				fmt.Println("also here")
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
@@ -98,20 +96,20 @@ func (uh *UserHandler) Authorized(next http.Handler) http.Handler {
 	})
 }
 
-func (uh *UserHandler) loggedIn(r *http.Request) bool {
-	if uh.userSess == nil {
+func (uh *UserHandler) LoggedIn(r *http.Request) bool {
+	if uh.UserSess == nil {
 		return false
 	}
-	userSess := uh.userSess
-	fmt.Printf("usersess: %s", userSess)
-	c, err := r.Cookie(userSess.UUID)
+	UserSess := uh.UserSess
+	fmt.Printf("usersess: %q", UserSess)
+	c, err := r.Cookie(UserSess.UUID)
 	//fmt.Println(c)
 	if err != nil {
 		return false
 	}
 
-	fmt.Printf("logged In: %s" ,userSess.SigningKey)
-	ok, err := session.Valid(c.Value, userSess.SigningKey)
+	fmt.Printf("logged In: %s" ,UserSess.SigningKey)
+	ok, err := session.Valid(c.Value, UserSess.SigningKey)
 	fmt.Println(err)
 	if !ok || (err != nil) {
 		return false
@@ -124,19 +122,19 @@ func (uh *UserHandler) Index(w http.ResponseWriter, r *http.Request) {
 	hcs, err := service.GetTop(4)
 
 	if err != nil {
-		uh.templ.ExecuteTemplate(w, "user.error.layout", nil)
+		uh.Templ.ExecuteTemplate(w, "user.error.layout", nil)
 		return
 	}
 
 	fmt.Println(hcs)
 
-	uh.templ.ExecuteTemplate(w, "user.index.default.layout", hcs)
+	uh.Templ.ExecuteTemplate(w, "user.index.default.layout", hcs)
 }
 
 // Login handles Get /login and POST /login
 func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.Referer())
-	token, err := rtoken.CSRFToken(uh.csrfSignKey)
+	token, err := rtoken.CSRFToken(uh.CsrfSignKey)
 
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -152,7 +150,7 @@ func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 			VErrors: nil,
 			CSRF:    token,
 		}
-		uh.templ.ExecuteTemplate(w, "user.login.layout", loginForm)
+		uh.Templ.ExecuteTemplate(w, "user.login.layout", loginForm)
 	} else if r.Method == http.MethodPost {
 		err := r.ParseForm()
 		if err != nil {
@@ -172,24 +170,24 @@ func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			if err.Error() == "error" {
 				loginForm.VErrors.Add("generic", "Your email address or password is wrong")
-				uh.templ.ExecuteTemplate(w, "user.login.layout", loginForm)
+				uh.Templ.ExecuteTemplate(w, "user.login.layout", loginForm)
 				return
 			}
 		} else {
 
 			//fmt.Println(resp)
-			uh.loggedInUser = resp
-			claims := rtoken.Claims(resp.Email, uh.userSess.Expires)
-			session.Create(claims, uh.userSess.UUID, uh.userSess.SigningKey, w)
-			fmt.Printf("sess: %s", uh.userSess.SigningKey)
-			newSess, err := service.StoreSession(uh.userSess)
-			fmt.Println("here", uh.userSess.SigningKey)
+			uh.LoggedInUser = resp
+			claims := rtoken.Claims(resp.Email, uh.UserSess.Expires)
+			session.Create(claims, uh.UserSess.UUID, uh.UserSess.SigningKey, w)
+			fmt.Printf("sess: %s", uh.UserSess.SigningKey)
+			newSess, err := service.StoreSession(uh.UserSess)
+			fmt.Println("here", uh.UserSess.SigningKey)
 			if err!=nil{
 				loginForm.VErrors.Add("generic", "Failed to store session")
-				uh.templ.ExecuteTemplate(w, "user.login.layout", loginForm)
+				uh.Templ.ExecuteTemplate(w, "user.login.layout", loginForm)
 				return
 			}
-			uh.userSess = newSess
+			uh.UserSess = newSess
 			//
 			//cookie := http.Cookie{
 			//	Name:     "user",
@@ -201,14 +199,27 @@ func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 			//http.SetCookie(w, &cookie)
 			// w.Header().Set("Location:", "https://locahost:8282/home")
-			//ctx := context.WithValue(r.Context(), ctxUserSessionKey, uh.userSess)
+			//ctx := context.WithValue(r.Context(), ctxUserSessionKey, uh.UserSess)
 			fmt.Printf("referer: %s\n", r.Referer())
+			var url string
+			fmt.Println(uh.LoggedInUser)
+			fmt.Println("role: "+uh.LoggedInUser.Role)
+			fmt.Printf("id: %d\n", uh.LoggedInUser.ID)
+			switch uh.LoggedInUser.Role {
+			case "admin":
+				url = "http://localhost:8282/admin?id="+strconv.Itoa(int(uh.LoggedInUser.ID))
+			case "agent":
+				url = "http://localhost:8282/agent?id="+strconv.Itoa(int(uh.LoggedInUser.ID))
+			case "user":
+				url = "http://localhost:8282/home"
+			}
+			fmt.Println(url)
 			if r.Referer() ==  "http://localhost:8282/login" {
-				http.Redirect(w, r, "http://localhost:8282/home", http.StatusSeeOther)
+				http.Redirect(w, r, url, http.StatusSeeOther)
 				return
 			}
 			http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
-			// uh.templ.ExecuteTemplate(w, "user.index.auth.layout", resp)
+			// uh.Templ.ExecuteTemplate(w, "user.index.auth.layout", resp)
 		}
 
 	}
@@ -227,7 +238,7 @@ func (uh *UserHandler) Auth(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			if err.Error() == "error" {
-				uh.templ.ExecuteTemplate(w, "user.login.layout", "incorrect credentials")
+				uh.Templ.ExecuteTemplate(w, "user.login.layout", "incorrect credentials")
 				return
 			}
 		} else {
@@ -246,7 +257,7 @@ func (uh *UserHandler) Auth(w http.ResponseWriter, r *http.Request) {
 			http.SetCookie(w, &cookie)
 			// w.Header().Set("Location:", "https://locahost:8282/home")
 			http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
-			// uh.templ.ExecuteTemplate(w, "user.index.auth.layout", resp)
+			// uh.Templ.ExecuteTemplate(w, "user.index.auth.layout", resp)
 		}
 
 	}
@@ -255,28 +266,28 @@ func (uh *UserHandler) Auth(w http.ResponseWriter, r *http.Request) {
 // Home handles GET /home
 func (uh *UserHandler) Home(w http.ResponseWriter, r *http.Request) {
 	hcs, err := service.GetTop(4)
-	fmt.Printf("home: %s\n", uh.userSess.SigningKey)
+	fmt.Printf("home: %s\n", uh.UserSess.SigningKey)
 	if err != nil {
-		uh.templ.ExecuteTemplate(w, "user.error.layout", nil)
+		uh.Templ.ExecuteTemplate(w, "user.error.layout", nil)
 		return
 	}
 
-	//fmt.Println(uh.loggedIn(r))
+	//fmt.Println(uh.LoggedIn(r))
 
 	//c, err := r.Cookie("user")
-	if !uh.loggedIn(r) {
-		uh.templ.ExecuteTemplate(w, "user.index.default.layout", hcs)
+	if !uh.LoggedIn(r) {
+		uh.Templ.ExecuteTemplate(w, "user.index.default.layout", hcs)
 		return
 	} else {
 		//fmt.Println(c.Value)
 		//fmt.Println(c.MaxAge)
 	}
-	uh.templ.ExecuteTemplate(w, "user.index.auth.layout", hcs)
+	uh.Templ.ExecuteTemplate(w, "user.index.auth.layout", hcs)
 }
 
 // SignUp handles GET /signup and POST /signup
 func (uh *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) {
-	token, err := rtoken.CSRFToken(uh.csrfSignKey)
+	token, err := rtoken.CSRFToken(uh.CsrfSignKey)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
@@ -290,7 +301,7 @@ func (uh *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 			VErrors: nil,
 			CSRF:    token,
 		}
-		uh.templ.ExecuteTemplate(w, "user.signup.layout", signUpForm)
+		uh.Templ.ExecuteTemplate(w, "user.signup.layout", signUpForm)
 		return
 	} else if r.Method == http.MethodPost {
 		err := r.ParseForm()
@@ -309,7 +320,7 @@ func (uh *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 
 		if !signUpForm.Valid() {
 			fmt.Println(signUpForm.VErrors)
-			uh.templ.ExecuteTemplate(w, "user.signup.layout", signUpForm)
+			uh.Templ.ExecuteTemplate(w, "user.signup.layout", signUpForm)
 			return
 		}
 
@@ -328,7 +339,7 @@ func (uh *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 			if strings.Compare(err.Error(), "duplicate") == 0 {
 				fmt.Println("duplicate")
 				signUpForm.VErrors.Add("generic", "email or phone number is already taken")
-				uh.templ.ExecuteTemplate(w, "user.signup.layout", signUpForm)
+				uh.Templ.ExecuteTemplate(w, "user.signup.layout", signUpForm)
 				return
 			}
 			w.Write([]byte("failed"))
@@ -353,7 +364,7 @@ func (uh *UserHandler) Search(w http.ResponseWriter, r *http.Request) {
 	healthcenters, err := service.GetHealthcenters(searchkey, column)
 
 	if err != nil {
-		uh.templ.ExecuteTemplate(w, "user.error.layout", nil)
+		uh.Templ.ExecuteTemplate(w, "user.error.layout", nil)
 		return
 	}
 
@@ -369,15 +380,15 @@ func (uh *UserHandler) Search(w http.ResponseWriter, r *http.Request) {
 
 	//c, err := r.Cookie("user")
 
-	if !uh.loggedIn(r) {
-		uh.templ.ExecuteTemplate(w, "user.result.default.layout", data)
+	if !uh.LoggedIn(r) {
+		uh.Templ.ExecuteTemplate(w, "user.result.default.layout", data)
 		return
 	} else {
 		//fmt.Println(c.Value)
 		//fmt.Println(c.MaxAge)
 	}
 
-	uh.templ.ExecuteTemplate(w, "user.result.auth.layout", data)
+	uh.Templ.ExecuteTemplate(w, "user.result.auth.layout", data)
 }
 
 // Healthcenters handles GET /healthcenters
@@ -389,14 +400,14 @@ func (uh *UserHandler) Healthcenters(w http.ResponseWriter, r *http.Request) {
 	hc, errr := service.GetHealthcenter(uint(id))
 
 	if errr != nil {
-		uh.templ.ExecuteTemplate(w, "user.error.layout", nil)
+		uh.Templ.ExecuteTemplate(w, "user.error.layout", nil)
 		return
 	}
 
 	services, err := service.GetServices(uint(id))
 
 	if err != nil {
-		uh.templ.ExecuteTemplate(w, "user.error.layout", nil)
+		uh.Templ.ExecuteTemplate(w, "user.error.layout", nil)
 		return
 	}
 
@@ -405,19 +416,19 @@ func (uh *UserHandler) Healthcenters(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("rating: ", rating)
 
 	if err != nil {
-		uh.templ.ExecuteTemplate(w, "user.error.layout", nil)
+		uh.Templ.ExecuteTemplate(w, "user.error.layout", nil)
 		return
 	}
 
 	comments, err := service.GetFeedback(hc.ID)
 
 	if err != nil {
-		uh.templ.ExecuteTemplate(w, "user.error.layout", nil)
+		uh.Templ.ExecuteTemplate(w, "user.error.layout", nil)
 		return
 	}
 
 	fmt.Println(comments)
-	token, err := rtoken.CSRFToken(uh.csrfSignKey)
+	token, err := rtoken.CSRFToken(uh.CsrfSignKey)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
@@ -451,26 +462,26 @@ func (uh *UserHandler) Healthcenters(w http.ResponseWriter, r *http.Request) {
 
 	//c, err := r.Cookie("user")
 
-	if !uh.loggedIn(r) {
-		uh.templ.ExecuteTemplate(w, "user.hc.default.layout", data)
+	if !uh.LoggedIn(r) {
+		uh.Templ.ExecuteTemplate(w, "user.hc.default.layout", data)
 		return
 	} else {
 		//fmt.Println(c.Value)
 		//fmt.Println(c.MaxAge)
 	}
 	//uid, _ := strconv.Atoi(c.Value)
-	uid := uh.loggedInUser.ID
+	uid := uh.LoggedInUser.ID
 	validity, err := service.CheckValidity(uid, hc.ID)
 	fmt.Println(validity)
 	fmt.Println(err)
 
 
 	if err != nil {
-		uh.templ.ExecuteTemplate(w, "user.hc.default.layout", data)
+		uh.Templ.ExecuteTemplate(w, "user.hc.default.layout", data)
 		return
 	}
 	data.Isvalid = validity
-	uh.templ.ExecuteTemplate(w, "user.hc.auth.layout", data)
+	uh.Templ.ExecuteTemplate(w, "user.hc.auth.layout", data)
 
 }
 
@@ -499,9 +510,10 @@ func (uh *UserHandler) Healthcenters(w http.ResponseWriter, r *http.Request) {
 
 // Logout hanldes the POST /logout requests
 func (uh *UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
-	//userSess, _ := r.Context().Value(ctxUserSessionKey).(*entity.Session)
-	session.Remove(uh.userSess.UUID, w)
-	service.DeleteSession(uh.userSess.UUID)
+	//UserSess, _ := r.Context().Value(ctxUserSessionKey).(*entity.Session)
+	session.Remove(uh.UserSess.UUID, w)
+	service.DeleteSession(uh.UserSess.UUID)
+	uh.LoggedInUser = nil
 	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
 
@@ -512,11 +524,11 @@ func (uh *UserHandler) Feedback(w http.ResponseWriter, r *http.Request) {
 	hid := r.PostFormValue("hcid")
 	fmt.Println("the request has come this far")
 	//c, err := r.Cookie("user")
-	if !uh.loggedIn(r) {
+	if !uh.LoggedIn(r) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-	fuid := uh.loggedInUser.ID
+	fuid := uh.LoggedInUser.ID
 	frating, err := strconv.Atoi(rating)
 
 	//fuid, err := strconv.Atoi(uid)
@@ -547,7 +559,8 @@ func (adh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	client := &http.Client{}
 	id,_ := strconv.Atoi(r.FormValue("hidden_id"))
-	URL := fmt.Sprintf("http://localhost:8181/v1/user/%d",id)
+	fmt.Println("deleting")
+	URL := fmt.Sprintf("http://localhost:8181/v1/users/%d",id)
 
 	req, err := http.NewRequest(http.MethodDelete,URL,nil)
 

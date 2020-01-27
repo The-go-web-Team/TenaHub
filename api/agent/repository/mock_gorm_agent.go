@@ -16,8 +16,8 @@ func NewMockAgentGormRepo(db *gorm.DB) agent.AgentRepository{
 	return &MockAgentGormRepo{conn:db}
 }
 
-func (adm *MockAgentGormRepo) AgentById(id uint) (*entity.Agent, []error) {
-	agent := entity.MockAgent
+func (adm *MockAgentGormRepo) AgentById(id uint) (*entity.User, []error) {
+	agent := entity.MockUser
 	if id != 1 {
 		return nil, []error{errors.New("Not found")}
 	}
@@ -38,21 +38,21 @@ func (adm *MockAgentGormRepo) Agent(agentData *entity.Agent) (*entity.Agent, []e
 	return nil, errs
 
 }
-func (adm *MockAgentGormRepo) Agents() ([]entity.Agent, []error) {
-	var agents []entity.Agent
-	agents = append(agents, entity.MockAgent,entity.MockAgent)
+func (adm *MockAgentGormRepo) Agents() ([]entity.User, []error) {
+	var agents []entity.User
+	agents = append(agents, entity.MockUser,entity.MockUser)
 	return agents, nil
 }
-func (adm *MockAgentGormRepo) UpdateAgent(agentData *entity.Agent) (*entity.Agent, []error) {
+func (adm *MockAgentGormRepo) UpdateAgent(agentData *entity.User) (*entity.User, []error) {
 	agent := agentData
 	return agent, nil
 
 }
-func (adm *MockAgentGormRepo) StoreAgent(agentData *entity.Agent) (*entity.Agent, []error) {
+func (adm *MockAgentGormRepo) StoreAgent(agentData *entity.User) (*entity.User, []error) {
 	agent := agentData
 	return agent, nil
 }
-func (adm *MockAgentGormRepo) DeleteAgent(id uint) (*entity.Agent, []error) {
+func (adm *MockAgentGormRepo) DeleteAgent(id uint) (*entity.User, []error) {
 	agent, errs := adm.AgentById(id)
 	if id != 1 {
 		return nil, []error{errors.New("Not found")}

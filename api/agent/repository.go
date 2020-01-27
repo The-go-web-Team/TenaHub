@@ -4,10 +4,10 @@ package agent
 import "github.com/TenaHub/api/entity"
 
 type AgentRepository interface {
-	AgentById(id uint) (*entity.Agent, []error)
-	Agents() ([]entity.Agent, []error)
+	AgentById(id uint) (*entity.User, []error)
+	Agents() ([]entity.User, []error)
 	Agent(agent *entity.Agent)(*entity.Agent, []error)
-	UpdateAgent(user *entity.Agent) (*entity.Agent, []error)
-	StoreAgent(user *entity.Agent) (*entity.Agent, []error)
-	DeleteAgent(id uint) (*entity.Agent, []error)
+	UpdateAgent(user *entity.User) (*entity.User, []error)
+	StoreAgent(user *entity.User) (*entity.User, []error)
+	DeleteAgent(id uint) (*entity.User, []error)
 }

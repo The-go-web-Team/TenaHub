@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/TenaHub/api/entity"
 	"github.com/TenaHub/api/service"
+	"fmt"
 )
 
 type ServiceHandler struct {
@@ -90,14 +91,15 @@ func (adm *ServiceHandler) GetServices(w http.ResponseWriter,r *http.Request, ps
 }
 func (adm *ServiceHandler) DeleteService(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
-
+	fmt.Println("dersenal")
+	fmt.Println(err)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 	_, errs := adm.serviceService.DeleteService(uint(id))
-
+	fmt.Println(errs)
 	if len(errs) > 0 {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)

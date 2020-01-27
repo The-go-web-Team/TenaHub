@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/url"
 	"errors"
-	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/client/entity"
 )
 
 func FetchHealthCenters() ([]entity.HealthCenter, error) {

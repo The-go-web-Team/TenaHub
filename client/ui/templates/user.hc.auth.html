@@ -38,7 +38,7 @@
                         {{ end }}
                     </ul>
                 </div>
-            <div class="reviews mb-5">
+            <div class="reviews mb-5" id="reviews">
                 <h2 class="border-bottom">Reviews</h2>
                 <div class="add-review pt-3 pb-3">
                     <div class='row'>
@@ -140,6 +140,10 @@
                 hcid:hid
             },function(data, success){
                 console.log(data, success);
+                // window.reload(true)
+                window.location.href = window.location.href + "#reviews"
+                window.location.reload(true)
+                // window.header().href = window.header().href
             });
         });
     </script>

@@ -10,7 +10,7 @@ import (
 	"bytes"
 	"strings"
 	"net/url"
-	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/client/entity"
 )
 
 type cookie struct {

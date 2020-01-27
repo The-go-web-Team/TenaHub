@@ -10,7 +10,7 @@ import (
 	"encoding/json"
 	adminRepo "github.com/TenaHub/api/admin/repository"
 	adminServ "github.com/TenaHub/api/admin/service"
-	"github.com/TenaHub1/api/delivery/http/handler"
+	"github.com/TenaHub/api/delivery/http/handler"
 	"github.com/TenaHub/api/entity"
 	"reflect"
 )

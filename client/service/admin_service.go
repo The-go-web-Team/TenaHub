@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/url"
 	"errors"
-	"github.com/TenaHub/api/entity"
+	"github.com/TenaHub/client/entity"
 )
 // var baseURL = "http://localhost:8181/v1"
 

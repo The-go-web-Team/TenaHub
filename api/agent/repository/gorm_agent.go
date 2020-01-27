@@ -5,6 +5,7 @@ import (
 	"github.com/TenaHub/api/entity"
 	"github.com/TenaHub/api/agent"
 	"github.com/TenaHub/api/delivery/http/handler"
+	"fmt"
 )
 
 type AgentGormRepo struct {
@@ -29,23 +30,25 @@ func (adm *AgentGormRepo) Agent(agentData *entity.Agent) (*entity.Agent, []error
 	return nil, errs
 
 }
-func (adm *AgentGormRepo) AgentById(id uint) (*entity.Agent, []error) {
-	agent := entity.Agent{}
+func (adm *AgentGormRepo) AgentById(id uint) (*entity.User, []error) {
+	agent := entity.User{}
+	fmt.Println(id)
 	errs := adm.conn.First(&agent, id).GetErrors()
+	fmt.Println(errs)
 	if len(errs) > 0 {
 		return nil, errs
 	}
 	return &agent, errs
 }
-func (adm *AgentGormRepo) Agents() ([]entity.Agent, []error) {
-	var agents []entity.Agent
-	errs := adm.conn.Find(&agents).GetErrors()
+func (adm *AgentGormRepo) Agents() ([]entity.User, []error) {
+	var agents []entity.User
+	errs := adm.conn.Where("role = ?", "agent").Find(&agents).GetErrors()
 	if len(errs) > 0 {
 		return nil, errs
 	}
 	return agents, errs
 }
-func (adm *AgentGormRepo) UpdateAgent(agentData *entity.Agent) (*entity.Agent, []error) {
+func (adm *AgentGormRepo) UpdateAgent(agentData *entity.User) (*entity.User, []error) {
 	agent := agentData
 	errs := adm.conn.Save(agent).GetErrors()
 	if len(errs) > 0 {
@@ -54,7 +57,7 @@ func (adm *AgentGormRepo) UpdateAgent(agentData *entity.Agent) (*entity.Agent, [
 	return agent, errs
 
 }
-func (adm *AgentGormRepo) StoreAgent(agentData *entity.Agent) (*entity.Agent, []error) {
+func (adm *AgentGormRepo) StoreAgent(agentData *entity.User) (*entity.User, []error) {
 	agent := agentData
 	errs := adm.conn.Create(agent).GetErrors()
 	if len(errs) > 0 {
@@ -62,7 +65,7 @@ func (adm *AgentGormRepo) StoreAgent(agentData *entity.Agent) (*entity.Agent, []
 	}
 	return agent, errs
 }
-func (adm *AgentGormRepo) DeleteAgent(id uint) (*entity.Agent, []error) {
+func (adm *AgentGormRepo) DeleteAgent(id uint) (*entity.User, []error) {
 	agent, errs := adm.AgentById(id)
 	if len(errs) > 0 {
 		return nil, errs

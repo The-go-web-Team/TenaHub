@@ -22,7 +22,7 @@ func (sh *SessionHandler) GetSession(w http.ResponseWriter, r *http.Request, _ h
 	w.Header().Set("Content-type", "application/json")
 
 	uuid := r.URL.Query().Get("uuid")
-
+	fmt.Println("session here")
 	session, errs := sh.sessionService.Session(uuid)
 
 	if len(errs) > 0 {

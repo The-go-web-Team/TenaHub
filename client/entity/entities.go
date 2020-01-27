@@ -89,14 +89,14 @@ type Service struct {
 	Name           string `json:"name"`
 	Description    string `json:"description"`
 	HealthCenterID uint   `json:"healthcenterid"`
-	HealthCenter   HealthCenter
+	//HealthCenter   HealthCenter
 	Status         string `json:"status"`
 }
 
 //Session represents login user session
 type Session struct {
 	ID         uint
-	UUID       string `gorm:"type:varchar(255);not null" json:"uuid"`
-	Expires    int64  `gorm:"type:varchar(255);not null" json:"expires"`
-	SigningKey []byte `gorm:"type:varchar(255);not null" json:"signing_key"`
+	UUID       string `json:"uuid"`
+	Expires    int64  `json:"expires"`
+	SigningKey []byte `json:"signing_key"`
 }
