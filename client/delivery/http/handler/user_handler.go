@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"github.com/TenaHub/client/service"
@@ -12,7 +13,6 @@ import (
 
 	"github.com/TenaHub/client/entity"
 	"github.com/TenaHub/client/rtoken"
-	"net/url"
 	"github.com/TenaHub/client/form"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/TenaHub/client/permission"
@@ -188,74 +188,38 @@ func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			uh.UserSess = newSess
-			//
-			//cookie := http.Cookie{
-			//	Name:     "user",
-			//	Value:    strconv.Itoa(int(resp.ID)),
-			//	MaxAge:   60 * 3,
-			//	Path:     "/",
-			//	HttpOnly: true,
-			//}
 
-			//http.SetCookie(w, &cookie)
-			// w.Header().Set("Location:", "https://locahost:8282/home")
-			//ctx := context.WithValue(r.Context(), ctxUserSessionKey, uh.UserSess)
 			fmt.Printf("referer: %s\n", r.Referer())
-			var url string
+			var urll string
 			fmt.Println(uh.LoggedInUser)
 			fmt.Println("role: "+uh.LoggedInUser.Role)
 			fmt.Printf("id: %d\n", uh.LoggedInUser.ID)
 			switch uh.LoggedInUser.Role {
 			case "admin":
-				url = "http://localhost:8282/admin?id="+strconv.Itoa(int(uh.LoggedInUser.ID))
+				urll = "http://localhost:8282/admin"
 			case "agent":
-				url = "http://localhost:8282/agent?id="+strconv.Itoa(int(uh.LoggedInUser.ID))
+				urll = "http://localhost:8282/agent"
 			case "user":
-				url = "http://localhost:8282/home"
+				urll = "http://localhost:8282/home"
 			}
-			fmt.Println(url)
+			fmt.Println(urll)
+			//r.Form.Add("id", strconv.Itoa(int(uh.LoggedInUser.ID)))
+			r.URL.Query().Add("id", strconv.Itoa(int(uh.LoggedInUser.ID)))
+			//r.Header.Add("id", strconv.Itoa(int(uh.LoggedInUser.ID)))
+			//r.Method = http.MethodPost
+			Url, err := url.Parse(urll)
+			parameters := url.Values{}
+			parameters.Add("id", strconv.Itoa(int(uh.LoggedInUser.ID)))
+			Url.RawQuery = parameters.Encode()
+
+			if err != nil {
+				http.Redirect(w, r, "http://localhost:8282/login", http.StatusSeeOther)
+			}
+
 			if r.Referer() ==  "http://localhost:8282/login" {
-				http.Redirect(w, r, url, http.StatusSeeOther)
+				http.Redirect(w, r, Url.String(), http.StatusSeeOther)
 				return
 			}
-			http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
-			// uh.Templ.ExecuteTemplate(w, "user.index.auth.layout", resp)
-		}
-
-	}
-}
-
-// Auth authenticates user and redirect to referer POST /auth
-func (uh *UserHandler) Auth(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodPost {
-		email := r.PostFormValue("email")
-		password := r.PostFormValue("password")
-
-		user := entity.User{Email: email, Password: password}
-		fmt.Println(user)
-
-		resp, err := service.Authenticate(&user)
-
-		if err != nil {
-			if err.Error() == "error" {
-				uh.Templ.ExecuteTemplate(w, "user.login.layout", "incorrect credentials")
-				return
-			}
-		} else {
-			fmt.Println(resp)
-
-
-
-			cookie := http.Cookie{
-				Name:     "user",
-				Value:    strconv.Itoa(int(resp.ID)),
-				MaxAge:   60 * 3,
-				Path:     "/",
-				HttpOnly: true,
-			}
-
-			http.SetCookie(w, &cookie)
-			// w.Header().Set("Location:", "https://locahost:8282/home")
 			http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 			// uh.Templ.ExecuteTemplate(w, "user.index.auth.layout", resp)
 		}
@@ -484,29 +448,6 @@ func (uh *UserHandler) Healthcenters(w http.ResponseWriter, r *http.Request) {
 	uh.Templ.ExecuteTemplate(w, "user.hc.auth.layout", data)
 
 }
-
-// Logout handles GET /logout
-//func (uh *UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
-//	c, err := r.Cookie("user")
-//
-//	if err != nil {
-//		http.Redirect(w, r, "http://localhost:8282/login", http.StatusSeeOther)
-//		return
-//	}
-//	if c != nil {
-//		c = &http.Cookie{
-//			Name:     "user",
-//			Value:    "",
-//			Path:     "/",
-//			Expires:  time.Unix(0, 0),
-//			MaxAge:   -10,
-//			HttpOnly: true,
-//		}
-//
-//		http.SetCookie(w, c)
-//	}
-//	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
-//}
 
 // Logout hanldes the POST /logout requests
 func (uh *UserHandler) Logout(w http.ResponseWriter, r *http.Request) {

@@ -19,7 +19,7 @@ import (
 type AgentHandler struct {
 	temp *template.Template
 	CsrfSignKey []byte
-	loggedInAgent *entity.Agent
+	loggedInAgent *entity.User
 }
 func NewAgentHandler(T *template.Template, csk []byte) *AgentHandler {
 	return &AgentHandler{temp: T, CsrfSignKey: csk}
@@ -109,20 +109,13 @@ type addStatus struct {
 	Success bool
 }
 type agentDatas struct {
-	Agent entity.Agent
+	Agent entity.User
 	HealthCenters []entity.HealthCenter
 	PendingServices []entity.Service
 	Form form.Input
 }
 func (ah *AgentHandler) AgentPage(w http.ResponseWriter, r *http.Request) {
-	//c, err := r.Cookie("agent")
-	//
-	//fmt.Println(c.Value, " is value")
-	//if err != nil {
-	//	http.Redirect(w, r, "http://localhost:8282/agent/login", http.StatusSeeOther)
-	//	return
-	//}
-	//id, _ := strconv.Atoi(c.Value)
+
 	token, err := rtoken.CSRFToken(ah.CsrfSignKey)
 	agentForm := struct {
 		Values  url.Values
@@ -133,10 +126,18 @@ func (ah *AgentHandler) AgentPage(w http.ResponseWriter, r *http.Request) {
 		VErrors: nil,
 		CSRF:    token,
 	}
-	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+	//id, err := strconv.Atoi(r.Form.Get("id"))
+	//id, err = strconv.Atoi(r.Header.Get("id"))
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	fmt.Println(r.URL.RawQuery)
+	fmt.Println(id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	agentData, err := service.FetchAgent(id)
 	if err != nil {
-		http.Redirect(w, r, "http://localhost:8282/agent/login", http.StatusSeeOther)
+		http.Redirect(w, r, "http://localhost:8282/login", http.StatusSeeOther)
 		return
 	}
 	ah.loggedInAgent = agentData

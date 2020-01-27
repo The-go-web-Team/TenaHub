@@ -20,7 +20,7 @@ func NewAgentHandler(adm agent.AgentService) *AgentHandler {
 
 func (adm *AgentHandler) GetSingleAgent(w http.ResponseWriter,r *http.Request, ps httprouter.Params) {
 	id, err := strconv.Atoi(ps.ByName("id"))
-
+	fmt.Println("id:" + ps.ByName("id"))
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)

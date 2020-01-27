@@ -10,7 +10,7 @@ import (
 	"github.com/TenaHub/client/entity"
 )
 
-func FetchAgent(id int) (*entity.Agent, error) {
+func FetchAgent(id int) (*entity.User, error) {
 	client := &http.Client{}
 	URL := fmt.Sprintf("%s/agent/%d", baseURL, id)
 	fmt.Println(URL)
@@ -19,7 +19,7 @@ func FetchAgent(id int) (*entity.Agent, error) {
 	if err != nil {
 		return nil, err
 	}
-	userdata := entity.Agent{}
+	userdata := entity.User{}
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err

@@ -9,7 +9,6 @@ type User struct {
 	ID          uint   `json:"id"`
 	FirstName   string `json:"firstname"`
 	LastName    string `json:"lastname"`
-	UserName    string `json:"username"`
 	Email       string `json:"email"`
 	Password    string `json:"password"`
 	ProfilePic  string `json:"profilepic"`

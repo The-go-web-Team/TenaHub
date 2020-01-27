@@ -38,26 +38,14 @@ func (adh *AdminHandler) AllAgents(w http.ResponseWriter, r *http.Request) {
 	adh.temp.ExecuteTemplate(w, "check.html", users)
 }
 type data struct {
-	Admin *entity.Admin
+	Admin *entity.User
 	Agent []entity.User
 	HealthCenter []entity.HealthCenter
 	User []entity.User
 	Form form.Input
 }
 func (adh *AdminHandler) AdminPage(w http.ResponseWriter, r *http.Request) {
-	//c, err := r.Cookie("admin")
 
-	//if err != nil {
-	//	//adh.temp.ExecuteTemplate(w, "admin.login.layout",nil)
-	//	http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
-	//	return
-	//} else {
-	//	fmt.Println(c.Value)
-	//	fmt.Println(c.MaxAge)
-	//}
-	//	id, _ := strconv.Atoi(c.Value)
-	//	usr := adh.userHandl.LoggedInUser
-	//	fmt.Println(usr)
 		token, err := rtoken.CSRFToken(adh.CsrfSignKey)
 		agentForm := struct {
 			Values  url.Values
@@ -68,7 +56,9 @@ func (adh *AdminHandler) AdminPage(w http.ResponseWriter, r *http.Request) {
 			VErrors: nil,
 			CSRF:    token,
 		}
-		id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+		//id, _ := strconv.Atoi(r.Form.Get("id"))
+		id, err := strconv.Atoi(r.URL.Query().Get("id"))
+		fmt.Println(r.URL.RawQuery)
 		admin, err := service.FetchAdmin(id)
 		fmt.Println(admin)
 		agents, err := service.FetchAgents()
@@ -82,6 +72,7 @@ func (adh *AdminHandler) AdminPage(w http.ResponseWriter, r *http.Request) {
 			return
 			//http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
 		}
+		fmt.Println(admin)
 		adh.temp.ExecuteTemplate(w, "admin_home.layout", data{admin,agents, healthCenters, users, agentForm})
 		return
 }
@@ -123,61 +114,6 @@ func (adh *AdminHandler) EditAdmin(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, r.Header.Get("Referer"), 302)
 }
-
-
-//func (u *entity.Admin) Prepare() {
-//	//u.ID = 0
-//	//u.Nickname = html.EscapeString(strings.TrimSpace(u.Nickname))
-//	//u.Email = html.EscapeString(strings.TrimSpace(u.Email))
-//	//u.CreatedAt = time.Now()
-//	//u.UpdatedAt = time.Now()
-//}
-
-//func (u *User) Validate(action string) error {
-//	switch strings.ToLower(action) {
-//	case "update":
-//		if u.Nickname == "" {
-//			return errors.New("Required Nickname")
-//		}
-//		if u.Password == "" {
-//			return errors.New("Required Password")
-//		}
-//		if u.Email == "" {
-//			return errors.New("Required Email")
-//		}
-//		if err := checkmail.ValidateFormat(u.Email); err != nil {
-//			return errors.New("Invalid Email")
-//		}
-//
-//		return nil
-//	case "login":
-//		if u.Password == "" {
-//			return errors.New("Required Password")
-//		}
-//		if u.Email == "" {
-//			return errors.New("Required Email")
-//		}
-//		if err := checkmail.ValidateFormat(u.Email); err != nil {
-//			return errors.New("Invalid Email")
-//		}
-//		return nil
-//
-//	default:
-//		if u.Nickname == "" {
-//			return errors.New("Required Nickname")
-//		}
-//		if u.Password == "" {
-//			return errors.New("Required Password")
-//		}
-//		if u.Email == "" {
-//			return errors.New("Required Email")
-//		}
-//		if err := checkmail.ValidateFormat(u.Email); err != nil {
-//			return errors.New("Invalid Email")
-//		}
-//		return nil
-//	}
-//}
 
 
 // Login handles Get /login and POST /login

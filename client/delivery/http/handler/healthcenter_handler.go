@@ -83,19 +83,6 @@ func (hch *HealthCenterHandler) Authorized(next http.Handler) http.Handler {
 		if !(hch.LoggedInUser == nil) {
 			role = "HEALTH_CENTER"
 		}
-		//roles, errs := uh.userService.UserRoles(uh.LoggedInUser)
-		//if len(errs) > 0 {
-		//	http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
-		//	return
-		//}
-
-		//for _, role := range roles {
-		//	permitted := permission.HasPermission(r.URL.Path, role.Name, r.Method)
-		//	if !permitted {
-		//		http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
-		//		return
-		//	}
-		//}
 
 		permitted := permission.HasPermission(r.URL.Path, strings.ToUpper(role) , r.Method)
 		fmt.Printf("permitted: %t\n", permitted)
@@ -230,16 +217,7 @@ func (ah *HealthCenterHandler) HealthCenterPage(w http.ResponseWriter, r *http.R
 		VErrors: nil,
 		CSRF:    token,
 	}
-	//c, err := r.Cookie("healthcenter")
 
-	//if ah.LoggedInUser==nil{
-	//	http.Redirect(w, r, "http://localhost:8282/healthcenter/login", http.StatusSeeOther)
-	//	return
-	//} else {
-	//	//fmt.Println(c.Value)
-	//	//fmt.Println(c.MaxAge)
-	//}
-	//id, _ := strconv.Atoi(cd.Value)
 	id := ah.LoggedInUser.ID
 	healthcenter, err := service.FetchHealthCenter(uint(id))
 	if err != nil {
@@ -309,37 +287,13 @@ func (ah *HealthCenterHandler) HealthCenterLogin(w http.ResponseWriter, r *http.
 				return
 			}
 			ah.UserSess = newSess
-			//cookie := http.Cookie{
-			//	Name:     "healthcenter",
-			//	Value:    strconv.Itoa(int(resp.ID)),
-			//	MaxAge:   60 * 30,
-			//	Path:     "/",
-			//	HttpOnly: true,
-			//}
-			//http.SetCookie(w, &cookie)
 			http.Redirect(w, r, "http://localhost:8282/healthcenter", http.StatusSeeOther)
 		}
 	}
 }
 // Logout handles GET /logout
 func (uh *HealthCenterHandler) HealthCenterLogout(w http.ResponseWriter, r *http.Request) {
-	//c, err := r.Cookie("healthcenter")
-	//if err != nil {
-	//	http.Redirect(w, r, "http://localhost:8282/healthcenter/login", http.StatusSeeOther)
-	//	return
-	//}
-	//if c != nil {
-	//	c = &http.Cookie{
-	//		Name:     "healthcenter",
-	//		Value:    "",
-	//		Path:     "/",
-	//		Expires:  time.Unix(0, 0),
-	//		MaxAge:   -10,
-	//		HttpOnly: true,
-	//	}
-	//
-	//	http.SetCookie(w, c)
-	//}
+
 	session.Remove(uh.UserSess.UUID, w)
 	service.DeleteSession(uh.UserSess.UUID)
 	uh.LoggedInUser = nil

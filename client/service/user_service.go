@@ -87,14 +87,7 @@ func PostUser(user *entity.User) error {
 
 // Authenticate authenticates user
 func Authenticate(user *entity.User) (*entity.User, error) {
-	// requestBody, err := json.MarshalIndent(user, "", "\n")
 	URL := fmt.Sprintf("%s/%s", baseURL, "user")
-
-	// fmt.Println(requestBody, URL)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return nil, err
-	// }
 
 	formval := url.Values{}
 	formval.Add("email", user.Email)

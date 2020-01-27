@@ -11,15 +11,15 @@ import (
 )
 // var baseURL = "http://localhost:8181/v1"
 
-func FetchAdmin(id int) (*entity.Admin, error) {
+func FetchAdmin(id int) (*entity.User, error) {
 	client := &http.Client{}
-	URL := fmt.Sprintf("%s/admin/%d", baseURL, id)
+	URL := fmt.Sprintf("%s/users/%d", baseURL, id)
 	req, _ := http.NewRequest("GET", URL, nil)
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
-	adminData := entity.Admin{}
+	adminData := entity.User{}
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
@@ -31,21 +31,6 @@ func FetchAdmin(id int) (*entity.Admin, error) {
 	}
 	return &adminData, nil
 }
-
-
-
-
-// type cookie struct {
-// 	Key        string
-// 	Expiration time.Time
-// }
-
-// type response struct {
-// 	Status string
-// 	Content interface{}
-// }
-
-// var loggedIn = make([]cookie, 10)
 
 // Authenticate authenticates user
 func AdminAuthenticate(admin *entity.Admin) (*entity.Admin, error) {
@@ -84,46 +69,3 @@ func AdminAuthenticate(admin *entity.Admin) (*entity.Admin, error) {
 	}
 	return &respjson.Content, nil
 }
-
-
-//
-//func FetchHealthCenter(id int) (*entity.HealthCenter, error) {
-//	client := &http.Client{}
-//	URL := fmt.Sprintf("%s/healthcenter/%d", baseURL, id)
-//	req, _ := http.NewRequest("GET", URL, nil)
-//	res, err := client.Do(req)
-//	if err != nil {
-//		return nil, err
-//	}
-//	healthcenter := &entity.HealthCenter{}
-//	body, err := ioutil.ReadAll(res.Body)
-//	if err != nil {
-//		return nil, err
-//	}
-//	err = json.Unmarshal(body, healthcenter)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return healthcenter, nil
-//}
-//
-//func FetchUser(id int) (*entity.User, error) {
-//	client := &http.Client{}
-//	URL := fmt.Sprintf("%s/user/%d", baseURL, id)
-//	req, _ := http.NewRequest("GET", URL, nil)
-//	res, err := client.Do(req)
-//	if err != nil {
-//		return nil, err
-//	}
-//	userdata := &entity.User{}
-//	body, err := ioutil.ReadAll(res.Body)
-//	if err != nil {
-//		return nil, err
-//	}
-//	err = json.Unmarshal(body, userdata)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return userdata, nil
-//}
-//
