@@ -359,7 +359,7 @@ func (uh *UserHandler) Search(w http.ResponseWriter, r *http.Request) {
 func (uh *UserHandler) Healthcenters(w http.ResponseWriter, r *http.Request) {
 
 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
-	fmt.Println(id)
+	//fmt.Println(id)
 
 	hc, errr := service.GetHealthcenter(uint(id))
 

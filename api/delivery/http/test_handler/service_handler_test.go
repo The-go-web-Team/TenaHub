@@ -16,9 +16,9 @@ import (
 
 func TestServices(t *testing.T) {
 
-	serviceRepo := serviceRepo.NewMockServiceGormRepo(nil)
-	serviceServ := serviceServ.NewServiceService(serviceRepo)
-	serviceHandler := handler.NewServiceHandler(serviceServ)
+	servicesRepo := serviceRepo.NewMockServiceGormRepo(nil)
+	servicesServ := serviceServ.NewServiceService(servicesRepo)
+	serviceHandler := handler.NewServiceHandler(servicesServ)
 
 	mux := httprouter.New()
 	mux.GET("/v1/services/:id", serviceHandler.GetServices)
@@ -62,14 +62,14 @@ func TestPendingService(t *testing.T) {
 	serviceHandler := handler.NewServiceHandler(serviceServ)
 
 	mux := httprouter.New()
-	mux.GET("/v1/pendingservice", serviceHandler.GetPendingServices)
+	mux.GET("/v1/pending/services/:id", serviceHandler.GetPendingServices)
 	ts := httptest.NewTLSServer(mux)
 	defer ts.Close()
 
 	tc := ts.Client()
 	url := ts.URL
 
-	resp, err := tc.Get(url + "/v1/pendingservice")
+	resp, err := tc.Get(url + "/v1/pending/services/1")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -31,9 +31,9 @@ func (cr *MockCommentGormRepo) Comments(id uint) ([]entity.Comment, []error) {
 // Comment returns single healthcenter comment from database
 func (cr *MockCommentGormRepo) Comment(id uint) (*entity.Comment, []error) {
 	comment := entity.MockComment
-	if id != 1 {
-		return nil, []error{errors.New("Not found")}
-	}
+	//if comment.ID != id {
+	//	return nil, []error{errors.New("Not found")}
+	//}
 	return &comment, nil
 }
 

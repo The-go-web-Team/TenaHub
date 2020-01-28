@@ -57,9 +57,9 @@ func (adh *AdminHandler) AdminPage(w http.ResponseWriter, r *http.Request) {
 		}
 		//id, _ := strconv.Atoi(r.Form.Get("id"))
 		id, err := strconv.Atoi(r.URL.Query().Get("id"))
-		fmt.Println(r.URL.RawQuery)
+		//fmt.Println(r.URL.RawQuery)
 		admin, err := service.FetchAdmin(id)
-		fmt.Println(admin)
+		//fmt.Println(admin)
 		agents, err := service.FetchAgents()
 		healthCenters, err := service.FetchHealthCenters()
 		users, err := service.FetchUsers()
@@ -71,7 +71,7 @@ func (adh *AdminHandler) AdminPage(w http.ResponseWriter, r *http.Request) {
 			return
 			//http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
 		}
-		fmt.Println(admin)
+		//fmt.Println(admin)
 		adh.temp.ExecuteTemplate(w, "admin_home.layout", data{admin,agents, healthCenters, users, agentForm})
 		return
 }

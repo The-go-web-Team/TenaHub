@@ -44,7 +44,6 @@ func (ch *CommentHandler) GetComments(w http.ResponseWriter, r *http.Request, ps
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
-
 	w.Write(output)
 	return
 }

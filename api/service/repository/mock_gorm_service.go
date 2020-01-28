@@ -11,7 +11,7 @@ type MockServiceGormRepo struct {
 }
 
 func NewMockServiceGormRepo(db *gorm.DB) service.ServiceRepository{
-	return &ServiceGormRepo{conn:db}
+	return &MockServiceGormRepo{conn:db}
 }
 func (adm *MockServiceGormRepo) Service(id uint) (*entity.Service, []error) {
 	var service entity.Service

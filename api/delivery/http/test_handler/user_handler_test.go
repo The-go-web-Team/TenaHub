@@ -73,7 +73,6 @@ func TestUser(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf("want %d, got %d", http.StatusOK, resp.StatusCode)
 	}

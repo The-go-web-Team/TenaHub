@@ -16,19 +16,19 @@ import (
 
 func TestComments(t *testing.T) {
 
-	commentRepo := commentRepo.NewCommentGormRepo(nil)
+	commentRepo := commentRepo.NewMockCommentGormRepo(nil)
 	commentServ := commentServ.NewCommentService(commentRepo)
 	commentHandler :=handler.NewCommentHandler(commentServ)
 
 	mux := httprouter.New()
-	mux.GET("/v1/comments", commentHandler.GetComments)
+	mux.GET("/v1/comments/:id", commentHandler.GetComments)
 	ts := httptest.NewTLSServer(mux)
 	defer ts.Close()
 
 	tc := ts.Client()
 	url := ts.URL
 
-	resp, err := tc.Get(url + "/v1/comments")
+	resp, err := tc.Get(url + "/v1/comments/1")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,19 +57,19 @@ func TestComments(t *testing.T) {
 
 func TestComment(t *testing.T) {
 
-	commentRepo := commentRepo.NewCommentGormRepo(nil)
+	commentRepo := commentRepo.NewMockCommentGormRepo(nil)
 	commentServ := commentServ.NewCommentService(commentRepo)
 	commentHandler := handler.NewCommentHandler(commentServ)
 
 	mux := httprouter.New()
-	mux.GET("/v1/comments/:id", commentHandler.GetComments)
+	mux.GET("/v1/comment/:id", commentHandler.GetComments)
 	ts := httptest.NewTLSServer(mux)
 	defer ts.Close()
 
 	tc := ts.Client()
 	url := ts.URL
 
-	resp, err := tc.Get(url + "/v1/comments/1")
+	resp, err := tc.Get(url + "/v1/comment/2")
 	if err != nil {
 		t.Fatal(err)
 	}

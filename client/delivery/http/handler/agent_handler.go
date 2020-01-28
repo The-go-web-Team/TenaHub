@@ -126,11 +126,10 @@ func (ah *AgentHandler) AgentPage(w http.ResponseWriter, r *http.Request) {
 		VErrors: nil,
 		CSRF:    token,
 	}
-	//id, err := strconv.Atoi(r.Form.Get("id"))
-	//id, err = strconv.Atoi(r.Header.Get("id"))
+
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-	fmt.Println(r.URL.RawQuery)
-	fmt.Println(id)
+	//fmt.Println(r.URL.RawQuery)
+	//fmt.Println(id)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -148,7 +147,7 @@ func (ah *AgentHandler) AgentPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("healtcenters are ", healthcentersByAgent)
 	fmt.Println("pending services are ", pendingServices)
 	data := agentDatas{Agent: *agentData, HealthCenters:healthcentersByAgent, PendingServices:pendingServices, Form:agentForm}
-	fmt.Println("the data is ", data)
+	//fmt.Println("the data is ", data)
 	//if err != nil {
 	//	w.WriteHeader(http.StatusNoContent)
 	//}

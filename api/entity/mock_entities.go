@@ -38,7 +38,7 @@ var MockComment = Comment{
 	Comment:"some comment",
 	UserID:3,
 	HealthCenterID:2,
-	PlacedAt:time.Now(),
+	PlacedAt:time.Unix(1494505756, 0),
 }
 var MockService = Service{
 	ID:2,

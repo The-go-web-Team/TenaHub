@@ -40,25 +40,28 @@ func (adh *ServiceHandler) AddService(w http.ResponseWriter, r *http.Request) {
 
 
 func (adh *ServiceHandler) EditService(w http.ResponseWriter, r *http.Request) {
-	name := r.FormValue("name")
-	description := r.FormValue("description")
-	id,_ := strconv.Atoi(r.FormValue("hidden_service_id"))
-	// healthcenter
+	if r.Method == http.MethodPut{
+		name := r.FormValue("name")
+		description := r.FormValue("description")
+		id,_ := strconv.Atoi(r.FormValue("hidden_service_id"))
+		// healthcenter
 
-	data := entity.Service{ID :uint(id),Name:name, Description:description}
-	jsonValue, _ := json.Marshal(data)
-	URL := fmt.Sprintf("http://localhost:8181/v1/service/%d", id)
-	client := &http.Client{}
-	req, err := http.NewRequest(http.MethodPut, URL, bytes.NewBuffer(jsonValue))
-	_, err = client.Do(req)
-	var status addStatus
-	if err != nil {
-		status.Success = false
-		fmt.Println(err)
-	}else {
-		status.Success = true
+		data := entity.Service{ID :uint(id),Name:name, Description:description}
+		jsonValue, _ := json.Marshal(data)
+		URL := fmt.Sprintf("http://localhost:8181/v1/service/%d", id)
+		client := &http.Client{}
+		req, err := http.NewRequest(http.MethodPut, URL, bytes.NewBuffer(jsonValue))
+		_, err = client.Do(req)
+		var status addStatus
+		if err != nil {
+			status.Success = false
+			fmt.Println(err)
+		}else {
+			status.Success = true
+		}
+		http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
 	}
-	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+
 }
 
 func (adh *ServiceHandler) DeleteService(w http.ResponseWriter, r *http.Request) {

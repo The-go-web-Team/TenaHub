@@ -25,8 +25,8 @@ type response struct {
 
 var loggedIn = make([]cookie, 10)
 
-const baseURL string = "https://tenahubapi.herokuapp.com/v1"
-//const baseURL string = "http://localhost:8181/v1"
+//const baseURL string = "https://tenahubapi.herokuapp.com/v1"
+const baseURL string = "http://localhost:8181/v1"
 var BaseURL = baseURL
 func getResponse(request *http.Request) []byte {
 	client := &http.Client{}
