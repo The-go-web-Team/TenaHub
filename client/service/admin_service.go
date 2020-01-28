@@ -5,8 +5,6 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"fmt"
-	"net/url"
-	"errors"
 	"github.com/TenaHub/client/entity"
 )
 // var baseURL = "http://localhost:8181/v1"
@@ -33,39 +31,39 @@ func FetchAdmin(id int) (*entity.User, error) {
 }
 
 // Authenticate authenticates user
-func AdminAuthenticate(admin *entity.Admin) (*entity.Admin, error) {
-	URL := fmt.Sprintf("%s/%s", baseURL, "admin")
-
-	formval := url.Values{}
-	formval.Add("email", admin.Email)
-	formval.Add("password", admin.Password)
-
-	resp, err := http.PostForm(URL, formval)
-
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-
-	respjson := struct {
-		Status string
-		Content entity.Admin
-	}{}
-
-	err = json.Unmarshal(body, &respjson)
-
-	fmt.Println(respjson)
-
-	if respjson.Status == "error" {
-		return nil, errors.New("error")
-	}
-	return &respjson.Content, nil
-}
+//func AdminAuthenticate(admin *entity.Admin) (*entity.Admin, error) {
+//	URL := fmt.Sprintf("%s/%s", baseURL, "admin")
+//
+//	formval := url.Values{}
+//	formval.Add("email", admin.Email)
+//	formval.Add("password", admin.Password)
+//
+//	resp, err := http.PostForm(URL, formval)
+//
+//	if err != nil {
+//		fmt.Println(err)
+//		return nil, err
+//	}
+//
+//	defer resp.Body.Close()
+//
+//	body, err := ioutil.ReadAll(resp.Body)
+//	if err != nil {
+//		fmt.Println(err)
+//		return nil, err
+//	}
+//
+//	respjson := struct {
+//		Status string
+//		Content entity.Admin
+//	}{}
+//
+//	err = json.Unmarshal(body, &respjson)
+//
+//	fmt.Println(respjson)
+//
+//	if respjson.Status == "error" {
+//		return nil, errors.New("error")
+//	}
+//	return &respjson.Content, nil
+//}

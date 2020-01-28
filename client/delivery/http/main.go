@@ -36,11 +36,11 @@ func main()  {
 	router.Handle("/admin/agent/addagent",  userHandler.Authenticated(userHandler.Authorized(http.HandlerFunc(AgentHandler.AddAgent))))
 	router.Handle("/admin/agent/deleteagent",userHandler.Authenticated(userHandler.Authorized(http.HandlerFunc(AgentHandler.DeleteAgent))) )
 	router.Handle("/admin/user/delete",userHandler.Authenticated(userHandler.Authorized(http.HandlerFunc(UserHandler.DeleteUser))))
+	router.Handle("/admin/healthcenter/delete", userHandler.Authenticated(userHandler.Authorized(http.HandlerFunc(HealthCenterHandler.DeleteHealthCenter))))
 
 
 	router.Handle("/agent", userHandler.Authenticated(userHandler.Authorized(http.HandlerFunc(AgentHandler.AgentPage))))
 	router.Handle("/agent/editagent", userHandler.Authenticated(userHandler.Authorized(http.HandlerFunc(AgentHandler.EditAgent))))
-	router.Handle("/agent/healthcenter/delete", userHandler.Authenticated(userHandler.Authorized(http.HandlerFunc(HealthCenterHandler.DeleteHealthCenter))))
 	router.Handle("/agent/healthcenter/add", userHandler.Authenticated(userHandler.Authorized(http.HandlerFunc(AgentHandler.AddHealthCenter))))
 
 

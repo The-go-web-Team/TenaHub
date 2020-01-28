@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"strconv"
 	"github.com/TenaHub/client/service"
-	"time"
 	"github.com/TenaHub/client/entity"
 	"github.com/TenaHub/client/form"
 	"net/url"
@@ -37,7 +36,8 @@ func (adh *AgentHandler) AddAgent(w http.ResponseWriter, r *http.Request) {
 	//data := entity.Agent{FirstName:firstName, LastName:lastName, UserName:username, Email:email,PhoneNumber:phone,Password:hashedPassword}
 	data := entity.User{FirstName:firstName, LastName:lastName, Email:email, PhoneNumber:phone, Password:hashedPassword, Role:"agent"}
 	jsonValue, _ := json.Marshal(data)
-	_, err = http.Post("http://localhost:8181/v1/agents","application/json",bytes.NewBuffer(jsonValue))
+	url := fmt.Sprintf("%s/%s", service.BaseURL, "users")
+	_, err = http.Post(url,"application/json",bytes.NewBuffer(jsonValue))
 	var status addStatus
 	if err != nil {
 		status.Success = false
@@ -68,7 +68,7 @@ func (adh *AgentHandler) EditAgent(w http.ResponseWriter, r *http.Request) {
 
 	data := entity.User{ID:uint(id), FirstName:firstName, LastName:lastName, Email:email,PhoneNumber:phone,Password:password}
 	jsonValue, _ := json.Marshal(data)
-	URL := fmt.Sprintf("http://localhost:8181/v1/agents/%d", id)
+	URL := fmt.Sprintf("%s/%s/%d",service.BaseURL,"users", id)
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodPut, URL, bytes.NewBuffer(jsonValue))
 	resp, err := client.Do(req)
@@ -86,7 +86,7 @@ func (adh *AgentHandler) EditAgent(w http.ResponseWriter, r *http.Request) {
 func (adh *AgentHandler) DeleteAgent(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 	id,_ := strconv.Atoi(r.FormValue("hidden_id"))
-	URL := fmt.Sprintf("http://localhost:8181/v1/agent/%d",id)
+	URL := fmt.Sprintf("%s/%s/%d",service.BaseURL,"users",id)
 
 	req, err := http.NewRequest(http.MethodDelete,URL,nil)
 	var status addStatus
@@ -175,7 +175,8 @@ func (ah *AgentHandler) AddHealthCenter(w http.ResponseWriter, r *http.Request) 
 	data := entity.HealthCenter{Name:name,Email:email,PhoneNumber:phone,City:city,Password:password, AgentID:uint(id)}
 	fmt.Println("the data is ", data)
 	jsonValue, _ := json.Marshal(data)
-	res, err := http.Post("http://localhost:8181/v1/healthcenter/addhealthcenter","application/json",bytes.NewBuffer(jsonValue))
+	url := fmt.Sprintf("%s/%s", service.BaseURL, "healthcenter/addhealthcenter")
+	res, err := http.Post(url,"application/json",bytes.NewBuffer(jsonValue))
 	var status addStatus
 	fmt.Println(res.StatusCode)
 	if err != nil {
@@ -185,61 +186,3 @@ func (ah *AgentHandler) AddHealthCenter(w http.ResponseWriter, r *http.Request) 
 	}
 	http.Redirect(w, r, r.Header.Get("Referer"), 302)
 }
-
-// Login handles Get /login and POST /login
-func (ah *AgentHandler) AgentLogin(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		ah.temp.ExecuteTemplate(w, "agent.login.layout", nil)
-
-	} else if r.Method == http.MethodPost {
-		email := r.PostFormValue("email")
-		password := r.PostFormValue("password")
-
-		agent := entity.Agent{Email: email, Password: password}
-		fmt.Println(agent)
-		resp, err := service.AgentAuthenticate(&agent)
-		if err != nil {
-			if err.Error() == "error" {
-				fmt.Println("password is not correct")
-				ah.temp.ExecuteTemplate(w, "agent.login.layout", "incorrect credentials")
-				return
-			}
-		} else {
-			cookie := http.Cookie{
-				Name:     "agent",
-				Value:    strconv.Itoa(int(resp.ID)),
-				MaxAge:   60 * 3,
-				Path:     "/",
-				HttpOnly: true,
-			}
-
-			http.SetCookie(w, &cookie)
-			http.Redirect(w, r, "http://localhost:8282/agent", http.StatusSeeOther)
-		}
-	}
-}
-
-// Logout handles GET /logout
-func (ah *AgentHandler) AgentLogout(w http.ResponseWriter, r *http.Request) {
-	c, err := r.Cookie("admin")
-
-	if err != nil {
-		http.Redirect(w, r, "http://localhost:8282/agent/login", http.StatusSeeOther)
-		return
-	}
-	if c != nil {
-		c = &http.Cookie{
-			Name:     "agent",
-			Value:    "",
-			Path:     "/",
-			Expires:  time.Unix(0, 0),
-			MaxAge:   -10,
-			HttpOnly: true,
-		}
-
-		http.SetCookie(w, c)
-	}
-	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
-}
-
-

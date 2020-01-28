@@ -93,8 +93,8 @@
 <div id="deleteHealthCenterModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="/healthcenter/delete" method="POST" id = "deletehealthcenterform">
-
+            <form action="/admin/healthcenter/delete" method="POST" id = "deletehealthcenterform">
+                <input type="hidden" value='{{ .Form.CSRF }}' name="_csrf"/>
                 <div class="modal-header">
                     <h4 class="modal-title">Delete Health Center</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

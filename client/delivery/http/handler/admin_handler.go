@@ -9,7 +9,6 @@ import (
 	"bytes"
 	"golang.org/x/crypto/bcrypt"
 	"strconv"
-	"time"
 	"github.com/TenaHub/client/entity"
 	"net/url"
 	"github.com/TenaHub/client/rtoken"
@@ -83,7 +82,7 @@ func (adh *AdminHandler) EditAdmin(w http.ResponseWriter, r *http.Request) {
 
 	firstName := r.FormValue("firstname")
 	lastName := r.FormValue("lastname")
-	username := r.FormValue("username")
+	//username := r.FormValue("username")
 	email := r.FormValue("email")
 	phone := r.FormValue("phone")
 	password := r.FormValue("password")
@@ -97,11 +96,11 @@ func (adh *AdminHandler) EditAdmin(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
-	data := entity.Admin{FirstName:firstName, LastName:lastName, UserName:username, Email:email,PhoneNumber:phone,Password:password,ProfilePic:fileName}
+	data := entity.User{FirstName:firstName, LastName:lastName, Email:email,PhoneNumber:phone,Password:password,ProfilePic:fileName}
 	jsonValue, _ := json.Marshal(data)
 	client := &http.Client{}
 
-	URL := fmt.Sprintf("http://localhost:8181/v1/admin/%d", id)
+	URL := fmt.Sprintf("%s/%s/%d",service.BaseURL,"admin", id)
 
 	req, err := http.NewRequest(http.MethodPut, URL, bytes.NewBuffer(jsonValue))
 	_, err = client.Do(req)
@@ -114,72 +113,6 @@ func (adh *AdminHandler) EditAdmin(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, r.Header.Get("Referer"), 302)
 }
-
-
-// Login handles Get /login and POST /login
-func (ah *AdminHandler) AdminLogin(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.Referer())
-	if r.Method == http.MethodGet {
-		ah.temp.ExecuteTemplate(w, "admin.login.layout", nil)
-
-	} else if r.Method == http.MethodPost {
-		email := r.PostFormValue("email")
-		password := r.PostFormValue("password")
-
-		admin := entity.Admin{Email: email, Password: password}
-		fmt.Println(admin)
-
-		resp, err := service.AdminAuthenticate(&admin)
-		//
-		fmt.Println(resp, " error ", err)
-
-		if err != nil {
-			if err.Error() == "error" {
-				//http.Redirect(w,r,"/admin",http.StatusSeeOther)
-				fmt.Println("before executing")
-				ah.temp.ExecuteTemplate(w, "admin.login.layout", "incorrect credentials")
-				return
-			}
-		} else {
-			fmt.Println(resp ," is the correct one")
-
-			cookie := http.Cookie{
-				Name:     "admin",
-				Value:    strconv.Itoa(int(resp.ID)),
-				MaxAge:   60 * 30,
-				Path:     "/",
-				HttpOnly: true,
-			}
-
-			http.SetCookie(w, &cookie)
-			http.Redirect(w, r, "http://localhost:8282/admin", http.StatusSeeOther)
-		}
-	}
-}
-
-// Logout handles GET /logout
-func (uh *AdminHandler) AdminLogout(w http.ResponseWriter, r *http.Request) {
-	c, err := r.Cookie("admin")
-
-	if err != nil {
-		http.Redirect(w, r, "http://localhost:8282/admin/login", http.StatusSeeOther)
-		return
-	}
-	if c != nil {
-		c = &http.Cookie{
-			Name:     "admin",
-			Value:    "",
-			Path:     "/",
-			Expires:  time.Unix(0, 0),
-			MaxAge:   -10,
-			HttpOnly: true,
-		}
-
-		http.SetCookie(w, c)
-	}
-	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
-}
-
 
 func HashPassword(password []byte)(string, error){
 	hashedPassword,err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)

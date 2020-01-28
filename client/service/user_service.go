@@ -25,8 +25,9 @@ type response struct {
 
 var loggedIn = make([]cookie, 10)
 
-const baseURL string = "http://localhost:8181/v1"
-
+const baseURL string = "https://tenahubapi.herokuapp.com/v1"
+//const baseURL string = "http://localhost:8181/v1"
+var BaseURL = baseURL
 func getResponse(request *http.Request) []byte {
 	client := &http.Client{}
 	resp, err := client.Do(request)
@@ -373,7 +374,7 @@ func GetFeedback(id uint)([]entity.UserComment, error) {
 
 func FetchUsers() ([]entity.User, error) {
 	client := &http.Client{}
-	URL := fmt.Sprintf("%s/users", baseURL)
+	URL := fmt.Sprintf("%s/users/user/type", baseURL)
 	req, _ := http.NewRequest("GET", URL, nil)
 	res, err := client.Do(req)
 	if err != nil {

@@ -5,14 +5,12 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"fmt"
-	"net/url"
-	"errors"
 	"github.com/TenaHub/client/entity"
 )
 
 func FetchAgent(id int) (*entity.User, error) {
 	client := &http.Client{}
-	URL := fmt.Sprintf("%s/agent/%d", baseURL, id)
+	URL := fmt.Sprintf("%s/users/%d", baseURL, id)
 	fmt.Println(URL)
 	req, _ := http.NewRequest("GET", URL, nil)
 	res, err := client.Do(req)
@@ -35,7 +33,7 @@ func FetchAgent(id int) (*entity.User, error) {
 
 func FetchAgents() ([]entity.User, error) {
 	client := &http.Client{}
-	URL := fmt.Sprintf("%s/agent", baseURL)
+	URL := fmt.Sprintf("%s/users/agent/type", baseURL)
 	req, _ := http.NewRequest("GET", URL, nil)
 	res, err := client.Do(req)
 	if err != nil {
@@ -54,41 +52,41 @@ func FetchAgents() ([]entity.User, error) {
 }
 
 // Authenticate authenticates user
-func AgentAuthenticate(agent *entity.Agent) (*entity.Agent, error) {
-	URL := fmt.Sprintf("%s/%s", baseURL, "agent")
-	fmt.Println(URL)
-	formval := url.Values{}
-	formval.Add("email", agent.Email)
-	formval.Add("password", agent.Password)
-
-	resp, err := http.PostForm(URL, formval)
-
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-
-	respjson := struct {
-		Status string
-		Content entity.Agent
-	}{}
-
-	err = json.Unmarshal(body, &respjson)
-
-	fmt.Println(respjson)
-
-	if respjson.Status == "error" {
-		return nil, errors.New("error")
-	}
-	return &respjson.Content, nil
-}
-
+//func AgentAuthenticate(agent *entity.Agent) (*entity.Agent, error) {
+//	URL := fmt.Sprintf("%s/%s", baseURL, "agent")
+//	fmt.Println(URL)
+//	formval := url.Values{}
+//	formval.Add("email", agent.Email)
+//	formval.Add("password", agent.Password)
+//
+//	resp, err := http.PostForm(URL, formval)
+//
+//	if err != nil {
+//		fmt.Println(err)
+//		return nil, err
+//	}
+//
+//	defer resp.Body.Close()
+//
+//	body, err := ioutil.ReadAll(resp.Body)
+//	if err != nil {
+//		fmt.Println(err)
+//		return nil, err
+//	}
+//
+//	respjson := struct {
+//		Status string
+//		Content entity.Agent
+//	}{}
+//
+//	err = json.Unmarshal(body, &respjson)
+//
+//	fmt.Println(respjson)
+//
+//	if respjson.Status == "error" {
+//		return nil, errors.New("error")
+//	}
+//	return &respjson.Content, nil
+//}
+//
 
